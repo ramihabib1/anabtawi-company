@@ -6,9 +6,12 @@ Why the limits: all bots on a Grok account share one cloud computer, and xAI's G
 
 ## Order
 1. `account-health` first (reads only, easy to grade), then `chief-of-staff` (the brief). Two bots for two days.
-2. If both fire on schedule, read DataDoe through MCP, write their state files, commit and push, add `supply-chain`, `pricing-intel`, `customer`. Never `advertising` on this runtime (it has T1 writes).
+2. If both fire on schedule, read DataDoe through MCP, write their state files, commit and push, add `supply-chain`, `pricing-intel`, `customer`. `advertising` runs here in observe-only mode with no Ads connector; its Tier 1 actions exist only on Paperclip.
 
-## Per bot, in the Grok Bot app
+## How it is built
+Rami hires only the Chief of Staff (see `RAMI-CHECKLIST.md`). The Chief of Staff executes `BOOTSTRAP.md`: it hires the other bots, creates the group chats per `CHATS.md`, sets routines, and keeps `ROSTER.md` current. The manual per-bot steps below are the fallback if a bot cannot hire bots on your plan.
+
+## Per bot, in the Grok Bot app (fallback)
 1. Hire a new bot. Name it `anabtawi-<dept>`.
 2. Paste the system prompt from `bots/<dept>.md`.
 3. Connectors: add the DataDoe MCP with the read-only key (Bring-Your-Own-MCP). No other connectors.
