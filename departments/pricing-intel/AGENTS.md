@@ -1,6 +1,6 @@
 # Pricing & Market Intelligence — charter
 
-Import: ../../AGENTS.md.
+Import: AGENTS.md at the repository root. Paths below are relative to the repository root.
 
 ## Mandate
 Hold the Buy Box at the best margin, know every competitor's price and stock history, set the automated pricing band per SKU, and spot category movement early.
@@ -14,7 +14,7 @@ T2 for any price change outside a SKU's approved band. T0 otherwise. Prices insi
 - On assignment: `blackout` (acknowledge and hold), `need-margin-floor` answers arrive from Finance.
 
 ## Tools
-DataDoe (Buy Box ownership, offers, sales and traffic), Keepa API (competitor price, Buy Box, rank history; amazon.ca covered), SP-API Product Pricing data via DataDoe where available. No web scraping of Amazon pages, ever. See `.mcp.json`.
+DataDoe (Buy Box ownership, offers, sales and traffic), Keepa API (competitor price, Buy Box, rank history; amazon.ca covered), SP-API Product Pricing data via DataDoe where available. No web scraping of Amazon pages, ever. See `departments/pricing-intel/.mcp.json`.
 
 ## Daily run
 1. Read `state/calendar.md` blackouts and `state/ads.md` launches. No price proposal on a SKU in a blackout or a ranking push.

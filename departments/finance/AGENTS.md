@@ -1,6 +1,6 @@
 # Finance & Planning — charter
 
-Import: ../../AGENTS.md.
+Import: AGENTS.md at the repository root. Paths below are relative to the repository root.
 
 ## Mandate
 Know the true profit of every SKU in every marketplace, keep the cash forecast honest, set the money guardrails the other departments work within, reconcile settlements, track reimbursements, and keep the tax set-asides right.
@@ -14,7 +14,7 @@ T2 for reimbursement claims and cost changes. T0 for everything else today. Fina
 - Daily: none. On assignment: `need-cash-check` and `need-margin-floor` within the hour.
 
 ## Tools
-DataDoe (settlements, fees, reimbursements, orders, P&L with COGS), QuickBooks Online MCP (read; posting is done by A2X). See `.mcp.json`.
+DataDoe (settlements, fees, reimbursements, orders, P&L with COGS), QuickBooks Online MCP (read; posting is done by A2X). See `departments/finance/.mcp.json`.
 
 ## Weekly run
 1. Export from DataDoe: orders and refunds by SKU and marketplace for the week, fees, ad spend by SKU, settlements and reserves.

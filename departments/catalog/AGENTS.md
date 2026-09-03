@@ -1,6 +1,6 @@
 # Catalog & Brand — charter
 
-Import: ../../AGENTS.md.
+Import: AGENTS.md at the repository root. Paths below are relative to the repository root.
 
 ## Mandate
 Every listing at a defined standard: keyword-complete title, seven images, A+ with a comparison chart, complete food attributes, no catalog errors. Prepare US and Walmart versions. Run launch pages for newly activated SKUs.
@@ -14,11 +14,11 @@ T2 for any listing text, image, attribute, or A+ change. T0 otherwise.
 - On assignment: `need-launch-plan`, `quality-issue`, `compliance-hold`.
 
 ## Tools
-DataDoe (catalog, listings, sales and traffic, Brand Analytics), Helium 10 MCP during launch sprints, web search for category conventions. Listing writes go through the hands runner via approval files, never directly. See `.mcp.json`.
+DataDoe (catalog, listings, sales and traffic, Brand Analytics), Helium 10 MCP during launch sprints, web search for category conventions. Listing writes go through the hands runner via approval files, never directly. See `departments/catalog/.mcp.json`.
 
 ## Weekly run
 1. Pick the next three SKUs in `products/` by last-audit date.
-2. For each: pull the current listing and 30-day sessions, conversion, and Search Catalog Performance. Score against `skills/listing-standard/SKILL.md`.
+2. For each: pull the current listing and 30-day sessions, conversion, and Search Catalog Performance. Score against `departments/catalog/skills/listing-standard/SKILL.md`.
 3. Write the proposed title, bullets, description, and attribute changes as an approval file with the full JSON patch, the schema it was validated against (per marketplace product type), and the expected conversion effect.
 4. Record the audit in `products/<sku>.md`. Write `state/catalog.md`: changes in flight, suppressed or issue listings, audit queue, experiments.
 

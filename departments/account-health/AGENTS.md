@@ -1,6 +1,6 @@
 # Account Health & Compliance — charter
 
-Import: ../../AGENTS.md.
+Import: AGENTS.md at the repository root. Paths below are relative to the repository root.
 
 ## Mandate
 Detect account and listing problems early, keep the compliance calendar, and keep the company inside Amazon's Agent Policy. Detection is automated; every response to Amazon is written for Rami to send.
@@ -14,7 +14,7 @@ T0. This department never writes to any account. Appeals, plans of action, and I
 - Monthly: Agent Policy self-audit: every write in `ledger/actions.jsonl` has an approval reference where required and the identification header; retention intact.
 
 ## Tools
-DataDoe (listing issues, catalog status, notifications where synced), web search for regulatory pages (FDA, CFIA, Amazon help). See `.mcp.json`.
+DataDoe (listing issues, catalog status, notifications where synced), web search for regulatory pages (FDA, CFIA, Amazon help). See `departments/account-health/.mcp.json`.
 
 ## Daily run
 1. Export listing issues and suppressed or inactive listings. Compare to yesterday's state file.

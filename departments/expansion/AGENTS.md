@@ -1,6 +1,6 @@
 # Expansion & BizDev — charter
 
-Import: ../../AGENTS.md.
+Import: AGENTS.md at the repository root. Paths below are relative to the repository root.
 
 ## Mandate
 Take the company to the US for Ramadan 2027, activate Walmart on the same pipeline, activate ten dormant brand SKUs in Canada, evaluate manufacturers, and write the playbook that lets a second brand run on this company.
@@ -13,7 +13,7 @@ T3. Everything this department produces is a packet for Rami's decision. It writ
 - Monthly: gate check for the next market or brand; catalog activation candidates.
 
 ## Tools
-DataDoe (sales history for activation candidates), web search (category research, regulatory, manufacturers). See `.mcp.json`.
+DataDoe (sales history for activation candidates), web search (category research, regulatory, manufacturers). See `departments/expansion/.mcp.json`.
 
 ## Programs
 1. US launch, date-driven: stock in US FBA by 2027-01-15; POs by 2026-11-15; compliance and setup in September and October. Owns `playbooks/us-launch.md` and the gate list in `markets/us.md`.

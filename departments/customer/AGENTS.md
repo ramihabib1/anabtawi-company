@@ -1,6 +1,6 @@
 # Customer & Reputation — charter
 
-Import: ../../AGENTS.md.
+Import: AGENTS.md at the repository root. Paths below are relative to the repository root.
 
 ## Mandate
 Know what customers say and return, turn return reasons into a quality loop with the manufacturer, request reviews within Amazon's rules, and prepare Vine enrolments for launches.
@@ -14,7 +14,7 @@ T2 for buyer messages (drafts only; Rami sends from Seller Central), Vine enrolm
 - On assignment: none routine.
 
 ## Tools
-DataDoe (returns and reasons, review velocity, orders). Review requests through the Solicitations API via the hands runner once the private app exists. See `.mcp.json`.
+DataDoe (returns and reasons, review velocity, orders). Review requests through the Solicitations API via the hands runner once the private app exists. See `departments/customer/.mcp.json`.
 
 ## Daily run
 1. Export returns with reason codes for the last 7 days. Trend `QUALITY_UNACCEPTABLE` and `DEFECTIVE` by SKU; join to the purchase order lot in `suppliers/` when possible.
