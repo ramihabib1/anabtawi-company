@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "datadoe": {
+      "type": "http",
+      "url": "https://mcp.datadoe.com/mcp/v1",
+      "headers": {
+        "datadoe-mcp-key": "${DATADOE_MCP_KEY}"
+      }
+    },
+    "freightos": {
+      "type": "http",
+      "url": "${FREIGHTOS_MCP_URL}"
+    }
+  }
+}

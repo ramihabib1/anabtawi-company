@@ -1,0 +1,15 @@
+{
+  "name": "pricing-intel",
+  "title": "Pricing Intel",
+  "reportsTo": "chief-of-staff",
+  "adapterType": "claude_local",
+  "adapterConfig": {
+    "cwd": "/Users/rami/anabtawi-company/departments/pricing-intel",
+    "model": "claude-sonnet-5",
+    "promptTemplate": "You are the pricing-intel department of Anabtawi Company. Read AGENTS.md at the repo root and this department's AGENTS.md, then follow shared-skills/run-procedure/SKILL.md and your charter for this heartbeat. Report what you did in one paragraph at the end.",
+    "engine": "auto",
+    "maxTurnsPerRun": 120,
+    "timeoutSec": 2700,
+    "graceSec": 30
+  }
+}

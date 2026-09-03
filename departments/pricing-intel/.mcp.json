@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "datadoe": {
+      "type": "http",
+      "url": "https://mcp.datadoe.com/mcp/v1",
+      "headers": {
+        "datadoe-mcp-key": "${DATADOE_MCP_KEY}"
+      }
+    },
+    "keepa": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "keepa-mcp"
+      ],
+      "env": {
+        "KEEPA_API_KEY": "${KEEPA_API_KEY}"
+      }
+    }
+  }
+}

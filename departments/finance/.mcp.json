@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "datadoe": {
+      "type": "http",
+      "url": "https://mcp.datadoe.com/mcp/v1",
+      "headers": {
+        "datadoe-mcp-key": "${DATADOE_MCP_KEY}"
+      }
+    },
+    "quickbooks": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@intuit/quickbooks-online-mcp-server"
+      ],
+      "env": {
+        "QBO_CLIENT_ID": "${QBO_CLIENT_ID}",
+        "QBO_CLIENT_SECRET": "${QBO_CLIENT_SECRET}",
+        "QBO_REALM_ID": "${QBO_REALM_ID}"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "advertising",
+  "title": "Advertising",
+  "reportsTo": "chief-of-staff",
+  "adapterType": "codex_local",
+  "adapterConfig": {
+    "cwd": "/Users/rami/anabtawi-company/departments/advertising",
+    "instructionsFilePath": "/Users/rami/anabtawi-company/departments/advertising/AGENTS.md",
+    "promptTemplate": "You are the advertising department of Anabtawi Company. Read AGENTS.md at the repo root and this department's AGENTS.md, then follow shared-skills/run-procedure/SKILL.md and your charter for this heartbeat. Report what you did in one paragraph at the end.",
+    "modelReasoningEffort": "medium",
+    "search": false,
+    "dangerouslyBypassApprovalsAndSandbox": true,
+    "timeoutSec": 2700,
+    "graceSec": 30
+  }
+}

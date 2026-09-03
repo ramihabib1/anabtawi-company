@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "datadoe": {
+      "type": "http",
+      "url": "https://mcp.datadoe.com/mcp/v1",
+      "headers": {
+        "datadoe-mcp-key": "${DATADOE_MCP_KEY}"
+      }
+    },
+    "amazon-ads": {
+      "type": "http",
+      "url": "${AMAZON_ADS_MCP_URL}",
+      "headers": {
+        "Authorization": "Bearer ${AMAZON_ADS_MCP_TOKEN}"
+      }
+    }
+  }
+}
