@@ -1,0 +1,8 @@
+- [x] 1.1 repo cloned, git identity set
+- [x] 1.3 DataDoe verified, account facts recorded
+- [x] 1.4 smoke export committed and pushed
+- [ ] 2 bots hired: account-health, supply-chain, pricing-intel, customer, finance, advertising, catalog, expansion (one box each)
+- [ ] 3 chats created with pinned protocol: #company, #meeting-weekly, #sop-monthly
+- [ ] 4 routines set and recorded in ROSTER.md
+- [ ] 5 smoke test: every bot's state file dated today
+- [ ] 6 first brief posted to #company
