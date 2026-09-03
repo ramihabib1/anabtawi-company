@@ -6,3 +6,8 @@
 - [ ] 4 routines set and recorded in ROSTER.md
 - [ ] 5 smoke test: every bot's state file dated today
 - [ ] 6 first brief posted to #company
+
+Day 1 notes:
+- Step 2 started: hired anabtawi-account-health and anabtawi-supply-chain only, as instructed. Remaining six wait for day 2/3.
+- #company is this runtime chat. #meeting-weekly and #sop-monthly are not created yet.
+- DataDoe tools are callable even when the namespace is not listed in the catalog.
