@@ -2,7 +2,7 @@
 
 | bot | hired on | prompt file | connectors | routine set (Asia/Jerusalem) | chats | status |
 |---|---|---|---|---|---|---|
-| anabtawi-chief-of-staff | | bots/chief-of-staff.md | DataDoe read-only, Telegram | daily 07:00; Mon 06:00; 1st 06:00 | #company, #meeting-weekly, #sop-monthly | |
+| anabtawi-chief-of-staff | | bots/chief-of-staff.md | DataDoe read-only | daily 07:00; Mon 06:00; 1st 06:00 | #company, #meeting-weekly, #sop-monthly | |
 | anabtawi-account-health | | bots/account-health.md | DataDoe read-only | daily 06:15 | #company, #meeting-weekly | |
 | anabtawi-supply-chain | | bots/supply-chain.md | DataDoe read-only | daily 06:15; Mon 06:10 | #company, #meeting-weekly, #sop-monthly | |
 | anabtawi-pricing-intel | | bots/pricing-intel.md | DataDoe read-only | daily 06:30; Mon 06:15 | #company, #meeting-weekly | |

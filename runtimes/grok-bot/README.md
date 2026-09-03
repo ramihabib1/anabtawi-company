@@ -17,7 +17,7 @@ Rami hires only the Chief of Staff (see `RAMI-CHECKLIST.md`). The Chief of Staff
 3. Connectors: add the DataDoe MCP with the read-only key (Bring-Your-Own-MCP). No other connectors.
 4. On the bot's computer, once: `git clone <deploy-key URL> ~/anabtawi-company`. The system prompt tells the bot to pull and push.
 5. Routine: schedule the bot at its calendar time (`docs/CALENDAR.md`), daily.
-6. Channel: connect the Telegram channel for the Chief of Staff bot only, so the brief reaches your phone. Other bots have no channel.
+6. Chats: the Chief of Staff posts the brief in `#company`; department bots are members of the chats listed in `ROSTER.md` and follow `CHATS.md`.
 
 ## Pass criteria (three consecutive days)
 - Fires within 15 minutes of schedule without you touching it.

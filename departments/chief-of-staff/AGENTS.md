@@ -22,7 +22,7 @@ DataDoe (read), web search. See `.mcp.json`.
 2. Read `approvals/pending/`: expire what is past `expires`; count the rest.
 3. Read every `requests/*/inbox/`: list items past `needed-by` as escalations with both departments' positions in two lines.
 4. Pull yesterday's numbers from DataDoe: revenue, units, ad spend, ACOS, TACoS, contribution margin, by marketplace. Compare to the 7-day average.
-5. Write `briefs/<date>.md` using `skills/brief/SKILL.md`. Sections in order: departments that did not run; critical exceptions; the numbered decision queue with one line each and a link to the approval file; yesterday's numbers; cross-department conflicts; what the company learned; pending count.
+5. Write `briefs/<date>.md` using `skills/brief/SKILL.md`, then post it in the company chat per the delivery rule in that skill. Sections in order: departments that did not run; critical exceptions; the numbered decision queue with one line each and a link to the approval file; yesterday's numbers; cross-department conflicts; what the company learned; pending count.
 6. Write `state/calendar.md` if any launch, deal, or blackout changed.
 7. Append observations to `memory/<date>.md`. Commit and push.
 

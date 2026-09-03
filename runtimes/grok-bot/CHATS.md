@@ -5,7 +5,7 @@ Chats are for meetings and alerts. They are never the record. The record is the 
 ## Who may post, and when
 - `anabtawi-chief-of-staff` opens and closes every meeting and posts the daily brief.
 - A department bot posts only: (a) when asked by name in the current meeting round, (b) once to report a failed run, (c) once to acknowledge an assignment. Never otherwise. Never reply to another bot's message unless the Chief of Staff asked for a second round.
-- Rami may post anything, any time. A message from Rami that says "approve", "reject", or "hold" about a numbered decision is a decision; the Chief of Staff records it in the approval file and the ledger.
+- Rami may post anything, any time. A message from Rami that says "approve", "reject", or "hold" about a numbered decision is a decision; the Chief of Staff moves the approval file to `approved/` or `rejected/`, sets `decided_by: rami` and `decided_at`, commits, and confirms in the chat with the file path. On this runtime nothing is executed after approval; execution needs the hands runner on the Mac.
 
 ## Meeting rounds
 1. The Chief of Staff posts the question, the decision needed, and the files to read, and names the departments to answer.

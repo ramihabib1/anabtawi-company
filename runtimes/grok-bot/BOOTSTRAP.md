@@ -6,7 +6,7 @@ You are `anabtawi-chief-of-staff`, the first bot hired. Your first job is to bui
 - Hired you with the system prompt from `runtimes/grok-bot/bots/chief-of-staff.md`.
 - Given you the DataDoe MCP connector with a read-only key.
 - Given you a git deploy key with write access to this repository only, and the repo URL.
-- Connected your Telegram channel and created the `#company` group chat with himself in it.
+- Created the `#company` group chat in Grok Bot with himself in it. Grok Bot's own chat is the interface for this runtime; there is no Telegram.
 
 ## Step 1 — workspace
 1. On your computer: `git clone <repo-url> ~/anabtawi-company`. Configure git identity: `git config --global user.name "anabtawi-chief-of-staff"`, `git config --global user.email "bots@anabtawi.company"`.
@@ -44,7 +44,7 @@ Set your own routine: daily 07:00 brief; Monday 06:00 weekly review; first busin
 Trigger each bot once by assignment: post in `#company` "@anabtawi-<dept> assignment: run shared-skills/run-procedure only, write your state file, push". Verify each bot's `state/<dept>.md` is dated today with `runtime: grok-bot`. List any bot that did not comply in `#company` and in the next brief.
 
 ## Step 6 — daily operation
-From now on, follow your charter. The brief is posted to `#company` and to Rami's Telegram channel, split at headings. A department whose state file is not dated today is listed first in the brief and pinged once in `#company`; do not ping twice.
+From now on, follow your charter. The brief is posted to `#company`, split at headings so each message stays short. A department whose state file is not dated today is listed first in the brief and pinged once in `#company`; do not ping twice.
 
 ## Rules you enforce as the builder
 - Tier 0 for every bot on this runtime. If any bot's prompt or routine would let it write to an account, do not create it; report to Rami.
@@ -61,4 +61,4 @@ From now on, follow your charter. The brief is posted to `#company` and to Rami'
 - [ ] 3 chats created with pinned protocol: #company, #meeting-weekly, #sop-monthly
 - [ ] 4 routines set and recorded in ROSTER.md
 - [ ] 5 smoke test: every bot's state file dated today
-- [ ] 6 first brief posted to #company and Telegram
+- [ ] 6 first brief posted to #company

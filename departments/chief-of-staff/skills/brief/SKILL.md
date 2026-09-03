@@ -33,4 +33,4 @@ source: DataDoe export <id>
 <n> approvals · <n> requests past needed-by
 ```
 
-Telegram delivery: split at headings so no message exceeds 4,000 characters; the first message is "Did not run" and "Critical" only.
+Chat delivery (Grok Bot `#company` now, Telegram on the Paperclip runtime later): split at headings so no message exceeds 4,000 characters; the first message is "Did not run" and "Critical" only.
