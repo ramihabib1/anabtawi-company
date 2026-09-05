@@ -14,4 +14,4 @@ Everything here is text. Any agent runtime that can read a folder, call MCP serv
 - `runtimes/` — how to run the departments on each runtime: Grok Bot (interim), Paperclip on the Mac mini (target), Claude Code and Codex headless.
 - `docs/` — conventions, schemas, and the design document.
 
-Design and research: see the anabtawi-os repository, `docs/ANABTAWI-OS-V3-DESIGN.html` and `docs/research/`.
+Design and research: `docs/DECISION-CONTROL-PLANE.md` (why Paperclip runs the company and what we build ourselves), `docs/research/` (the four surveys behind it), and the anabtawi-os repository for the v3 design and the 12 earlier surveys.
