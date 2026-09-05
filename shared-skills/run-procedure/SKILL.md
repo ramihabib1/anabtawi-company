@@ -14,6 +14,9 @@ Every path in the constitution, charters, and skills is relative to the reposito
 4. Read the state files your charter names, and always `state/calendar.md`.
 5. If this is an assignment wake (not your scheduled slot): stop after step 3, commit, push.
 
+## Sending requests
+Before sending a request, check `requests/<to-dept>/inbox/` for an open request from you of the same type about the same SKUs. If one exists, append today's update under a `## Update <date>` heading in that file instead of creating a new one. One open request per type per SKU set.
+
 ## End
 1. Write `state/<yours>.md` with today's date, `runtime:` set to the runtime you are, `status:` ok, degraded, or failed, and `tools_failed:` listing any tool that errored.
 2. Write `memory/<today>.md` with observations: facts you saw, not conclusions. One line each with its source.
