@@ -1,0 +1,502 @@
+<title>Anabtawi Operating System</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F4F3EF; --panel:#FBFAF7; --ink:#1E2230; --muted:#5F6472; --line:#D9D6CD;
+  --accent:#3E7A4B; --accent-soft:#E3EEE4; --money:#A6473E; --money-soft:#F4E4E1;
+  --code-bg:#ECEAE3; --warn:#8A6A1F;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15181F; --panel:#1C2029; --ink:#E7E5DF; --muted:#9BA1AE; --line:#2C313C;
+    --accent:#7FB88A; --accent-soft:#1F2E24; --money:#D9776C; --money-soft:#3A2321;
+    --code-bg:#222732; --warn:#D3B25E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15181F; --panel:#1C2029; --ink:#E7E5DF; --muted:#9BA1AE; --line:#2C313C;
+  --accent:#7FB88A; --accent-soft:#1F2E24; --money:#D9776C; --money-soft:#3A2321;
+  --code-bg:#222732; --warn:#D3B25E;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55;margin:0}
+a{color:var(--accent)}
+.wrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px;max-width:1120px;margin:0 auto;padding:40px 24px 96px}
+@media (max-width:900px){.wrap{grid-template-columns:1fr;gap:24px}}
+nav.toc{position:sticky;top:24px;align-self:start;font-size:13px}
+@media (max-width:900px){nav.toc{position:static}}
+nav.toc .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+nav.toc ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+nav.toc li a{display:block;padding:5px 0 5px 12px;color:var(--muted);text-decoration:none}
+nav.toc li a:hover,nav.toc li a:focus{color:var(--ink);outline:none}
+nav.toc li a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{max-width:72ch}
+header.mast{margin-bottom:40px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:44px;line-height:1.05;margin:8px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:27px;line-height:1.15;margin:56px 0 12px;text-wrap:balance}
+h3{font-family:"IBM Plex Sans",sans-serif;font-weight:600;font-size:16.5px;margin:28px 0 8px}
+p{margin:0 0 14px}
+.lede{font-size:18.5px;line-height:1.5;color:var(--ink)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);margin-top:14px}
+code,.mono{font-family:"IBM Plex Mono",monospace;font-size:.92em}
+code{background:var(--code-bg);padding:1px 5px;border-radius:3px}
+pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font-size:13px;line-height:1.45}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0 20px;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-weight:600;font-size:12.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--ink)}
+td.num,th.num{text-align:right}
+tr.lead td{background:var(--accent-soft);font-weight:500}
+.tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;padding:1px 6px;border:1px solid var(--line);border-radius:3px;color:var(--muted);vertical-align:middle;margin-left:4px}
+.tag.v{border-color:var(--accent);color:var(--accent)}
+.tag.u{border-color:var(--warn);color:var(--warn)}
+.verdict{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:22px 24px;margin:20px 0 8px}
+.verdict h3{margin-top:0}
+.verdict ul{margin:0;padding-left:18px}
+.verdict li{margin:0 0 9px}
+figure{margin:24px 0 28px}
+figure svg{max-width:100%;height:auto;display:block;color:var(--ink);font-family:"IBM Plex Sans",sans-serif}
+figcaption{font-size:13.5px;color:var(--muted);margin-top:10px;line-height:1.45}
+.money{color:var(--money)}
+.callout{border-left:3px solid var(--money);background:var(--money-soft);padding:12px 16px;border-radius:0 6px 6px 0;margin:16px 0}
+.callout.green{border-left-color:var(--accent);background:var(--accent-soft)}
+ul,ol{padding-left:22px}
+li{margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 18px}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+.cell{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.cell .k{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.cell .v{font-size:15px}
+.week{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.week .n{font-family:"Fraunces",Georgia,serif;font-size:22px;font-weight:600;line-height:1.1}
+.week .n small{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);font-weight:400;margin-top:4px}
+.week .exit{font-size:13.5px;color:var(--muted);margin-top:4px}
+footer{margin-top:64px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion:no-preference){a{transition:color .12s}}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <div class="eyebrow">Contents</div>
+  <ol>
+    <li><a href="#verdict">Verdict</a></li>
+    <li><a href="#questions">Questions and assumptions</a></li>
+    <li><a href="#evidence">What the evidence says</a></li>
+    <li><a href="#overturn">What this overturns</a></li>
+    <li><a href="#arch">Architecture</a></li>
+    <li><a href="#depts">Departments and coordination</a></li>
+    <li><a href="#goals">Strategy and goal loop</a></li>
+    <li><a href="#knowledge">Knowledge and learning</a></li>
+    <li><a href="#money">Approval and money path</a></li>
+    <li><a href="#board">The board interface</a></li>
+    <li><a href="#runner">Runner and schedule</a></li>
+    <li><a href="#datadoe">DataDoe plan</a></li>
+    <li><a href="#brands">Second brand</a></li>
+    <li><a href="#migration">Migration</a></li>
+    <li><a href="#build">Build order</a></li>
+    <li><a href="#cost">Monthly cost</a></li>
+    <li><a href="#score">Scorecard</a></li>
+    <li><a href="#risks">Risks and disagreements</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="mast">
+  <div class="eyebrow">Design · for Rami's approval · Asia/Jerusalem</div>
+  <h1>Anabtawi Operating System</h1>
+  <p class="lede">A company of AI departments that runs the Anabtawi brand with Rami as the board. Departments are folders of text. Runs are scheduled Claude Code sessions on the Max plan. GitHub is the record and the approval button. Money moves only through a hands workflow no model can read.</p>
+  <div class="meta"><span>2026-09-05</span><span>supersedes DECISION-CONTROL-PLANE.md</span><span>full text: docs/OPERATING-SYSTEM-DESIGN.md</span></div>
+</header>
+
+<section id="verdict">
+<h2>The verdict in one page</h2>
+<div class="verdict">
+<ul>
+<li><strong>A department is a folder of text.</strong> Charter, skills, memory, tools file. The pilot proved it: two departments produced daily, cited, correct findings and changed behaviour from inbox files without a prompt edit.</li>
+<li><strong>The unit of work is a run, not an agent.</strong> One fresh Claude Code session, one charter, one repo, then it ends. State lives in files. The persistent chat bot is what stalled in the pilot; the bounded run is what worked.</li>
+<li><strong>The scheduler is Claude Code Routines</strong> <span class="tag v">verified</span>: Pro and Max plans, cron with a one-hour minimum, fresh cloud session per fire, connectors and a committed <code>.mcp.json</code>, pushes to <code>claude/</code> branches, drawn from the subscription plus a daily run cap. No server. Exit is a launchd plist per department on the Mac mini.</li>
+<li><strong>Approval is a pull request merge.</strong> A proposal is a PR that moves a file from <code>approvals/pending/</code> to <code>approved/</code>. Rami reads the body on his phone and taps Merge. Push notification, second confirm, expiry, audit trail, family visibility: zero code.</li>
+<li><strong class="money">Money moves only through the hands workflow.</strong> A GitHub Actions job on that merge runs a deterministic script, fetches the SP-API token from 1Password at run time, executes exactly the approved payload with the <code>Agent/</code> header, appends the ledger. No model in the loop. Amazon Section 19 is met by construction.</li>
+<li><strong>The goal layer is text</strong> (<code>strategy/STRATEGY.md</code>, <code>GOALS.md</code>, a decision journal, a prediction log) owned by the Chief of Staff's weekly run, which scores every key result and writes the ranked decisions for Rami. The separate CEO agent is folded in as separate runs.</li>
+<li><strong>Learning compounds through files, not a memory product</strong>: dated observations, pruned memory, playbooks with provenance and 90-day decay, a prediction log scored monthly, a decision journal, and a monthly attempt to falsify each playbook.</li>
+<li><strong>Paperclip is dropped, Grok Bot retired, Codex optional</strong> as an independent second opinion on money proposals from the Mac mini.</li>
+<li><strong>The Mac mini is hands and fallback</strong>, not the heartbeat. If it is off, the company still runs.</li>
+<li><strong>A second brand is one afternoon</strong>: new repo from the template, new DataDoe organisation, new Routines. The OS ships as a Claude Code plugin.</li>
+</ul>
+</div>
+<p>Monthly cost outside launch sprints: about USD 300 to 400 on top of the subscriptions already paid. Details in the cost section.</p>
+</section>
+
+<section id="questions">
+<h2>Questions I would have asked, and the assumptions used</h2>
+<p>This session ran unattended, so each question is answered with the assumption the design was built under and what changes if the answer differs.</p>
+<div class="tw"><table>
+<tr><th>Question</th><th>Assumption</th><th>If different</th></tr>
+<tr><td>Which account holds the Max plan? This session's account already has an unrelated Routine whose last run was abandoned.</td><td>Rami's own Max 20x.</td><td>On Max 5x, halve the daily schedule.</td></tr>
+<tr><td>ChatGPT tier?</td><td>Plus. Codex is an optional reviewer.</td><td>On Pro, Codex can carry two analysis departments.</td></tr>
+<tr><td>What do the two family members need?</td><td>Read the brief and numbers; answer non-money questions; never approve money.</td><td>Add them as GitHub reviewers on a second rule for money PRs.</td></tr>
+<tr><td>Is the manufacturer family-owned, so a PO is an internal transfer?</td><td>Treated as money either way: every PO stays T2.</td><td>Only the cash forecast changes.</td></tr>
+<tr><td>Guardrail numbers in the constitution?</td><td>Placeholders kept.</td><td>Edit one file.</td></tr>
+<tr><td>Preferred phone channel?</td><td>GitHub app for approvals, Slack for the brief, email for family. Telegram only on request; it needs a script.</td><td>The approval files do not change.</td></tr>
+<tr><td>Private SP-API app and Ads credential registered?</td><td>Neither yet; week-one tasks.</td><td>Skip those tasks.</td></tr>
+<tr><td>Walmart Canada live or dormant?</td><td>Dormant, Q1 2027.</td><td>No change until then.</td></tr>
+<tr><td>Keep SuperGrok?</td><td>Cancel after week two.</td><td>Keep as a credential-free research bot.</td></tr>
+<tr><td>Is the restock shipped 09-04 the whole answer to 28 out-of-stock SKUs?</td><td>Yes for now.</td><td>Supply Chain proposes POs in week two.</td></tr>
+<tr><td>Rewrite git history so every commit is Rami's? Routines refuse to push to a branch carrying others' commits; the pilot's are by the bot identity.</td><td>Yes, once, during migration.</td><td>Rely entirely on the PR path.</td></tr>
+</table></div>
+</section>
+
+<section id="evidence">
+<h2>What the evidence says</h2>
+<h3>The pilot, verified from the repo</h3>
+<p>Two departments on a shared cloud computer at T0 with one read-only key ran three days and produced a 29-row daily cover table with velocity, cover, lost revenue (CAD 1,241 to 1,286 a day), inbound ETAs, expiry flags and five cited export ids; and an account-health file that classed three suppressed parent listings correctly as a catalog attribute fix rather than an appeal, sent a compliance hold, and found that DataDoe's real-time notification sources were disabled. Both refused to guess. An urgent request superseded an hour later by a normal one was handled correctly and honoured in every later run.</p>
+<p>Failures had structural causes: a shared clone with relative paths (fixed in the run procedure); three near-duplicate requests to a department that did not exist (fixed by "one open request per type per SKU set"); the Chief of Staff stalled on its multi-step bootstrap, never posted a brief, and left Rami's second request unanswered past its deadline; every commit carried one shared identity. The lesson is not that coordination fails. A persistent chat bot executing a checklist across days is the wrong unit of work; a scheduled, bounded run with a fixed procedure and a state file is the right one.</p>
+<h3>Facts this design leans on</h3>
+<div class="tw"><table>
+<tr><th>Fact</th><th>Tag</th><th>Consequence</th></tr>
+<tr><td>Only the unmodified <code>claude</code>, <code>codex</code> and <code>grok</code> binaries can spend the subscriptions; Anthropic forbids third parties routing through Max credentials.</td><td><span class="tag v">verified</span></td><td>No orchestrator may sit between subscription and model.</td></tr>
+<tr><td>Routines: Pro/Max; scheduled, API and GitHub triggers; one-hour minimum; no approval prompts; connectors included; committed <code>.mcp.json</code> honoured; <code>claude/</code> branches always accepted; subscription usage plus a daily run cap.</td><td><span class="tag v">verified 09-05</span></td><td>A hosted scheduler exists on the plan already paid.</td></tr>
+<tr><td>Cloud environments on Pro/Max: API credentials attached by Anthropic's proxy; "the key never reaches Claude, the commands it runs, or the session's environment variables". GitHub credentials stay outside the VM.</td><td><span class="tag v">verified 09-05</span></td><td>Read keys live where no model can read them. Write keys still go to hands.</td></tr>
+<tr><td>GitHub Actions for Claude Code accepts "a long-lived token with your Claude subscription".</td><td><span class="tag v">verified 09-05</span></td><td>A second hosted scheduler, same subscription.</td></tr>
+<tr><td>A green Routine status "does not mean the task in your prompt succeeded".</td><td><span class="tag v">verified</span></td><td>The company needs its own dead-man's switch.</td></tr>
+<tr><td>Paperclip: goal object with no metric, target, owner or progress; no outbound webhooks; approvals never expire; weekly breaking releases; a CVSS 10 RCE patched in April; about 2,200 open issues.</td><td><span class="tag v">repo</span> <span class="tag">press</span></td><td>Dropped.</td></tr>
+<tr><td>Amazon Section 19: registered SP-API app, <code>Agent/</code> header, 12-month log, human authorization over 20 percent in 24 hours or 500 ASINs, no scraped pricing data, cease on request.</td><td><span class="tag">reported</span></td><td>Met structurally; confirm the live text before the first write.</td></tr>
+<tr><td>DataDoe: export-job MCP, Actions with dry run and audit, COGS upsert, 47-skill hub, scheduled agents to Slack, BigQuery, USD 97 flat; no inbound plans, no reimbursement cases.</td><td><span class="tag v">contract</span> <span class="tag">features</span></td><td>Read and alert layer, never the write path.</td></tr>
+<tr><td>Project Vend 2: a manager agent with a target, a floor and a forced procedure cut unauthorized discounts by 80 percent.</td><td><span class="tag">reported</span></td><td>Three layers: departments, Office, human on money.</td></tr>
+</table></div>
+</section>
+
+<section id="overturn">
+<h2>Where this overturns the 2026-09-05 control-plane decision</h2>
+<div class="tw"><table>
+<tr><th>Then</th><th>Now</th><th>Why</th></tr>
+<tr><td>Paperclip on the Mac as scheduler, approvals, budgets, kill switch.</td><td>Routines schedule; GitHub PRs approve; the plan's limits and a hook-enforced ad cap are the budgets; a Routine toggle plus key revocation is the kill switch.</td><td>Paperclip's edge was scheduling, approvals and budgets. Routines and GitHub provide all three hosted, on the plan, with no server. What it adds is a Postgres to back up, weekly breaking migrations and a bus factor of one.</td></tr>
+<tr><td>A CEO agent separate from the Chief of Staff.</td><td>One Office department with three runs: daily brief, weekly review, monthly review.</td><td>Fresh context per run already isolates grading from operating. Key results are still scored by isolated subagents.</td></tr>
+<tr><td>Mac mini as the box the company runs on.</td><td>Mac mini as hands, Codex login and fallback.</td><td>"Nothing I babysit, no server I maintain" is a non-negotiable.</td></tr>
+<tr><td>Grok Bot kept as fallback and chat.</td><td>Retired at the first Routine brief.</td><td>Two schedulers is a surface a solo operator should not carry.</td></tr>
+<tr><td>Nine departments.</td><td>Eight: Customer and Account Health merge.</td><td>Both listen and flag, never write, same sources, same hour.</td></tr>
+<tr><td>A Telegram bot script for approvals.</td><td>PR merge, with Slack and email as mirrors.</td><td>The bot was the largest custom code and held a chat token. GitHub already has buttons, confirm, reviewers and an immutable log.</td></tr>
+</table></div>
+</section>
+
+<section id="arch">
+<h2>Architecture</h2>
+<figure>
+<svg viewBox="0 0 980 560" role="img" aria-label="Runs clone the brand repo, write state and proposals to claude branches; state auto-merges, proposals become pull requests Rami merges; a merge into approvals/approved triggers the hands workflow, which executes through the private SP-API app with secrets from 1Password and appends the ledger; DataDoe, Keepa and the Ads MCP feed the runs; a Mac mini with launchd is the fallback scheduler.">
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+<marker id="arrm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#A6473E"/></marker>
+</defs>
+<!-- Board -->
+<rect x="330" y="18" width="320" height="76" rx="6" fill="none" stroke="currentColor" stroke-width="1.2"/>
+<text x="490" y="42" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Board: Rami, family</text>
+<text x="490" y="60" text-anchor="middle" font-size="11.5" fill="currentColor">GitHub app (PRs, Issues) · Slack and email (brief)</text>
+<text x="490" y="77" text-anchor="middle" font-size="11.5" fill="currentColor">Claude Code session on the repo: ask the company</text>
+<!-- Repo -->
+<rect x="250" y="170" width="480" height="96" rx="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+<text x="490" y="194" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Brand repo on GitHub: the system of record</text>
+<text x="490" y="214" text-anchor="middle" font-size="11.5" fill="currentColor">strategy/ · departments/ · state/ · requests/ · approvals/ · ledger/ · products/</text>
+<text x="490" y="232" text-anchor="middle" font-size="11.5" fill="currentColor">Actions: auto-merge state paths · expire stale PRs · 07:30 dead-man check</text>
+<text x="490" y="252" text-anchor="middle" font-size="11" fill="currentColor" opacity=".75">git history is the audit trail</text>
+<!-- Board <-> repo -->
+<line x1="440" y1="94" x2="440" y2="170" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+<text x="432" y="136" text-anchor="end" font-size="11" fill="currentColor">merge = approve</text>
+<line x1="540" y1="170" x2="540" y2="94" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+<text x="548" y="136" font-size="11" fill="currentColor">brief, decisions, PRs</text>
+<!-- Runs -->
+<rect x="20" y="330" width="290" height="120" rx="6" fill="none" stroke="#3E7A4B" stroke-width="1.6"/>
+<text x="165" y="354" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Runs: Claude Code Routines</text>
+<text x="165" y="373" text-anchor="middle" font-size="11.5" fill="currentColor">one per department run, fresh cloud session</text>
+<text x="165" y="391" text-anchor="middle" font-size="11.5" fill="currentColor">Max plan · 06:15 to 06:35 daily, Mondays, monthly</text>
+<text x="165" y="409" text-anchor="middle" font-size="11.5" fill="currentColor">PreToolUse hook guards T1 ad writes</text>
+<text x="165" y="427" text-anchor="middle" font-size="11.5" fill="currentColor">PostToolUse hook writes the ledger</text>
+<!-- Office -->
+<rect x="345" y="330" width="290" height="120" rx="6" fill="none" stroke="#3E7A4B" stroke-width="1.6"/>
+<text x="490" y="354" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Office: Chief of Staff</text>
+<text x="490" y="373" text-anchor="middle" font-size="11.5" fill="currentColor">07:00 brief · Monday review · monthly review</text>
+<text x="490" y="391" text-anchor="middle" font-size="11.5" fill="currentColor">scores GOALS.md, ranks decisions for Rami</text>
+<text x="490" y="409" text-anchor="middle" font-size="11.5" fill="currentColor">expires approvals, escalates requests</text>
+<text x="490" y="427" text-anchor="middle" font-size="11.5" fill="currentColor">chairs meetings with one subagent per department</text>
+<!-- Hands -->
+<rect x="670" y="330" width="290" height="120" rx="6" fill="none" stroke="#A6473E" stroke-width="1.8"/>
+<text x="815" y="354" text-anchor="middle" font-size="13" font-weight="600" fill="#A6473E">Hands: GitHub Actions, no model</text>
+<text x="815" y="373" text-anchor="middle" font-size="11.5" fill="currentColor">on merge into approvals/approved/</text>
+<text x="815" y="391" text-anchor="middle" font-size="11.5" fill="currentColor">hands.py validates payload and Amazon floor</text>
+<text x="815" y="409" text-anchor="middle" font-size="11.5" fill="currentColor">SP-API token from 1Password at run time</text>
+<text x="815" y="427" text-anchor="middle" font-size="11.5" fill="currentColor">Agent/AnabtawiOS header · ledger · executed/</text>
+<!-- runs -> repo -->
+<line x1="165" y1="330" x2="300" y2="266" stroke="#3E7A4B" stroke-width="1.4" marker-end="url(#arr)"/>
+<text x="150" y="300" text-anchor="end" font-size="11" fill="currentColor">push claude/dept/date; state auto-merges,</text>
+<text x="150" y="314" text-anchor="end" font-size="11" fill="currentColor">proposals open a PR</text>
+<line x1="490" y1="330" x2="490" y2="266" stroke="#3E7A4B" stroke-width="1.4" marker-end="url(#arr)"/>
+<text x="498" y="302" font-size="11" fill="currentColor">reads every state file, writes briefs/</text>
+<!-- repo -> hands -->
+<line x1="700" y1="266" x2="800" y2="330" stroke="#A6473E" stroke-width="1.6" marker-end="url(#arrm)"/>
+<text x="712" y="296" font-size="11" fill="#A6473E">merge of a money PR</text>
+<!-- hands -> Amazon -->
+<rect x="700" y="490" width="230" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.2"/>
+<text x="815" y="512" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Amazon SP-API, private app</text>
+<text x="815" y="530" text-anchor="middle" font-size="11" fill="currentColor">prices · listings · inbound plans · solicitations</text>
+<line x1="815" y1="450" x2="815" y2="490" stroke="#A6473E" stroke-width="1.6" marker-end="url(#arrm)"/>
+<text x="823" y="474" font-size="11" fill="#A6473E">writes</text>
+<!-- data feeds -->
+<rect x="20" y="490" width="620" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="330" y="512" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Data and events: DataDoe MCP and scheduled agents · Keepa · Ads MCP (T1) · QuickBooks · Freightos</text>
+<text x="330" y="530" text-anchor="middle" font-size="11" fill="currentColor">read keys held as cloud API credentials, attached by Anthropic's proxy, never visible to the model</text>
+<line x1="165" y1="490" x2="165" y2="450" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+<text x="173" y="474" font-size="11" fill="currentColor">reads, alerts wake a run</text>
+<line x1="490" y1="490" x2="490" y2="450" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+<text x="498" y="474" font-size="11" fill="currentColor">yesterday's numbers</text>
+<!-- fallback -->
+<text x="20" y="150" font-size="11.5" fill="currentColor" opacity=".8">Fallback: Mac mini, launchd, same claude -p commands; Codex reviewer; Managed Agents if limits bind</text>
+</svg>
+<figcaption>The company as data flow. Green edges are the daily working loop on the subscription. The red edge is the only path on which money moves: a merge by Rami into <code>approvals/approved/</code>, executed by a script that holds credentials no run can see.</figcaption>
+</figure>
+
+<h3>Six layers, each replaceable</h3>
+<div class="tw"><table>
+<tr><th>Layer</th><th>Choice</th><th>Beats</th><th>Exit cost</th></tr>
+<tr><td>Departments</td><td>Folders of text: AGENTS.md, skills, memory, .mcp.json</td><td>Agents in a database; a Python package</td><td>None; this is the asset</td></tr>
+<tr><td>Brains</td><td>Claude Code on Max via Routines; Codex on the Mac mini as reviewer</td><td>Agent SDK (API), open harnesses (API), Grok Build (exfiltration record)</td><td>One command line per department</td></tr>
+<tr><td>Scheduler</td><td>Claude Code Routines</td><td>Paperclip, launchd, Actions cron, Managed Agents, n8n</td><td>A launchd plist per department, one evening</td></tr>
+<tr><td>Record and approval</td><td>GitHub repo, PRs, Issues, Actions</td><td>Telegram bot, Paperclip approvals, artifact inbox, Notion, Linear</td><td>Files unchanged; a new channel reads the same folder</td></tr>
+<tr><td>Hands</td><td>Actions workflow, deterministic Python, 1Password secrets, private SP-API app; Ads MCP for T1</td><td>DataDoe Actions (their app identity, no inbound), a Mac daemon, 0-star SP-API MCPs</td><td>Same script under launchd</td></tr>
+<tr><td>Knowledge</td><td>Markdown, JSONL and CSV in the repo; DuckDB for queries</td><td>Mem0, Letta, Zep, a wiki product</td><td>None</td></tr>
+</table></div>
+<p>The rule of the company, restated: every component is a hosted service we pay for, a first-party CLI on a subscription, a GitHub feature, or a text file in the repo. Custom code is four scripts and a few workflow files, under 600 lines. Anything beyond that is drift toward v1.</p>
+</section>
+
+<section id="depts">
+<h2>Departments and coordination</h2>
+<h3>The list</h3>
+<div class="tw"><table>
+<tr><th>Department</th><th>Cadence</th><th>Tier</th><th>Why its own folder</th></tr>
+<tr><td>Chief of Staff (the Office)</td><td>07:00 daily · Mon 06:45 · monthly</td><td>T0</td><td>Rhythm, goals, decisions list, calendar, escalations, ratchet</td></tr>
+<tr><td>Finance and Planning</td><td>Monday · monthly</td><td>T2</td><td>Contribution margin per SKU is the number every proposal cites; owns cash and the PO ceiling</td></tr>
+<tr><td>Supply Chain</td><td>06:15 daily · Monday · monthly</td><td>T2</td><td>Proved in the pilot; stockouts are today's problem</td></tr>
+<tr><td>Advertising</td><td>06:35 daily · Monday</td><td>T1 hygiene, T2 structure</td><td>The one bounded write class through a first-party MCP, guarded in code</td></tr>
+<tr><td>Catalog and Brand</td><td>Monday · monthly</td><td>T2</td><td>JSON patches against per-marketplace schemas; bilingual and food attributes</td></tr>
+<tr><td>Pricing and Market Intel</td><td>06:30 daily · Monday</td><td>T2 outside the band</td><td>Must be able to disagree with Advertising on the same SKU</td></tr>
+<tr><td>Customer and Health (merged)</td><td>06:15 daily</td><td>T0, drafts only</td><td>Returns, reviews, message drafts, listing issues, account status, compliance calendar</td></tr>
+<tr><td>Expansion and BizDev</td><td>Monday · monthly gates</td><td>T3 packets</td><td>US launch is date-driven with thirteen gates; Walmart and brand two follow</td></tr>
+</table></div>
+<h3>The unit of work is a run</h3>
+<p>One Routine fire, one fresh session, one prompt naming the department and the run, one clone of <code>main</code>, work through the department's tools, one push to <code>claude/&lt;dept&gt;/&lt;date&gt;</code>, one pull request, then the session ends. A persistent identity with a chat surface is what stalled in the pilot and what Vending-Bench shows melting down over long horizons. Skills alone are procedures without a caller; workflows-as-code need a programmer for every change, and the pilot showed that the changes that matter are plain-text corrections. The run is the composition: a charter calls skills on a schedule, with the deterministic parts pushed into scripts and hooks.</p>
+<h3>Run procedure, version 2</h3>
+<ol>
+<li>Start from a clean clone of <code>main</code>. No department clones, no rebase.</li>
+<li>Read the constitution, the charter, <code>MEMORY.md</code>, <code>strategy/GOALS.md</code>, the inbox, the state files the charter names, and <code>state/calendar.md</code>.</li>
+<li>Answer inbox items first. An assignment wake means answer and stop.</li>
+<li>Do the charter's work. Writes go through the Ads MCP under the hook (T1) or an approval file (T2 and above).</li>
+<li>Write <code>state/&lt;name&gt;.md</code> with today's date, a <code>served_objectives</code> list, and a <code>predictions</code> block for any proposal.</li>
+<li>Write <code>memory/&lt;date&gt;.md</code>; update <code>MEMORY.md</code> only for durable facts.</li>
+<li>Commit as the department, push to the <code>claude/</code> branch, open one PR. State-only PRs auto-merge; PRs with approval files or playbook changes wait.</li>
+</ol>
+<h3>Coordination</h3>
+<p>Three channels in rising cost. <strong>Shared state</strong> in <code>state/*.md</code> is read before proposing; the Office rejects proposals that ignore it. <strong>Typed requests</strong> keep the existing schema with two rules from the pilot promoted: one open request per type per SKU set, updated not duplicated; and a request to a department that has not run in seven days is answered by the Office on its behalf and flagged. <strong>Meetings</strong> are one Office run spawning one subagent per department to state a position from its files, resolved against the constitution, written to <code>meetings/</code>. The coordinator will not stall this time because it never executes multi-step work across days: bootstrap is Rami's, and each Office run is one bounded procedure with a hard stop.</p>
+</section>
+
+<section id="goals">
+<h2>Strategy and the goal loop</h2>
+<div class="grid2">
+<div class="cell"><div class="k">strategy/STRATEGY.md</div><div class="v">Mission, north star and its computation, quarterly posture, department mandates and boundaries, non-negotiables, this quarter's one or two wildly important goals, deferred items with triggers, revision log.</div></div>
+<div class="cell"><div class="k">strategy/GOALS.md</div><div class="v">YAML: quarter, north star target and baseline, one to three objectives with key results (metric, target, baseline, current, as-of), owner, definition of done, status; anti-thrash lock and override triggers; append-only weekly scorecard.</div></div>
+<div class="cell"><div class="k">strategy/decisions.md</div><div class="v">The decision journal: one entry per T2 or T3 decision and per plan change, with evidence pointer, predicted outcome, review date.</div></div>
+<div class="cell"><div class="k">ledger/predictions.jsonl</div><div class="v">One line per proposal: metric, predicted value, horizon, source. Scored monthly; the calibration per department and action class feeds the ratchet.</div></div>
+</div>
+<p>North star for the first quarter: contribution margin after ads, CAD-normalised, CA plus US, monthly. The constitution's targets become key results: CA CAD 20k a month by March 2027 with ten activated SKUs; hero stockout days zero; US stock live 2027-01-15.</p>
+<h3>The Office's three runs</h3>
+<p><strong>Daily brief, 07:00.</strong> Any state file not dated today leads the brief as a failed department. Expires stale approvals and closes their PRs. Lists requests past <code>needed-by</code> with both positions. Pulls yesterday's numbers by marketplace against the seven-day average. Writes <code>briefs/&lt;date&gt;.md</code> under 400 words, every number cited, posts it to Slack and emails the family, and opens GitHub Issues labelled <code>for-rami</code> for tasks that are his, each with evidence, impact and deadline. Hard cap of five decisions; if none, one line says so.</p>
+<p><strong>Weekly review, Monday.</strong> Scores each key result with an isolated subagent per result, flags only two-consecutive-week breaches, appends the scorecard row, writes the ranked decisions list, chairs the Monday meeting, and proposes tier promotions as a one-line charter PR when the ratchet's numbers are met.</p>
+<p><strong>Monthly review, first business day.</strong> Chairs S&amp;OP; falsifies playbooks against thirty days of outcomes; scores the prediction log; proposes scoped repairs to milestones as a diff; writes the posture paragraph as a PR; prunes memory; runs the Agent Policy self-audit over the ledger.</p>
+<p>Anti-thrash: quarterly objectives are locked until the date in <code>GOALS.md</code>, changeable at the boundary or by a named override trigger; monthly milestones change only by a scoped repair; weekly tasks regenerate freely; a single week's breach changes nothing; every plan change has an evidence pointer; the Office proposes quarterly changes as PRs and never merges one.</p>
+</section>
+
+<section id="knowledge">
+<h2>Knowledge and learning</h2>
+<p>Nothing lives in Claude Code's auto memory: cloud sessions are fresh machines, so any memory not in the repo does not exist. That discipline is what makes the second brand cheap.</p>
+<div class="tw"><table>
+<tr><th>Kind</th><th>Where</th><th>Written by</th></tr>
+<tr><td>Company facts</td><td><code>products/</code>, <code>suppliers/</code>, <code>markets/</code></td><td>The owning department, by PR</td></tr>
+<tr><td>Procedures</td><td>Skills in the plugin</td><td>Rami and the Monday review</td></tr>
+<tr><td>Playbooks</td><td><code>playbooks/</code>, each fact with since, source, confidence, last reinforced</td><td>Monday compiles; monthly falsifies</td></tr>
+<tr><td>Department memory</td><td><code>memory/MEMORY.md</code> and dated files</td><td>The department</td></tr>
+<tr><td>Outcomes</td><td><code>ledger/actions.jsonl</code>, <code>kpis.csv</code>, <code>predictions.jsonl</code>, <code>strategy/decisions.md</code></td><td>Hooks, Finance, the Office</td></tr>
+</table></div>
+<p><strong>The loop.</strong> Daily observations with sources accumulate. The Monday review classifies the week's observations as new, reinforcing or contradicting a playbook fact and writes the diffs. A fact not reinforced in 90 days is marked decaying and moved out of the active section; a decayed fact cited in a proposal must be re-verified first. The monthly review tries to falsify each active fact against the last thirty days of outcomes and records the verdict. The brief's "Learned" section shows what was promoted or demoted, so Rami watches the company's beliefs change.</p>
+<p><strong>Measurably better.</strong> Every proposal states what it expects to happen and by when. The Office scores each prediction at its horizon and keeps a calibration per department and action class. That answers "is the system learning" with a number, and it becomes a ratchet condition: an action class earns T1 by predictions that came true, not only by approvals.</p>
+<p><strong>Retrieval and evals.</strong> Grep over markdown and DuckDB over the ledgers until the repo reaches thousands of files. An <code>evals/</code> folder of twenty to thirty golden cases, past state files with the decision Rami actually made, is replayed quarterly and whenever a charter or skill changes.</p>
+</section>
+
+<section id="money">
+<h2>The approval and money path, end to end</h2>
+<div class="callout">
+<strong>T2 proposal, step by step.</strong>
+<ol>
+<li>A run writes <code>approvals/pending/&lt;id&gt;.md</code> with the existing schema plus <code>prediction</code> fields and a <code>payload</code> in the exact shape the hands script executes.</li>
+<li>It pushes and opens a PR titled with the one-line proposal. The body is the proposal, evidence, impact, and what happens if rejected. Labels: <code>approval</code>, <code>t2</code>, <code>money</code>, department.</li>
+<li>GitHub notifies Rami's phone. He reads the body, taps Approve, then Merge. For <code>money</code> PRs a branch rule requires the approving review, so it is two deliberate taps.</li>
+<li>The merge moves the file to <code>approved/</code>; a small Actions step fills <code>decided_by</code> and <code>decided_at</code> from the merger's identity, so no model can forge them.</li>
+<li>The <code>hands</code> workflow runs on push to <code>main</code> touching <code>approvals/approved/</code>: validates the front matter and payload per action type, checks expiry and the Amazon floor, fetches the SP-API token from 1Password with a service-account token held as a GitHub secret, executes with <code>User-Agent: Agent/AnabtawiOS</code>, writes request and response to <code>ledger/actions.jsonl</code>, moves the file to <code>executed/</code> or <code>failed/</code>, commits as <code>anabtawi/hands</code>, posts one line to Slack.</li>
+<li>Rejection is closing the PR; expiry is the Office closing PRs older than 48 hours. Expired proposals are re-proposed with fresh data, never executed stale.</li>
+</ol>
+</div>
+<h3>State changes that do not need Rami</h3>
+<p>Option A, recommended: path-scoped auto-merge. A 30-line Actions check passes only when a PR from a <code>claude/</code> branch touches nothing outside <code>state/</code>, memory, <code>requests/</code>, <code>briefs/</code>, <code>meetings/</code>, and <code>kpis.csv</code>. Option B: direct push to <code>main</code> for those paths, which needs the history rewrite and is enforced by procedure only.</p>
+<h3>T1 under a hook</h3>
+<p>Advertising calls the official Ads MCP directly. A <code>PreToolUse</code> hook in the committed <code>.claude/settings.json</code> runs <code>scripts/guard_ads.py</code> on every Ads write: plus or minus 15 percent on bids, plus 25 percent on budgets, the daily cap across campaigns, one change per target per 24 hours from the ledger, and the blackout and stockout-risk lists in <code>state/</code>. A breach blocks the call with the reason. A <code>PostToolUse</code> hook appends every successful write to the ledger. Guardrails live in code, which is what Project Vend 2 and the long-horizon guardrail literature both ask for.</p>
+<h3>What never goes to a model</h3>
+<p>SP-API refresh token and client secret, the Ads credential used by hands, the 1Password service-account token, GitHub credentials (the cloud GitHub proxy keeps them outside the VM). Read-only keys for DataDoe and Keepa are cloud-environment API credentials attached by Anthropic's proxy. Whether that feature can attach DataDoe's custom header is unknown <span class="tag u">test week 1</span>; the fallback is an environment variable holding a read-only key that is revoked in one click.</p>
+<h3>Section 19 compliance map</h3>
+<div class="tw"><table>
+<tr><th>Obligation (reported)</th><th>Met by</th></tr>
+<tr><td>Registered SP-API app; no scraping</td><td>Private app for writes; DataDoe and the Ads MCP for reads; hard rule 1 stands</td></tr>
+<tr><td><code>Agent/</code> identification</td><td>hands.py sets it on every call</td></tr>
+<tr><td>12-month action log with inputs and outputs</td><td><code>ledger/actions.jsonl</code> in git, written by hooks and hands, never by a model</td></tr>
+<tr><td>Human authorization above thresholds</td><td>Every price change is T2; hands refuses any move over 20 percent in 24 hours or batch over 500 regardless of approval</td></tr>
+<tr><td>No scraped competitor data</td><td>Pricing reads SP-API data via DataDoe, and Keepa</td></tr>
+<tr><td>Cease on request</td><td>Pause Routines, revoke DataDoe key and Ads credential, disable the hands workflow</td></tr>
+</table></div>
+<h3>The only custom code</h3>
+<div class="tw"><table>
+<tr><th>Script</th><th class="num">Lines</th><th>Runs where</th></tr>
+<tr><td><code>scripts/hands.py</code></td><td class="num">~250</td><td>GitHub Actions, or launchd on the Mac mini</td></tr>
+<tr><td><code>scripts/guard_ads.py</code></td><td class="num">~100</td><td>PreToolUse hook in Advertising runs</td></tr>
+<tr><td><code>scripts/ledger_hook.py</code></td><td class="num">~40</td><td>PostToolUse hook in every run</td></tr>
+<tr><td><code>scripts/state_check.py</code></td><td class="num">~40</td><td>Actions cron at 07:30</td></tr>
+<tr><td><code>.github/workflows/*.yml</code></td><td class="num">~120</td><td>GitHub</td></tr>
+</table></div>
+</section>
+
+<section id="board">
+<h2>The board interface</h2>
+<div class="grid2">
+<div class="cell"><div class="k">Decisions</div><div class="v">GitHub mobile. Every T2 proposal is a PR; every T3 packet is an Issue. Push notification, one screen, two taps.</div></div>
+<div class="cell"><div class="k">Brief</div><div class="v">Slack channel through the connector in the Office's Routine, chunked under 4,000 characters; full text in <code>briefs/</code>.</div></div>
+<div class="cell"><div class="k">Ask the company</div><div class="v">A Claude Code session on the repo with the DataDoe connector. The loop that already worked, now with strategy, state and memory in the working directory.</div></div>
+<div class="cell"><div class="k">Corrections</div><div class="v">A file in <code>requests/&lt;dept&gt;/inbox/</code>, from a session or edited on GitHub mobile, or a Slack reply the Office converts.</div></div>
+<div class="cell"><div class="k">Family</div><div class="v">Email. The Office sends the daily brief and Monday scorecard through the Gmail connector. Replies are filed as info requests with the sender named. Nothing to install.</div></div>
+<div class="cell"><div class="k">History</div><div class="v">The repo. <code>state/</code> for today, git log for any day.</div></div>
+</div>
+<div class="tw"><table>
+<tr><th>Option beaten</th><th>Why not primary</th></tr>
+<tr><td>Telegram bot with buttons</td><td>Best chat UX, but a script holding a chat token that must stay up. Optional add-on once the Mac mini is on; files do not change.</td></tr>
+<tr><td>Artifact dashboard and inbox</td><td>A public artifact is readable by anyone with the link, and approval state would live outside the repo. Good for a read-only dashboard later.</td></tr>
+<tr><td>Claude in Slack</td><td>Attractive for asking from the phone, but appears tied to organisation environments. Unknown for a Max account; check in week three.</td></tr>
+<tr><td>Notion, Linear, monday.com</td><td>A second system of record. Issues on the repo already do this.</td></tr>
+</table></div>
+</section>
+
+<section id="runner">
+<h2>The runner and the schedule</h2>
+<div class="tw"><table>
+<tr><th>Routine</th><th>Local time</th><th>Connectors</th></tr>
+<tr><td>customer-health daily</td><td>06:15 daily</td><td>DataDoe</td></tr>
+<tr><td>supply-chain daily</td><td>06:15 daily</td><td>DataDoe, Freightos</td></tr>
+<tr><td>pricing-intel daily</td><td>06:30 daily</td><td>DataDoe, Keepa</td></tr>
+<tr><td>advertising daily</td><td>06:35 daily</td><td>Ads MCP, DataDoe</td></tr>
+<tr class="lead"><td>office brief</td><td>07:00 daily</td><td>DataDoe, Slack, Gmail</td></tr>
+<tr><td>finance, supply, pricing, advertising, catalog, expansion weekly</td><td>06:00 to 06:35 Monday</td><td>as daily; QuickBooks; Helium 10 in sprints</td></tr>
+<tr class="lead"><td>office weekly review and meeting</td><td>06:45 Monday</td><td>DataDoe, Slack, Gmail</td></tr>
+<tr><td>office, finance, supply monthly</td><td>06:00 first business day</td><td>as above</td></tr>
+<tr><td>event wake</td><td>API trigger</td><td>DataDoe</td></tr>
+</table></div>
+<p>Five daily runs plus the brief; about twelve on a Monday. The daily run cap's number is unknown <span class="tag u">read week 1</span>. If it binds, one morning Routine spawns the daily departments as subagents in calendar order and then the brief: one run, fresh context per department.</p>
+<p><strong>Events.</strong> DataDoe scheduled agents watch Buy Box loss, cover under floor, suppressed listings, one-star reviews, spend over twice baseline, account status, and post to Slack. If DataDoe can call a webhook <span class="tag u">test week 2</span>, it fires the event Routine with the alert as text, which arrives labelled untrusted. Otherwise the next scheduled run reads Slack.</p>
+<p><strong>Capacity.</strong> Routines draw down subscription usage like interactive sessions. At the planning number of 150k to 500k tokens per run, five daily runs are one to two and a half million tokens a day; Max 20x is expected to carry the calendar plus Rami's sessions. Week one measures real usage before adding departments. The "ordinary individual usage" clause is the one policy risk; Routines are Anthropic's own feature for unattended runs on these plans, and one email to Anthropic describing the use is a week-one task.</p>
+<p><strong>Fallback.</strong> <code>runtimes/launchd/</code> holds one plist per Routine running the same <code>claude -p</code> command in a fresh clone with secrets injected by <code>op run</code>. Switching is pausing the Routines and loading the plists. <strong>Dead-man's switch.</strong> An Actions cron at 07:30 checks that the brief and every daily state file are dated today and alerts otherwise; independent of Anthropic, DataDoe and the Mac mini. <strong>Codex.</strong> Optional nightly <code>codex exec</code> on the Mac mini that writes an independent review comment on each money PR. <strong>Graduation.</strong> Managed Agents run the same folders if the plan's limits ever bind for good.</p>
+</section>
+
+<section id="datadoe">
+<h2>The DataDoe plan</h2>
+<div class="tw"><table>
+<tr><th>Feature</th><th>Use</th></tr>
+<tr><td>MCP exports</td><td>Every department's reads through the shared export skill; cite export ids</td></tr>
+<tr><td>COGS upsert</td><td>Finance after every executed PO, through hands or Rami's session</td></tr>
+<tr><td>Scheduled agents and alerts</td><td>The event layer: Slack delivery reported, webhook unknown</td></tr>
+<tr><td>Skill Hub</td><td>Read the 47 skills in week two; fork useful ones into the plugin with our guardrails, if they are forkable text</td></tr>
+<tr><td>Actions</td><td>Disabled for every Routine; per-type enable only in Rami's session for one-off edits while the private app is registered</td></tr>
+<tr><td>BigQuery backfill</td><td>Later, when Finance wants SQL over two years</td></tr>
+<tr><td>Memories and files</td><td>Not used; memory lives in the repo</td></tr>
+<tr><td>Second brand</td><td>A second organisation, USD 97, its own key</td></tr>
+</table></div>
+<p>Risk: one hosted vendor holds the read integration and the alert layer. Mitigation: the export skill is the only place its tool names appear; Nova Analytics is the drop-in cross-check to trial for a month; the private SP-API app can serve reads. The pilot already logged one incident (orders delayed from 09-01) and two coverage gaps (notification sources disabled; listings 15 to 20 percent loaded); both are week-one tickets.</p>
+</section>
+
+<section id="brands">
+<h2>The second brand</h2>
+<p>The operating system becomes a Claude Code plugin in its own repository: skills (run procedure, export, cover, PO proposal, negatives, listing standard, brief, review, falsification), hooks, scripts, templates (constitution, charters, GOALS.md, dossiers, workflows), and the department subagents used in meetings. Brand repos install it by version and hold only what is theirs: the constitution's numbers, tier lines, dossiers, state, memory, ledger, strategy. Instantiating a brand is a repo from the template, a DataDoe organisation, the SP-API app and Ads credential in 1Password, the Routines from the calendar, a Slack channel and an email list. One afternoon, then a T0 week. Playbooks are brand-specific by default; a fact promoted to the shared plugin needs two brands' evidence.</p>
+</section>
+
+<section id="migration">
+<h2>Migration from what exists</h2>
+<p>Nothing moves until this design is approved. Then: <strong>keep</strong> the constitution, charters, skills, state, requests, approvals, ledger, dossiers, playbooks and conventions; <strong>add</strong> <code>strategy/</code>, the workflows, the hooks settings, the four scripts, <code>evals/</code>, <code>runtimes/routines/</code> and <code>runtimes/launchd/</code>, and a runbook; <strong>edit</strong> the constitution's run procedure and channels, the merged charter, the conventions for prediction and goal fields; <strong>retire</strong> the Grok Bot and Paperclip runtimes to an archive folder; <strong>fix the pilot's leftovers</strong>: seed <code>products/</code> and mark the heroes, fill the supplier file (every cover number today assumes lead time zero), replace the 09-03 calendar line, answer the open request, clear the duplicate stockout-risk requests, decide the history rewrite. Retire the Grok bots the morning after the first Routine brief lands.</p>
+</section>
+
+<section id="build">
+<h2>Build order, week by week</h2>
+<div class="week"><div class="n">1<small>Sep 8</small></div><div>Approve the design. Register the private SP-API app; apply for the Ads credential. Keys into 1Password and as cloud API credentials; test the DataDoe header. Create <code>strategy/</code> with real targets. Create the four daily Routines and the brief at T0. Read the run cap and usage. Seed products, fill the supplier file. Open the DataDoe tickets.<div class="exit">Exit: five consecutive automated briefs from live data, every daily state file dated, usage known. Rami: 6 to 8 hours.</div></div></div>
+<div class="week"><div class="n">2<small>Sep 15</small></div><div>Hooks and scripts: guard, ledger, state check, auto-merge check, expiry job. Choose auto-merge option A or B. Slack channel and family email live. Test DataDoe alerts and the webhook question. Read the Skill Hub. Retire the Grok bots.<div class="exit">Exit: state PRs auto-merge; dead-man fires on a stale file; family receives the brief. 4 to 6 hours.</div></div></div>
+<div class="week"><div class="n">3<small>Sep 22</small></div><div><code>hands.py</code> for price and listing changes, dry run against the private app, then live for one listing fix (the three suppressed parents). Branch rules for money PRs. Mac mini: auto-login, sleep off, Tailscale, <code>op</code>, both CLIs signed in, plists ready but unloaded.<div class="exit">Exit: first executed T2 action in the ledger with the Agent header; fallback switch rehearsed once. 6 to 8 hours.</div></div></div>
+<div class="week"><div class="n">4<small>Sep 29</small></div><div>Advertising to T1 under the hook once the Ads credential is approved. Weekly review Routine with scorecard and decisions list. First Monday meeting. Finance's first weekly P&amp;L and cash forecast; A2X connected. hands gains purchase orders and FBA shipments.<div class="exit">Exit: a Monday pack Rami reads in 90 minutes; first PO proposal with Freightos landed cost. 4 to 6 hours.</div></div></div>
+<div class="week"><div class="n">5<small>Oct 6</small></div><div>Monthly review Routine: S&amp;OP, falsification, prediction scoring, tier review. Prediction log populated. <code>evals/</code> seeded with September's decisions. Codex reviewer if the plan allows.<div class="exit">Exit: September close; first falsification verdicts; first tier-promotion PR opened by the Office. 3 to 4 hours.</div></div></div>
+<div class="week"><div class="n">6<small>Oct 13</small></div><div>Plugin extraction into <code>anabtawi-os</code>; the brand repo installs it. US launch program with owners and dates; FDA agent and accountant engaged. Runbook complete.<div class="exit">Exit: a dry run of "instantiate brand two" reaches a T0 brief in one afternoon. 4 to 6 hours.</div></div></div>
+<p style="margin-top:14px">After week six, Rami's recurring time is the brief (ten minutes), the Monday pack (ninety minutes) and the monthly S&amp;OP (an hour).</p>
+</section>
+
+<section id="cost">
+<h2>Monthly cost</h2>
+<div class="tw"><table>
+<tr><th>Item</th><th class="num">USD / month</th><th>Note</th></tr>
+<tr><td>Claude Max 20x</td><td class="num">200</td><td>already paid; company plus Rami's sessions</td></tr>
+<tr><td>ChatGPT Plus</td><td class="num">20</td><td>already paid; optional reviewer</td></tr>
+<tr><td>SuperGrok</td><td class="num">0</td><td>cancel after week two</td></tr>
+<tr><td>Anthropic usage credits</td><td class="num">0 to 100</td><td>only if a cap is hit</td></tr>
+<tr><td>DataDoe</td><td class="num">97</td><td>read and alert layer</td></tr>
+<tr><td>Keepa</td><td class="num">~55</td><td>entry tier</td></tr>
+<tr><td>QuickBooks Online Plus</td><td class="num">~99</td><td>first-party MCP</td></tr>
+<tr><td>A2X</td><td class="num">29</td><td>plus 79 for Walmart later</td></tr>
+<tr><td>Helium 10 Diamond</td><td class="num">0 or 279</td><td>launch sprints only</td></tr>
+<tr><td>1Password</td><td class="num">~5</td><td>vault and service account</td></tr>
+<tr><td>GitHub, Slack</td><td class="num">0</td><td>free tiers</td></tr>
+<tr><td>Mac mini</td><td class="num">one-time 600 to 900</td><td>about 2 in electricity</td></tr>
+<tr><td>Reimbursement recovery</td><td class="num">25% of recovered</td><td>no fixed fee</td></tr>
+<tr class="lead"><td>Run rate</td><td class="num">~305 to 405 new</td><td>~525 to 625 all-in outside sprints; up to ~900 in a Helium 10 sprint with overage</td></tr>
+</table></div>
+</section>
+
+<section id="score">
+<h2>The finalists against Rami's weights</h2>
+<div class="tw"><table>
+<tr><th>Criterion (weight)</th><th class="num">A. Routines + GitHub + hands</th><th class="num">B. Paperclip on Mac mini</th><th class="num">C. Bare CLI + launchd</th><th class="num">D. Managed Agents</th><th class="num">E. 5dive on Linux</th></tr>
+<tr><td>Strategy and goals (20)</td><td class="num">8</td><td class="num">6</td><td class="num">6</td><td class="num">7</td><td class="num">7</td></tr>
+<tr><td>Decisions and tasks for Rami (20)</td><td class="num">9</td><td class="num">7</td><td class="num">5</td><td class="num">7</td><td class="num">8</td></tr>
+<tr><td>Unattended with approvals (20)</td><td class="num">9</td><td class="num">8</td><td class="num">6</td><td class="num">8</td><td class="num">7</td></tr>
+<tr><td>Subscriptions and no lock-in (15)</td><td class="num">8</td><td class="num">9</td><td class="num">10</td><td class="num">3</td><td class="num">9</td></tr>
+<tr><td>Portability and tool access (10)</td><td class="num">9</td><td class="num">8</td><td class="num">10</td><td class="num">7</td><td class="num">6</td></tr>
+<tr><td>Audit and budgets (10)</td><td class="num">8</td><td class="num">8</td><td class="num">5</td><td class="num">8</td><td class="num">5</td></tr>
+<tr><td>Maturity and maintenance (5)</td><td class="num">8</td><td class="num">4</td><td class="num">9</td><td class="num">6</td><td class="num">2</td></tr>
+<tr class="lead"><td>Weighted</td><td class="num">8.50</td><td class="num">7.35</td><td class="num">6.95</td><td class="num">6.60</td><td class="num">7.10</td></tr>
+</table></div>
+<p>A is the only option where the Office's decisions arrive as native push notifications with one-tap approval and no code; unattended operation needs no machine of ours; the lock-in point, Anthropic hosting the scheduler, costs one evening of plists to leave; audit is git plus GitHub's own logs. Its weaknesses are Routines' research-preview status and unknown daily cap, the individual-usage clause, and the DataDoe header question, each with a week-one test and a fallback that leaves the departments unchanged.</p>
+</section>
+
+<section id="risks">
+<h2>Risks, exits, and where I disagree with the brief</h2>
+<ul>
+<li><strong>Routines change or vanish:</strong> launchd on the Mac mini, or Actions cron with the subscription token. Tripwire: two missed daily runs in a week not explained by usage.</li>
+<li><strong>Usage cap binds:</strong> bundle departments into one morning Routine; then usage credits; then Managed Agents. Tripwire: the brief is late twice.</li>
+<li><strong>Anthropic enforces the individual-usage clause:</strong> same ladder; a funded API key keeps the calendar running at metered cost.</li>
+<li><strong>DataDoe lag or outage:</strong> Nova trial as cross-check; the private app can read.</li>
+<li><strong>Section 19 text differs from reports:</strong> the thresholds live in hands.py; edit one file.</li>
+</ul>
+<div class="callout green">
+<strong>Said once.</strong> "Subscriptions first, no lock-in" and "no server I maintain" pull against each other; earlier designs resolved it toward a machine at home. I resolved it toward Anthropic's hosted scheduler because the departments do not depend on it and the exit is a plist. The Mac mini should be hands and safety net, not heartbeat. Nine departments were one too many at this revenue; Customer and Health merge until volume splits them. Grok should go; three surfaces is two too many for one operator. Everything else in the brief is built as asked.
+</div>
+</section>
+
+<footer>Full design with sources and tags: <code>docs/OPERATING-SYSTEM-DESIGN.md</code> in the anabtawi-company repository. Eight web-research agents were cut off by the session limit before writing; the design rests on the sixteen existing surveys, the pilot, and three Claude Code documentation pages fetched on 2026-09-05. Gaps are marked as tests in weeks one to three.</footer>
+</main>
+</div>
