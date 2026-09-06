@@ -6,11 +6,11 @@ Research date: **2026-09-06**. Researcher: Claude (agent). Account context: Anab
 
 **Important constraint on this research run:** this session's network egress policy **blocks every `*.monday.com` domain** (`monday.com`, `developer.monday.com`, `support.monday.com` all returned `EGRESS_BLOCKED`). I could not open monday's own pages in a browser-equivalent fetch, and the session's web-search budget was exhausted partway through.
 
-Everything below therefore comes from one of three places:
+Everything below comes from one of three places:
 
-1. **monday's own knowledge bases, read through the official monday MCP server** — `get_monday_knowledge(kind:"general")` returns verbatim snippets from support.monday.com articles with URLs; `get_monday_knowledge(kind:"developer_docs")` returns answers with deep links into developer.monday.com. These are monday's primary documentation, retrieved today through monday's own retrieval service. I tag these **VERIFIED** and give the article URL, with the caveat that I read the snippet monday returned rather than the rendered page.
-2. **Direct introspection of the live account** — `get_user_context`, `get_graphql_schema`, `get_type_details`, `all_widgets_schema`, `agent_catalog`. This is the strongest evidence available: it is the API answering about itself. Tagged **VERIFIED (live introspection)**.
-3. **Third-party sources** (pricing blogs, analyst posts) reached by web search. Tagged **REPORTED**.
+1. **monday's own knowledge bases, read through the official monday MCP server** — `get_monday_knowledge` returns verbatim snippets from support.monday.com articles with URLs (`general`) or answers with deep links into developer.monday.com (`developer_docs`). Tagged **VERIFIED** with the article URL, with the caveat that I read the snippet monday returned rather than the rendered page.
+2. **Direct introspection of the live account** — `get_user_context`, `get_graphql_schema`, `get_type_details`, `all_widgets_schema`, `agent_catalog`: the API answering about itself. Tagged **VERIFIED (live introspection)**.
+3. **Third-party sources** reached by web search. Tagged **REPORTED**.
 
 Anything I could not pin down is tagged **UNKNOWN** with a note on what I tried. No monday account was created, modified or deleted; only read-only tools were called.
 
@@ -288,11 +288,43 @@ VERIFIED (developer docs via MCP):
 
 So the common claim "formula columns aren't readable via API" is **half-true and out of date**: they are readable through `display_value`, subject to 10,000 values/minute and 5 formula columns per request, **but a formula that references a mirror column returns nothing**. Since mirroring is how you'd pull a supplier cost onto a SKU row, this combination silently breaks. **Do the arithmetic outside monday and write plain Numbers columns.**
 
+### Pagination and measuring complexity
+
+VERIFIED (developer docs via MCP):
+- `items_page(limit:, cursor:)` is cursor-based. **Default limit 25, maximum 500.** Cursors are **cached and valid for 60 minutes**; `cursor: null` means the end. You **cannot pass both `query_params` and `cursor`** in the same call — use `query_params` on the first page, cursor thereafter.
+- Page 2+ should use the **root-level `next_items_page(limit:, cursor:)`** rather than re-nesting inside `boards`, specifically to avoid the complexity cost of re-entering the board.
+- **You can measure any request's cost**: add a `complexity { query before after }` field to the query or mutation and monday returns the cost, the budget before and after, and the reset time. This is the way to size the daily sync empirically rather than guessing.
+- The exact complexity formula is **not published** (UNKNOWN); it scales with data volume, nesting depth, limits and filters.
+
+At 500 items per page, a 60-SKU board is one call. Even a 10,000-item board is 20 calls.
+
+### App features you can build
+
+VERIFIED (developer docs via MCP, developer.monday.com/apps/docs/app-features#quick-reference):
+- **Board view** (tab under the board title, added from the Views Center)
+- **Item view** (opens in an item's updates section)
+- **Dashboard widget** (multi-board)
+- **Custom column** (`COLUMN` / `BOARD_COLUMN_EXTENSION` / `FIELD_TYPE`)
+- **Integration recipe** (`INTEGRATION`, i.e. monday workflows blocks)
+- **AI assistant features** — **six** AI-assistant app feature types across boards, items and docs, plus a **Sidekick tool** and **connect a custom external agent**
+- Board menu features (group / item / multi-item menus), column view, doc actions, account settings view, administration view, workspace custom objects and workspace templates
+
+### monday code and the CLI
+
+VERIFIED (developer docs via MCP):
+- **monday code** hosts server-side and client-side app code inside monday. **Regions: `us`, `au`, `eu`, `il`.** Deploys via Cloud Native Buildpacks, autoscales, and includes a **pub/sub message queue**.
+- Storage: **key-value Storage API** (per account, token-scoped), **Secure Storage API** (encrypted), plus **document DB and object storage**. `mapps storage:remove-data` exists for GDPR purges.
+- Secrets and env vars: `mapps code:secret -m set -k <KEY> -v <VALUE>`, `mapps code:env`, read server-side via the SDK.
+- **`mapps scheduler:create | list | run | update | delete` — monday code has its own cron.**
+- CLI is `npm install -g @mondaycom/apps-cli`, then `mapps init -t <TOKEN>`. Key commands: `code:push` (`--client-side` for static), `code:status`, `code:logs`, `code:report`, `app:create|list|scaffold|promote`, `app-version:list|builds`, `app-features:create|list|build`, `storage:search|export`, `database:connection-string`, `tunnel:create`, `manifest:export|import`.
+
+**This is a real alternative to the Mac mini for the always-on parts** — a hosted, region-pinned Node backend with encrypted secret storage and a scheduler, inside the same vendor as the management surface. It does not solve the Amazon-credential question (secrets must still live in a vault under monday's terms), and it is lock-in beyond "monday as management surface", so treat it as a fallback if the Mac mini proves unreliable, not as the default.
+
 ### Auth, versioning, apps
 
 - **Auth**: personal API token (mirrors the user's UI permissions, `Authorization: Bearer <token>`) or **OAuth 2.0/2.1 authorization-code** with monday as IdP; you can register your own OAuth app in the Developer Center to cap scopes and get independent audit/revocation (VERIFIED).
 - **Versioning**: `API-Version` header. Three versions live at any time — release candidate, current, maintenance — with a new RC each quarter and at least six months of stability per version; deprecations announced ≥6 months ahead. `version` and `versions` queries exist in the live schema (VERIFIED, live introspection + REPORTED for the cadence details from developer.monday.com/api-reference/docs/api-versioning). **2026-10 is listed as a release candidate; 2024-10 and 2025-01 were deprecated on 2026-02-15 and now route to 2025-04** (REPORTED — search result summaries; I could not open the changelog).
-- **Live schema surface** (VERIFIED, live introspection): **102 query fields and 213 mutations**. Notable for this design: `audit_logs` + `audit_event_catalogue`, `items_history`, `activity_logs`, `next_items_page`, `items_page_by_column_values`, `complexity`, `usage`, `export_markdown_from_doc`, `doc_version_history`, `doc_version_diff`, `export_job_status`; mutations `create_board_export`, `ingest_items`, `backfill_items`, `bulk_archive_items`, `bulk_delete_items`, `change_multiple_column_values`, `create_notification`, `run_prompt`, `create_webhook`, `use_template`, `duplicate_board`, and per-AI-column configurators (`configure_summarize_ai_column`, `configure_extract_ai_column`, `configure_categorize_ai_column`, `configure_person_assignment_ai_column`, `configure_write_me_ai_column`, `configure_translate_ai_column`, `configure_improve_text_ai_column`, `configure_open_block_ai_column`, `remove_ai_from_column`).
+- **Live schema surface** (VERIFIED, live introspection): **102 query fields and 213 mutations**. Notable for this design — queries `audit_logs`, `audit_event_catalogue`, `items_history`, `next_items_page`, `items_page_by_column_values`, `complexity`, `usage`, `export_markdown_from_doc`, `doc_version_history`, `doc_version_diff`, `export_job_status`; mutations `create_board_export`, `ingest_items`, `backfill_items`, `bulk_archive_items`, `bulk_delete_items`, `change_multiple_column_values`, `create_notification`, `run_prompt`, `create_webhook`, `use_template`, `duplicate_board`, plus nine `configure_*_ai_column` / `remove_ai_from_column` mutations for attaching AI to columns programmatically.
 - **`connect_external_agent` does not appear in the default mutation list** — consistent with it being gated behind `API-Version: dev` (VERIFIED, live introspection; absence is the evidence).
 - **Board export via API**: `create_board_export` mutation + `export_job_status` / `export_events` queries exist (VERIFIED, live introspection). monday's security checklist also says "you can set up custom exports using the API" (VERIFIED).
 
@@ -313,7 +345,7 @@ VERIFIED (developer docs via MCP + the tool list present in this session).
 
 **Cost: monday MCP is listed as Free in the AI Feature Catalog** — it consumes no AI credits (VERIFIED).
 
-**Tool surface observed in this session** (VERIFIED — these are the tools this session actually has): board/item CRUD (`create_board`, `create_item(s)`, `update_items`, `change_item_column_values`, `create_column`, `create_group`, `move_object`), views and dashboards (`create_view`, `create_view_table`, `create_dashboard`, `create_widget`, `all_widgets_schema`), docs (`create_doc`, `update_doc`, `read_docs`), forms (`create_form`, `form_questions_editor`, `create_form_submission`), automations and workflows (`create_automation`, `manage_automations`, `create_workflow`, `validate_workflow`, `publish_workflow`, `run_workflow_once`, `get_automation_runs`, `get_automation_statistics`), agents (`manage_agent`, `manage_agent_skills`, `manage_agent_knowledge`, `manage_agent_triggers`, `agent_catalog`, `connect_external_agent`), Vibe (`vibe_create`, `vibe_update`, `vibe_get`, `vibe_list`, `vibe_delete`, `vibe_ask`, `vibe_publication`), raw API (`all_monday_api`, `all_api_read`, `all_api_write`, `get_graphql_schema`, `get_type_details`), knowledge (`get_monday_knowledge`), analytics (`board_insights`, `get_board_activity`), notifications (`create_notification`), meetings/notetaker (`explore_meetings`, `get_meetings_content`, `search_meetings_content`), and **`execute_code`**.
+**Tool surface observed in this session** (VERIFIED — these are the tools this session actually has), grouped: board/item/column/group CRUD and moves; views, dashboards and widgets (`create_view`, `create_dashboard`, `create_widget`, `all_widgets_schema`); docs (`create_doc`, `update_doc`, `read_docs`); forms; automations and workflows (`create_automation`, `manage_automations`, `create_workflow`, `validate_workflow`, `publish_workflow`, `run_workflow_once`, `get_automation_runs`, `get_automation_statistics`); agents (`manage_agent`, `manage_agent_skills`, `manage_agent_knowledge`, `manage_agent_triggers`, `agent_catalog`, `connect_external_agent`); Vibe (`vibe_create/update/get/list/delete/ask/publication`); raw API (`all_monday_api`, `all_api_read`, `all_api_write`, `get_graphql_schema`, `get_type_details`); knowledge (`get_monday_knowledge`); analytics (`board_insights`, `get_board_activity`); `create_notification`; meetings/notetaker; and **`execute_code`**.
 
 **Rate limit observed live:** `get_monday_knowledge(kind:"developer_docs")` is capped at **10 requests per 600 seconds** and returns HTTP 429 with `retryAfter` (VERIFIED — I hit it repeatedly during this research). The `general` knowledge tool has a materially higher budget (25+ calls without a 429).
 
@@ -434,6 +466,10 @@ VERIFIED — [Bell Notifications](https://support.monday.com/hc/en-us/articles/3
 | API: 10,000 calls/day, 2,500 q/min, 100 concurrency | **Pro** | — | VERIFIED | dev docs: rate limits |
 | API: 25,000 calls/day | Enterprise | quote-only | VERIFIED | dev docs |
 | Agent complexity budget 20M/min | any (agent context) | — | VERIFIED | dev docs |
+| `items_page` limit 500/page, cursor valid 60 min | any paid | — | VERIFIED | dev docs: items-page |
+| Measure request cost with `complexity { query before after }` | any paid | — | VERIFIED | dev docs: optimizing API usage |
+| App features: board view, item view, dashboard widget, custom column, integration recipe, 6 AI-assistant types | any paid (dev account) | — | VERIFIED | dev docs: app-features |
+| monday code hosting (us/au/eu/il), secure storage, DB, pub/sub, **scheduler/cron** | any paid (dev account) | pricing UNKNOWN | VERIFIED (capability) | dev docs: monday code |
 | Formula readable via `display_value` | Pro (needs formula column) | — | VERIFIED | dev docs: formula |
 | Formula/mirror writable or filterable via API | **never** | — | VERIFIED | dev docs: coverage gaps |
 | Doc markdown export + version history via API | any paid | — | VERIFIED | live schema |
@@ -527,6 +563,7 @@ Do not build the company on them. They are in gradual release, Work Management o
 5. **Does the Button column render and fire on the mobile item card?** Decides whether approval is one tap or two.
 6. **Is QuickBooks reachable at all from a Work Management–only account,** or does it require buying monday CRM seats?
 7. **Does "duplicating a board with values is not supported" apply to this account's boards,** or only to Enterprise mondayDB 2.0 boards? Decides the second-brand seeding strategy.
-8. **What is the current stable API version** (2026-07 vs 2026-04)? A `{ version { value kind } }` query answers it in one call; my attempt was blocked by the read-only tool set I was asked to use.
+8. **What is the current stable API version** (2026-07 vs 2026-04)? Neither the developer-docs KB nor search could confirm it today (the KB's newest reference was 2023-10; search reported 2026-10 as the release candidate). A `{ version { value kind } }` / `{ versions { value kind } }` query answers it in one call — both fields exist in the live schema — but running it needs a GraphQL-execution tool outside the read-only set I was asked to use.
 9. **Per-minute automation rate limits** are acknowledged in monday's docs but never numbered. Matters if the hands runner triggers automations via API writes.
 10. **Exact Free/Basic automation action allowances** — the plan articles never state them.
+11. **What does monday code cost?** The capability is documented in detail; the pricing is not, in anything the KB returned.
