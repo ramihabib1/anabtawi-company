@@ -1,15 +1,15 @@
 # Anabtawi OS
 
-The operating system that runs the Anabtawi brand as a company of AI departments, with Rami as the board. Designed from a blank page in September 2026; nothing here descends from an earlier design.
+The operating system that runs the Anabtawi brand as a company of AI departments, with Rami as the board.
 
-- `docs/ANABTAWI-OS-DESIGN.md` — the design: architecture, alternatives beaten, monday workspace to the schema, SKU profile, departments, CEO loop, knowledge, money path, human interface, tools and cost, multi-brand, build order.
-- `docs/monday-schema.yaml` — the monday workspace as data; `bin/project-monday.py --init` builds it (after approval).
-- `docs/anabtawi-os.html` — the rendered design.
-- `docs/schemas/` — approval packet and ledger entry JSON Schemas.
-- `docs/research/` — the ten research reports the design rests on, every claim tagged VERIFIED / REPORTED / UNKNOWN.
-- `AGENTS.md` — the constitution every department loads first. `CLAUDE.md` and `GEMINI.md` include it.
-- `departments/<dept>/` — nine departments: charter, `department.yaml`, skills, memory.
-- `strategy/`, `patterns/`, `playbooks/`, `products/`, `state/`, `work/`, `projects/`, `requests/`, `approvals/`, `ledger/` — the company's memory and record.
-- `hands/`, `bin/`, `ops/` — the runner, the adapters, the machine.
+Read `SPEC.md` (three pages). Then `docs/PLAN.md` for what is built tonight and each day after.
 
-Status: design awaiting Rami's approval. Nothing has been built in monday. Build order is §13 of the design.
+- `AGENTS.md` — the constitution, one page. `CLAUDE.md` and `GEMINI.md` include it.
+- `docs/jobs.json` — every scheduled job: reads, tools, steps, writes, timeout, done conditions. `bin/run-job.py <id>` runs one.
+- `docs/mcp-servers.json` — every MCP server, variable names only.
+- `docs/monday-schema.yaml` — the monday workspace as data; `bin/build-monday.py --init` creates it.
+- `docs/record-schemas.yaml`, `docs/schemas/` — record formats; `bin/validate-records.py` checks them.
+- `departments/<dept>/` — charter, `department.yaml` (jobs, servers, tier table), skills, memory.
+- `state/`, `briefs/`, `approvals/`, `ledger/`, `requests/`, `work/`, `projects/`, `patterns/`, `products/`, `suppliers/`, `strategy/` — the company's record.
+- `bin/project-monday.py` — the only process that writes monday. `hands/observe.py` — the runner; tonight it has no write path.
+- `docs/audit/` — six independent audits of this design. `docs/research/` — the ten research reports. `docs/archive/` — the long design document and its reasoning.

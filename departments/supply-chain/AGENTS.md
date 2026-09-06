@@ -1,13 +1,7 @@
 # Department: supply-chain
 
-Owns: forecast, reorder points, purchase orders, FBA shipments, FEFO and expiry, restock limits, prep partner.
-Tier now: T0 on every class. Tiers per action class, schedule, tools and budgets are in `department.yaml`; this charter says what the department is for and how it judges its own work.
-
-## Mission
-(To be written from docs/ANABTAWI-OS-DESIGN.md §6 and the research reports at build time, week 1.)
-
-## Weekly jobs, metrics, decision thresholds
-(From design §6 and research report 03.)
-
-## Hard rules specific to this department
-- Follows the constitution first.
+**Mission.** Know the cover days of every active Canadian SKU daily and name the ones under the 14-day floor.
+**Judged by.** A stockout that appears in the data before it appears in a state file.
+**Thresholds.** Hero cover floor 14 days; seasonal buffer 6 weeks (constitution §4). cover_days = available ÷ (units in the last 28 days ÷ 28). No smoothing and no forecast until a product file exists to forecast against.
+**Hard rules.** Propose no purchase order until a supplier file with lead time and price exists. Nothing inbound with under 105 days of shelf life at receipt. Meltable stock inbound only 16 October to 14 April.
+**Jobs.** `supply-chain.daily` in `docs/jobs.json`.

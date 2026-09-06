@@ -1,11 +1,11 @@
 name: account-health
-owns: "account health rating, violations, IP, food and label compliance, appeals packets, monthly BSA §19 self-audit"
-schedule:   # Asia/Jerusalem
-  - {slot: morning-scan, at: "07:15", prompt: prompts/exception-scan.md, timeout_min: 10}
-  - {slot: daily, at: "16:45", prompt: prompts/daily.md, timeout_min: 15}
-harness: {default: claude-code, fallbacks: [routine, claude-code-api, codex-api]}
-model: {default: sonnet, escalate_to: opus}
-mcp: [datadoe-read]
-reads_state: []
-budgets: {datadoe_tokens_per_run: 6, monday_calls_per_run: 40, resident_tokens: 20000}
-tier: {}   # every class T0 until the ratchet in AGENTS.md §5; the CEO run proposes, Rami edits this line
+owns: "account health rating, violations, IP, food and label compliance, appeals packets, BSA §19 self-audit"
+status: active
+jobs: ["account-health.daily"]          # ids in docs/jobs.json; the job defines reads, tools, steps, writes, timeout, done_when
+servers: ["datadoe-read"]   # defined in docs/mcp-servers.json; a not_built server blocks the job
+reads_state: ["preflight"]
+harness: claude-code                # the only harness in use; no fallback until one is tested
+model: sonnet
+tier:
+  default: T0                       # anything not listed under classes is T0 and is refused by the runner
+  classes: {}                      # Rami edits this map to promote a class; the ceo run proposes, never edits

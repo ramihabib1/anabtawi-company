@@ -1,501 +1,106 @@
-# monday-schema.yaml — the monday.com workspace as data. bin/project-monday.py --init builds it; brand two reuses it.
-# Column ids are stable across brands. Types are monday column types. Labels listed for status columns.
-# Nothing here is built until Rami approves docs/ANABTAWI-OS-DESIGN.md.
-version: 1.0
-workspace: "{brand} OS"
-folders:
-  - name: "1 Command"
-    boards: [strategy, key_results, initiatives, scorecard, scorecard_history, decisions, tasks_for_rami]
-    docs: [strategy_doc, weekly_review, monthly_review]
-  - name: "1b Work"
-    boards: [projects, work_items]
-    docs: [project_briefs]
-  - name: "2 Catalog"
-    boards: [products, sku_profiles, suppliers_pos]
-  - name: "3 Operations"
-    boards: [knowledge, calendar, run_health, requests]
-    docs: [playbook_index, patterns_digest, operating_notes]
-  - name: "4 Later"
-    boards: [wholesale_pipeline, finance_close]
-
-departments: &departments [ceo, finance, supply-chain, advertising, catalog, pricing-intel, customer, account-health, expansion]
+# monday-schema.yaml — the monday workspace as data. bin/build-monday.py --init creates it with raw GraphQL create_column(id:)
+# so column ids are explicit and stable; it writes ops/monday-ids.json (board ids) as it goes. Ids are [a-z_]{1,20}: no digits.
+# Ids can never be reused after deletion, so nothing here is ever renamed; later additions are new boards or new columns.
+# Verified against the account on 2026-09-06: Pro tier; views creatable by API are TABLE/FORM/DOC only; dashboard widgets cannot be
+# filtered by API (filters are one-time UI clicks); no date-window filter operator exists (a build-written status stands in).
+version: 2.0
+workspace: "Anabtawi OS"
+board_kind: public          # Main boards, so the workspace can be saved as a template later
+owner_user_id: "108169876"  # Rami; every board is created with this owner
 
 boards:
   decisions:
     name: Decisions
-    groups: [Today, This week, Deferred, Executed, Closed]
+    groups: [Today, This week, Deferred, Done]
     columns:
-      - {id: dec_id, title: Decision id, type: text, writer: ceo}
-      - {id: decision, title: Decision, type: status, writer: rami,
-         labels: [Pending, Approved, Rejected, Deferred, Expired, Executing, Executed, Failed]}
-      - {id: rank, title: Rank, type: numbers, writer: ceo}
-      - {id: score, title: Score, type: numbers, writer: ceo}
-      - {id: dept, title: Department, type: dropdown, writer: ceo, labels: *departments}
-      - {id: tier, title: Tier, type: status, writer: ceo, labels: [T2, T3]}
-      - {id: action_type, title: Action, type: dropdown, writer: ceo,
-         labels: [purchase_order, pricing_band_change, price_change, listing_change, fba_shipment, campaign_create, coupon, buyer_message, vine, reimbursement, strategy, other]}
-      - {id: impact_cad, title: Impact CAD 30d, type: numbers, writer: ceo}
-      - {id: confidence, title: Confidence, type: status, writer: ceo, labels: [Low, Medium, High, Certain]}
-      - {id: reversibility, title: Reversibility, type: status, writer: ceo, labels: [Two-way, Costly, One-way]}
-      - {id: deadline, title: Deadline, type: date, writer: ceo, time: true}
-      - {id: expires, title: Expires, type: date, writer: ceo, time: true}
-      - {id: if_ignored, title: If ignored, type: long_text, writer: ceo}
-      - {id: evidence, title: Evidence, type: long_text, writer: ceo}
-      - {id: dry_run, title: Dry-run diff, type: long_text, writer: ceo}
-      - {id: sku_link, title: SKUs, type: board_relation, to: sku_profiles, writer: ceo}
-      - {id: kr_link, title: Key result, type: board_relation, to: key_results, writer: ceo}
-      - {id: approval_file, title: Packet, type: link, writer: ceo}
-      - {id: snooze_until, title: Snooze until, type: date, writer: rami}
-      - {id: decided_at, title: Decided at, type: last_updated, writer: monday}
-      - {id: ledger_ref, title: Ledger seq, type: numbers, writer: hands}
-      - {id: outcome, title: Outcome, type: status, writer: finance, labels: [Pending, Hit, Miss, Inconclusive]}
-      - {id: repo_path, title: Repo path, type: text, writer: ceo}
-      - {id: commit, title: Commit, type: text, writer: ceo}
+      - {id: dec_id, title: Decision id, type: text}
+      - {id: decision, title: Decision, type: status, labels: [Pending, Approved, Rejected, Deferred, Expired, Executing, Executed, Failed]}
+      - {id: rank, title: Rank, type: numbers}
+      - {id: tier, title: Tier, type: status, labels: [T2, T3]}
+      - {id: dept, title: Department, type: dropdown, labels: [ceo, finance, supply-chain, advertising, catalog, pricing-intel, customer, account-health, expansion]}
+      - {id: impact_cad, title: Impact CAD 30d, type: numbers}
+      - {id: expires, title: Expires, type: date, time: true}
+      - {id: if_ignored, title: If ignored, type: long_text}
+      - {id: evidence, title: Evidence, type: long_text}
+      - {id: approval_file, title: Packet, type: link}
     views:
-      - {name: Today, type: table, filter: {group: Today}, sort: [rank]}
-      - {name: History, type: table, filter: {group: [Executed, Closed]}}
-    permissions: "board owner only (Rami). Pro has no column permissions, so the decision column is protected by board permissions; never grant edit on this board to a seat or guest."
+      - {name: Today, type: TABLE, filter: {group: Today}, sort: [{column: rank, dir: asc}], column_order: [decision, if_ignored, impact_cad, expires]}
     automations:
-      - "when item created in group Today → notify Rami"
-      - "when decision changes to Approved or Rejected → notify Rami (receipt)"
-      - "when expires arrives and decision is Pending → set decision Expired, notify Rami"
-      - "when decision changes to Deferred → set snooze_until to +7 days"
+      - "when an item is created in group Today, notify Rami"
+      - "when decision changes to Approved or Rejected, notify Rami"
+    writers: {decision: rami, everything_else: bin/project-monday.py}
+    rule: "Rami's tap is recorded intent tonight. It is not an execution signal until the two-identity test in docs/PLAN.md passes."
 
-  key_results:
-    name: Key Results
-    groups: "one per objective"
+  sku_profiles:
+    name: SKU Profiles
+    item_name: "<SKU>, <MARKET>"
+    groups: [Hero, Core, Long-tail, Kill, Planned]
     columns:
-      - {id: kr_id, type: text}
-      - {id: metric_id, type: text}
-      - {id: direction, type: status, labels: [Up, Down, Band]}
-      - {id: baseline, type: numbers}
-      - {id: baseline_date, type: date}
-      - {id: target, type: numbers}
-      - {id: current, type: numbers}
-      - {id: as_of, type: date}
-      - {id: owner_dept, type: dropdown, labels: *departments}
-      - {id: data_source, type: dropdown, labels: [datadoe, ads, keepa, ledger, repo, quickbooks, manual]}
-      - {id: status, type: status, labels: [Green, Yellow, Red, Unknown]}
-      - {id: status_rule, type: dropdown, labels: [R1, R2, R3]}
-      - {id: definition_of_done, type: long_text}
-      - {id: cost_of_miss_cad, type: numbers}
-      - {id: frozen_until, type: date}
-      - {id: thrash_count, type: numbers}
-      - {id: work_items, type: board_relation, to: work_items}
-      - {id: repo_path, type: text}
-      - {id: commit, type: text}
-    writer: ceo
-    views: [{name: Reds and yellows, filter: {status: [Red, Yellow]}}]
-
-  strategy:
-    name: Strategy
-    groups: "one per quarter"
-    columns:
-      - {id: quarter, type: dropdown}
-      - {id: status, type: status, labels: [Green, Yellow, Red, Done]}
-      - {id: owner_dept, type: dropdown, labels: *departments}
-      - {id: cost_of_miss_cad, type: numbers}
-      - {id: slack_weeks, type: numbers}
-      - {id: frozen_until, type: date}
-      - {id: narrative, type: long_text}
-      - {id: key_results, type: board_relation, to: key_results}
-      - {id: proposal, type: status, labels: [None, Proposed], writer: rami}
-      - {id: repo_path, type: text}
-      - {id: commit, type: text}
-    writer: ceo
-
-  scorecard:
-    name: Scorecard
-    items: 15
-    columns:
-      - {id: metric_id, type: text}
-      - {id: kind, type: status, labels: [Lead, Lag]}
-      - {id: owner_dept, type: dropdown, labels: *departments}
-      - {id: current, type: numbers}
-      - {id: prev, type: numbers}
-      - {id: avg_4wk, type: numbers}
-      - {id: target, type: text}
-      - {id: status, type: status, labels: [Green, Yellow, Red]}
-      - {id: status_rule, type: dropdown, labels: [R1, R2, R3]}
-      - {id: unit, type: text}
-      - {id: note, type: text}
-      - {id: as_of, type: date}
-    writer: ceo
-
-  scorecard_history:
-    name: Scorecard History
-    note: "Append-only: 15 rows a week (~780 a year), so Chart widgets can show trends on the phone. History of record is strategy/scorecard/. Archive yearly."
-    groups: "one per quarter"
-    columns:
-      - {id: week, type: week}
-      - {id: metric_id, type: text}
-      - {id: kind, type: status, labels: [Lead, Lag]}
-      - {id: value, type: numbers}
-      - {id: target_num, type: numbers}
-      - {id: status, type: status, labels: [Green, Yellow, Red]}
-      - {id: as_of, type: date}
-    writer: ceo
+      - {id: next_action, title: Next action, type: status, labels: [Nothing, Watch, Reorder now, Approve price, Fix listing, Review reviews, Blocked]}
+      - {id: cover_days, title: Cover days, type: numbers}
+      - {id: margin_pct, title: Margin after ads %, type: numbers}
+      - {id: price, title: Price, type: numbers}
+      - {id: units_seven_d, title: Units/day 7d, type: numbers}
+      - {id: fba_available, title: FBA available, type: numbers}
+      - {id: tacos_fourteen_d, title: TACoS 14d %, type: numbers}
+      - {id: bsr, title: BSR, type: numbers}
+      - {id: rating, title: Rating, type: numbers}
+      - {id: marketplace, title: Marketplace, type: status, labels: [CA, US, WMT]}
+      - {id: class, title: Class, type: status, labels: [Hero, Core, Long-tail, Kill]}
+      - {id: listing_health, title: Listing health, type: status, labels: [Live, At risk, Suppressed]}
+      - {id: data_health, title: Data health, type: status, labels: [Fresh, Stale, Broken]}
+      - {id: data_asof, title: Data as-of, type: text}
     views:
-      - {name: Trend by metric, type: chart, graph_type: line, x: as_of, y: value, group_by: metric_id}
+      - {name: "Rami — today", type: TABLE, filter: {next_action: {not_any_of: [Nothing]}}, sort: [{column: cover_days, dir: asc}], column_order: [next_action, cover_days, margin_pct]}
+    writers: {all: bin/project-monday.py}
+    source: "state/skus/<date>.jsonl written by the daily build (day 2); until then Rami may type values by hand"
+
+  run_health:
+    name: Run Health
+    items: [ceo, finance, supply-chain, advertising, catalog, pricing-intel, customer, account-health, expansion, ops]
+    columns:
+      - {id: status, title: Status, type: status, labels: [OK, Stale, Failed, Paused, Not scheduled]}
+      - {id: last_run, title: Last run, type: date, time: true}
+      - {id: state_date, title: State date, type: date}
+      - {id: harness, title: Harness, type: dropdown, labels: [claude-code, codex, hands-runner, human]}
+      - {id: tools_failed, title: Tools failed, type: text}
+      - {id: log, title: Log, type: link}
+    automations:
+      - "when status changes to Failed or Stale, notify Rami"
+    writers: {all: bin/project-monday.py}
 
   tasks_for_rami:
     name: Tasks for Rami
     groups: [This week, Next, Waiting, Done]
     columns:
-      - {id: why_human, type: long_text, required: true}
-      - {id: est_minutes, type: numbers}
-      - {id: due, type: date}
-      - {id: hard_deadline, type: checkbox}
-      - {id: consequence, type: long_text}
-      - {id: dept, type: dropdown, labels: *departments}
-      - {id: status, type: status, labels: [Open, Done, "Won't do"], writer: rami}
-      - {id: kr_link, type: board_relation, to: key_results}
-      - {id: evidence, type: link}
-      - {id: repo_path, type: text}
-    views: [{name: "Due ≤3 days", filter: {due: within_next_3_days, status: Open}}]
-    automations: ["when due arrives and status Open → notify Rami 08:00 Asia/Jerusalem"]
-
-  work_items:
-    name: Work Items
-    note: >
-      Anything that must get done and tracked. Opened by the CEO run (from red KRs and project milestones),
-      by any department (for itself or another department), or by Rami through the Ask the company form.
-      The record is work/<id>.md in the repo; the projection mirrors it both ways for status only.
-    groups: [Open, In progress, Blocked, Waiting on Rami, Done, Dropped]
-    columns:
-      - {id: wi_id, type: text}
-      - {id: type, type: status, labels: [Proposal, Data, Plan, Fix, Research, Build, Milestone]}
-      - {id: opened_by, type: dropdown, labels: [ceo, finance, supply-chain, advertising, catalog, pricing-intel, customer, account-health, expansion, rami]}
-      - {id: dept, type: dropdown, labels: *departments, title: Assigned department}
-      - {id: priority, type: numbers, note: "computed in repo from KR score, due date and blocking count; no manual priority column"}
-      - {id: due, type: date}
-      - {id: needed_by, type: date}
-      - {id: effort_est, type: numbers, title: Effort (agent minutes)}
-      - {id: project, type: board_relation, to: projects}
-      - {id: milestone, type: text, note: "milestone id inside the project"}
-      - {id: kr_link, type: board_relation, to: key_results}
-      - {id: blocked_by, type: dependency, to: work_items}
-      - {id: expected_output, type: status, labels: [Proposal, Data, Plan, Change, Decision]}
-      - {id: constraints, type: long_text}
-      - {id: is_satisfied, type: checkbox}
-      - {id: is_progress, type: checkbox}
-      - {id: is_in_loop, type: checkbox}
-      - {id: answer_ref, type: link}
-      - {id: status, type: status, labels: [Open, In progress, Blocked, Waiting on Rami, Answered, Superseded, Dropped, Escalated]}
-      - {id: last_touch, type: last_updated}
-      - {id: repo_path, type: text}
-    subitems:
-      steps: [step, owner_dept, status(Todo|Doing|Done), evidence_link]
+      - {id: status, title: Status, type: status, labels: [Open, Done, "Won't do"]}
+      - {id: due, title: Due, type: date}
+      - {id: due_soon, title: Due soon, type: status, labels: [No, Under three days, Overdue]}
+      - {id: why_human, title: Why a human, type: long_text}
+      - {id: est_minutes, title: Minutes, type: numbers}
+      - {id: consequence, title: If missed, type: long_text}
+      - {id: dept, title: Department, type: dropdown, labels: [ceo, finance, supply-chain, advertising, catalog, pricing-intel, customer, account-health, expansion]}
+      - {id: evidence, title: Evidence, type: link}
     views:
-      - {name: My department, type: table, group_by: dept}
-      - {name: Blocked, filter: {status: Blocked}}
-      - {name: Waiting on Rami, filter: {status: Waiting on Rami}}
-      - {name: Board, type: kanban, by: status}
-    automations:
-      - "when status changes to Waiting on Rami → notify Rami"
-      - "when needed_by arrives and status not Answered/Done → set status Escalated, notify Rami"
-    rules:
-      - "a work item Waiting on Rami must also exist as a Decision or a Task for Rami; the projection enforces it"
-      - "a department may open at most 5 work items for another department per week; more is a request to the CEO run"
-
-  projects:
-    name: Projects & Milestones
-    note: "Multi-step work with a timeline: US launch, 10 CA activations, Walmart CA, prep partner, brand two. Record is projects/<id>.md."
-    groups: [Active, Planned, Done]
-    columns:
-      - {id: project_id, type: text}
-      - {id: owner_dept, type: dropdown, labels: *departments}
-      - {id: objective, type: board_relation, to: strategy}
-      - {id: kr_link, type: board_relation, to: key_results}
-      - {id: timeline, type: timeline}
-      - {id: status, type: status, labels: [On track, At risk, Late, Blocked, Done]}
-      - {id: progress, type: numbers, title: "Milestones done %"}
-      - {id: next_milestone, type: text}
-      - {id: next_due, type: date}
-      - {id: slack_days, type: numbers, note: "days of float on the critical path, computed in repo"}
-      - {id: critical_path, type: checkbox}
-      - {id: cost_cap_cad, type: numbers}
-      - {id: spent_cad, type: numbers}
-      - {id: brief, type: doc}
-      - {id: repo_path, type: text}
-    subitems:
-      milestones:
-        - {id: ms_id, type: text}
-        - {id: owner_dept, type: dropdown}
-        - {id: timeline, type: timeline}
-        - {id: due, type: date}
-        - {id: depends_on, type: dependency}
-        - {id: gate, type: checkbox, note: "a gate milestone needs Rami's decision to pass"}
-        - {id: status, type: status, labels: [Todo, Doing, Done, Late, Blocked]}
-        - {id: work_items, type: board_relation, to: work_items}
-        - {id: evidence, type: link}
-    views:
-      - {name: Timeline, type: timeline}
-      - {name: Critical path, filter: {critical_path: true}}
-    automations:
-      - "when a milestone due arrives and status not Done → set Late, notify Rami if gate"
-    seed:
-      - {project_id: us-launch-2027, timeline: "2026-09-08 → 2027-03-10", milestones: [trademark-check, ior-and-bond, fsvp-agent, grocery-approval, us-labels, launch-po, sailing(≤2026-11-25), prior-notice, fba-inbound-plan, stock-sellable(≤2027-01-10), vine, ppc-live, ramadan-start(2027-02-08), eid(2027-03-09), post-season-selldown]}
-      - {project_id: ca-activations-10, timeline: "2026-09-15 → 2027-03-31"}
-      - {project_id: walmart-ca-monitor, timeline: "2026-10-01 → 2027-02-28"}
-      - {project_id: prep-partner-selection, timeline: "2026-09-15 → 2026-11-15"}
-      - {project_id: brand-two-dry-run, timeline: "2026-12-01 → 2026-12-15"}
-
-  initiatives:
-    name: Initiatives
-    note: "Bets with falsifiers. Record is strategy/initiatives/<id>.md. Killed or renewed at the monthly review."
-    groups: [Running, Won, Lost, Killed]
-    columns:
-      - {id: init_id, type: text}
-      - {id: hypothesis, type: long_text}
-      - {id: serves, type: board_relation, to: key_results}
-      - {id: owner_dept, type: dropdown, labels: *departments}
-      - {id: cost_cap_cad, type: numbers}
-      - {id: spent_cad, type: numbers}
-      - {id: decision_date, type: date}
-      - {id: falsifier, type: long_text}
-      - {id: status, type: status, labels: [Running, Won, Lost, Killed]}
-      - {id: project, type: board_relation, to: projects}
-      - {id: repo_path, type: text}
-    writer: ceo
-
-  knowledge:
-    name: Knowledge
-    note: >
-      Read-only mirror of patterns/ and the skills' governance front matter so Rami and a future seat can see
-      what the company believes, how sure it is, and what was falsified. Written by the librarian pass and the monthly review.
-    groups: [Hypothesis, Supported, Validated, Playbook, Decaying, Falsified]
-    columns:
-      - {id: kind, type: status, labels: [Pattern, Playbook, Skill, Fact]}
-      - {id: claim, type: long_text}
-      - {id: scope, type: text, note: "marketplace / department / SKUs"}
-      - {id: owner_dept, type: dropdown, labels: *departments}
-      - {id: status, type: status, labels: [Hypothesis, Supported, Validated, Playbook, Decaying, Falsified, Archived]}
-      - {id: confidence, type: numbers, note: "reproducible formula: confirmations/(confirmations+contradictions+1) × recency"}
-      - {id: confirmations, type: numbers}
-      - {id: contradictions, type: numbers}
-      - {id: first_seen, type: date}
-      - {id: last_seen, type: date}
-      - {id: hit_rate, type: numbers, note: "playbooks: realised hit rate over ≥10 firings"}
-      - {id: firings_90d, type: numbers}
-      - {id: seasonality_guard, type: checkbox}
-      - {id: next_test, type: text}
-      - {id: review_by, type: date}
-      - {id: evidence, type: link, note: "pattern file in the repo; evidence lines live there"}
-      - {id: decisions, type: board_relation, to: decisions, note: "decisions this rule produced"}
-      - {id: repo_path, type: text}
-      - {id: commit, type: text}
-    views:
-      - {name: What changed this week, filter: {last_seen: within_last_7_days}, sort: [status, confidence]}
-      - {name: Up for review, filter: {review_by: within_next_14_days}}
-      - {name: Falsified, filter: {status: Falsified}}
-    writer: ceo
-    rules:
-      - "no human edits; a disagreement is filed through the Ask the company form and becomes a contradiction with a source"
-
-  products:
-    name: Products
-    columns:
-      - {id: sku, type: text}
-      - {id: brand, type: dropdown}
-      - {id: category, type: dropdown}
-      - {id: case_pack, type: numbers}
-      - {id: moq, type: numbers}
-      - {id: shelf_life_days, type: numbers}
-      - {id: meltable, type: status, labels: [Yes, No]}
-      - {id: hazmat, type: status, labels: [None, Review, Hazmat]}
-      - {id: certifications, type: text}
-      - {id: unit_dims, type: text}
-      - {id: pkg_dims, type: text}
-      - {id: supplier, type: board_relation, to: suppliers_pos}
-      - {id: lifecycle, type: status, labels: [Planned, Launching, Active, Declining, Discontinued]}
-      - {id: class, type: status, labels: [Hero, Core, Long-tail, Kill]}
-      - {id: profile, type: link}
-      - {id: listings, type: board_relation, to: sku_profiles}
-    writer: build
-
-  sku_profiles:
-    name: SKU Profiles
-    item_name: "{sku} · {marketplace}"
-    groups: [Hero, Core, Long-tail, Kill, Planned]
-    writer: build
-    columns:
-      - {id: product, type: board_relation, to: products, card: true}
-      - {id: marketplace, type: status, labels: [CA, US, WMT], card: true}
-      - {id: asin, type: text}
-      - {id: class, type: status, labels: [Hero, Core, Long-tail, Kill], card: true}
-      - {id: lifecycle, type: status, labels: [Planned, Launching, Active, Declining, Discontinued]}
-      - {id: next_action, type: status, card: true,
-         labels: [Nothing, Watch, Reorder now, Approve price, Fix listing, Review reviews, Blocked]}
-      - {id: owner_dept, type: dropdown, labels: *departments}
-      - {id: price, type: numbers, card: true}
-      - {id: price_band, type: text}
-      - {id: margin_pct, type: numbers, card: true}
-      - {id: margin_floor, type: numbers}
-      - {id: landed_cost, type: numbers}
-      - {id: cogs_status, type: status, labels: [Fresh, Estimated, Stale]}
-      - {id: units_7d, type: numbers, card: true}
-      - {id: fba_available, type: numbers, card: true}
-      - {id: inbound, type: numbers}
-      - {id: cover_days, type: numbers, card: true}
-      - {id: reorder_point, type: numbers}
-      - {id: next_po_eta, type: date}
-      - {id: oldest_expiry, type: date}
-      - {id: expiry_lt90, type: numbers}
-      - {id: meltable, type: status, labels: [Yes, No]}
-      - {id: ad_spend_14d, type: numbers}
-      - {id: tacos_14d, type: numbers, card: true}
-      - {id: top_keyword, type: text}
-      - {id: rating, type: numbers, card: true}
-      - {id: reviews, type: numbers}
-      - {id: bsr, type: numbers, card: true}
-      - {id: buybox_pct, type: numbers}
-      - {id: listing_health, type: status, labels: [Live, At risk, Suppressed], card: true}
-      - {id: data_health, type: status, labels: [Fresh, Stale, Broken], card: true}
-      - {id: data_asof, type: text}
-      - {id: open_approvals, type: numbers, card: true}
-      - {id: decisions_doc, type: doc, card: true}
-      - {id: profile, type: link}
-    column_order_first_three: [next_action, cover_days, margin_pct]
-    subitems:
-      cost_rows: [effective_from, cogs, freight, duty, prep, po_ref, currency]
-      competitors: [asin, price, bsr, seen_at, source]
-    views:
-      - {name: "Rami — today", filter: {or: [{next_action: not Nothing}, {data_health: Broken}]}, sort: [class, cover_days]}
-      - {name: Kanban by class, type: kanban, by: class}
-      - {name: US launch readiness, filter: {marketplace: US, lifecycle: Planned}}
-
-  suppliers_pos:
-    name: Suppliers & POs
-    permissions: owner_only
-    columns:
-      - {id: legal_name, type: text}
-      - {id: country, type: country}
-      - {id: payment_terms, type: text}
-      - {id: lead_time_days, type: numbers}
-      - {id: lead_time_measured, type: numbers}
-      - {id: bank_on_file, type: checkbox}
-      - {id: contact, type: email}
-      - {id: last_po, type: date}
-      - {id: scorecard, type: numbers}
-    subitems:
-      po:
-        - {id: po_ref, type: text}
-        - {id: status, type: status, labels: [Proposed, Approved, Paid, Shipped, Received, Closed]}
-        - {id: amount, type: numbers}
-        - {id: currency, type: status, labels: [CAD, USD]}
-        - {id: skus, type: text}
-        - {id: ship_date, type: date}
-        - {id: eta, type: date}
-        - {id: paid_on, type: date, writer: rami}
-        - {id: approval_id, type: text}
-    automations: ["when subitem status changes to Paid → set paid_on today, notify Rami"]
-
-  calendar:
-    name: Calendar & Blackouts
-    columns:
-      - {id: kind, type: status, labels: [Ramadan, Eid, Prime Day, BFCM, Christmas, Meltable window, Blackout, Fee change, Deadline]}
-      - {id: start, type: date}
-      - {id: end, type: date}
-      - {id: marketplace, type: dropdown, labels: [CA, US, WMT, All]}
-      - {id: applies_to, type: text}
-      - {id: source, type: link}
-    seed: "lunar dates through 2032 from state/calendar.md; Ramadan 2027 ≈ 2027-02-08, Eid al-Fitr ≈ 2027-03-09"
-
-  run_health:
-    name: Run Health
-    items: *departments
-    columns:
-      - {id: last_run, type: date, time: true}
-      - {id: state_date, type: date}
-      - {id: status, type: status, labels: [OK, Stale, Failed, Paused]}
-      - {id: harness, type: dropdown, labels: [claude-code, codex, routine, grok]}
-      - {id: tools_failed, type: text}
-      - {id: proposals_open, type: numbers}
-      - {id: run_minutes, type: numbers}
-      - {id: log, type: link}
-    writer: run_wrapper
-    automations: ["when status changes to Failed or Stale → notify Rami"]
-
-  requests:
-    name: Requests
-    columns:
-      - {id: from, type: dropdown, labels: *departments}
-      - {id: to, type: dropdown, labels: *departments}
-      - {id: type, type: dropdown}
-      - {id: needed_by, type: date}
-      - {id: status, type: status, labels: [Open, Answered, Escalated]}
-      - {id: file, type: link}
-    hidden_group: ask_the_company   # form target; projection copies into requests/ceo/inbox/
-
-  wholesale_pipeline: {name: Wholesale Pipeline, enabled: false, note: "sales seat, month 3+"}
-  finance_close: {name: Finance Close, enabled: false, note: "finance seat, month 3+"}
+      - {name: Due soon, type: TABLE, filter: {and: [{due_soon: {any_of: [Under three days, Overdue]}}, {status: {not_any_of: [Done]}}]}}
+    writers: {status: rami, everything_else: bin/project-monday.py}
 
 dashboards:
   cockpit:
-    boards: [run_health, decisions, sku_profiles, scorecard, tasks_for_rami]
+    name: Cockpit
+    boards: [decisions, sku_profiles, run_health, tasks_for_rami]
     widgets:
-      - {kind: BATTERY, board: run_health, status_column: status, done: OK, name: Company alive}
-      - {kind: NUMBER, board: decisions, count: {group: Today}, name: Decisions today}
-      - {kind: NUMBER, board: sku_profiles, min: cover_days, filter: {class: Hero}, name: Min hero cover}
-      - {kind: NUMBER, board: sku_profiles, avg: margin_pct, name: Margin after ads}
-      - {kind: NUMBER, board: scorecard, value: {metric_id: net_revenue_ca_7d}, name: Net revenue 7d}
-      - {kind: CHART, board: scorecard, graph_type: donut, x: status, name: Scorecard}
-      - {kind: LISTVIEW, board: decisions, view: Today}
-      - {kind: LISTVIEW, board: tasks_for_rami, view: "Due ≤3 days"}
-      - {kind: NUMBER, board: work_items, count: {status: [Blocked, Waiting on Rami]}, name: Work stuck}
-      - {kind: NUMBER, board: knowledge, count: {status: Validated, last_seen: within_last_30_days}, name: Validated this month}
-      - {kind: CHART, board: scorecard_history, graph_type: line, x: as_of, y: value, filter: {metric_id: [net_revenue_ca_7d, margin_after_ads_ca]}, name: 13-week trend}
-  finance:
-    boards: [scorecard, sku_profiles, suppliers_pos]
-    widgets:
-      - {kind: NUMBER, name: Cash available for POs}
-      - {kind: NUMBER, name: PO ceiling used}
-      - {kind: NUMBER, name: TACoS}
-      - {kind: NUMBER, name: Reimbursements pending}
-      - {kind: CHART, board: sku_profiles, graph_type: column, x: class, y: margin_pct, calc: average}
-      - {kind: LISTVIEW, board: sku_profiles, filter: {margin_pct: below margin_floor}}
-  us_launch:
-    boards: [sku_profiles, tasks_for_rami, calendar, key_results, projects, work_items]
-    widgets:
-      - {kind: NUMBER, name: US SKUs through gate of 15}
-      - {kind: NUMBER, name: Slack days to 2027-01-10}
-      - {kind: CHART, name: Readiness by gate}
-      - {kind: LISTVIEW, board: tasks_for_rami, filter: {dept: expansion}}
-      - {kind: GANTT, board: projects, filter: {project_id: us-launch-2027}, name: US launch timeline}
-      - {kind: LISTVIEW, board: work_items, filter: {project: us-launch-2027, status: [Blocked, Late]}}
-      - {kind: CALENDAR, board: calendar}
+      - {kind: BATTERY, board: run_health, status_column: status, done_text: OK, name: Company alive}
+      - {kind: NUMBER, board: sku_profiles, column: cover_days, counter_type: min, name: Min cover days}
+      - {kind: NUMBER, board: sku_profiles, column: margin_pct, counter_type: average, name: Margin after ads}
+      - {kind: NUMBER, board: decisions, count_items: true, name: Decisions}
+      - {kind: LISTVIEW, board: decisions, name: Decisions}
+      - {kind: LISTVIEW, board: tasks_for_rami, name: Tasks}
+    ui_clicks_after_init: ["filter Decisions widgets to group Today", "filter Min cover days to class Hero", "filter Tasks to view Due soon"]
 
-forms:
-  ask_the_company:
-    board: requests
-    group: ask_the_company
-    questions:
-      - {id: question, type: long_text, required: true}
-      - {id: about, type: dropdown, labels: [SKU, Strategy, Money, Other]}
-      - {id: sku, type: text}
-      - {id: urgency, type: status, labels: [Today, This week, Whenever]}
-      - {id: wants, type: status, labels: [An answer, A change, A project]}
-    routing: "projection turns a submission into requests/ceo/inbox/ and, when wants ≠ An answer, into a Work Item opened_by rami"
-
-docs:
-  strategy_doc: {source: strategy/CURRENT.md, refresh: nightly}
-  weekly_review: {source: meetings/<date>-weekly.md, refresh: weekly}
-  monthly_review: {source: meetings/<date>-monthly.md, refresh: monthly}
-  playbook_index: {source: playbooks/INDEX.md, refresh: weekly}
-  patterns_digest: {source: memory/weekly/<week>.md, refresh: weekly, note: "what was promoted, contradicted, decayed"}
-  project_briefs: {attached_to: projects.brief, source: projects/<id>.md, refresh: on change}
-  operating_notes: {source: ops/OPERATING-NOTES.md, refresh: nightly}
-  sku_decisions: {attached_to: sku_profiles.decisions_doc, source: "products/<brand>/<sku>.md#decision-history", refresh: on decision}
-
-permissions:
-  rami: admin
-  viewers_later: {finance_family: [finance dashboard, scorecard, decisions(view)], accountant: [finance dashboard]}
-  guests_later: {sales_family: [wholesale_pipeline(edit content), products(view)]}
-  owner_only: [decisions, suppliers_pos, strategy, key_results, initiatives]
-
-api_budget:
-  daily_calls_pro: 10000
-  target_daily_usage: 1500
-  bulk_write: update_items(40)  # or ingest_items for the nightly SKU sync
-  never_at_runtime: [get_monday_knowledge, filtered items_page in loops]
+later:
+  note: "Added as new boards or columns, never renames. Column ideas are in docs/archive/DESIGN-2026-09.md §4."
+  boards: [Strategy, Key Results, Initiatives, Scorecard, Scorecard History, Work Items, Projects & Milestones, Products, Suppliers & POs, Knowledge, Calendar & Blackouts, Requests, Cockpit (one-item numbers board)]
+  form: "Ask the company (create_form creates its own board; route by the projection)"
+  dashboards: [Finance, US Launch]
+  permissions: "Decisions and any money board become Private boards when a second seat is added; until then the single seat is Rami"

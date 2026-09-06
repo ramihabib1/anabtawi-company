@@ -1,17 +1,27 @@
 name: staleness-watchdog
 on:
-  schedule: [{cron: "0 6 * * *"}]   # 09:00 Asia/Jerusalem in summer; adjust for DST in week 1
+  schedule:
+    - cron: "0 6 * * *"   # 09:00 Asia/Jerusalem during IDT
+    - cron: "0 7 * * *"   # 09:00 Asia/Jerusalem during IST; the guard step keeps only the right one
   workflow_dispatch:
+permissions: {issues: write, contents: read}
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: every state file must carry today's date
+      - name: only at 09:00 Jerusalem
+        run: '[ "$(TZ=Asia/Jerusalem date +%H)" = "09" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ] || exit 0'
+      - name: every scheduled department has a state file dated today
+        env: {GH_TOKEN: "${{ github.token }}"}
         run: |
-          today=$(TZ=Asia/Jerusalem date +%F); bad=0
-          for d in ceo finance supply-chain advertising catalog pricing-intel customer account-health expansion; do
+          today=$(TZ=Asia/Jerusalem date +%F); stale=""
+          for d in $(python3 -c "import json;print(' '.join(sorted({j['dept'] for j in json.load(open('docs/jobs.json'))['jobs'] if j['dept']!='ops'})))"); do
             f=state/$d.md
-            if [ ! -f "$f" ] || ! head -3 "$f" | grep -q "$today"; then echo "STALE: $f"; bad=1; fi
+            if [ ! -f "$f" ] || ! head -1 "$f" | grep -q "$today"; then stale="$stale $d"; fi
           done
-          exit $bad
+          if [ -n "$stale" ]; then
+            gh issue create --title "STALE $today:$stale" --body "State files not dated today:$stale. A stale state file is a failed run (AGENTS.md §5.4)." || true
+            echo "STALE:$stale"; exit 1
+          fi
+          echo "all fresh"

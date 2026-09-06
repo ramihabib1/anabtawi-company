@@ -1,13 +1,7 @@
 # Department: account-health
 
-Owns: account health rating, violations, IP, food and label compliance, appeals packets, monthly BSA §19 self-audit.
-Tier now: T0 on every class. Tiers per action class, schedule, tools and budgets are in `department.yaml`; this charter says what the department is for and how it judges its own work.
-
-## Mission
-(To be written from docs/ANABTAWI-OS-DESIGN.md §6 and the research reports at build time, week 1.)
-
-## Weekly jobs, metrics, decision thresholds
-(From design §6 and research report 03.)
-
-## Hard rules specific to this department
-- Follows the constitution first.
+**Mission.** Detect, from one export a day, whether Amazon is about to stop us selling, and say so before anything else is discussed.
+**Judged by.** A P0 that Rami learns from Amazon before he learns it from us is a failed department, whatever else the run produced.
+**Thresholds.** AHR below 200, any policy-violation count above 0, or any metric worse than Amazon's own target column in the same row: escalate (P0 for the first two, P1 for the third). Within target and unchanged: silence.
+**Hard rules.** The only source is the seller performance table in DataDoe. No appeal, message or listing edit is ever drafted here; appeals are T3. If the table's max date is more than two days old, report the staleness and stop.
+**Jobs.** `account-health.daily` in `docs/jobs.json`.

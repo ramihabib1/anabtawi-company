@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "defaults": {
+    "harness": "claude-code",
+    "permission_mode": "acceptEdits",
+    "output_format": "json",
+    "disallowed_tools": ["WebFetch", "WebSearch"],
+    "model": "sonnet",
+    "retries": 0,
+    "tz": "Asia/Jerusalem"
+  },
+  "jobs": [
+    {
+      "id": "ops.preflight",
+      "dept": "ops",
+      "trigger": {"type": "manual"},
+      "servers": ["datadoe-read"],
+      "reads": ["AGENTS.md", "docs/mcp-servers.json"],
+      "steps": [
+        "Call exports_sources_get. Write every source name with its columns to .exports/sources.json.",
+        "For the seller performance table, the FBA inventory table and the orders table: export one day each (yesterday), record max(date) and the Jerusalem clock time of the call.",
+        "Write state/preflight.md in the state_file format: line 1 header dated today; ## Data = table | max_date | lag_days | checked_at.",
+        "Append to ops/OPERATING-NOTES.md the exact table and column names the other jobs must use.",
+        "Create nothing. Change nothing outside the writes list."
+      ],
+      "writes": ["state/preflight.md", "ops/OPERATING-NOTES.md", ".exports/sources.json"],
+      "timeout_min": 20,
+      "budget": {"datadoe_exports": 4},
+      "on_failure": ["wrapper writes state/preflight.md with tools_failed", "stop the chain"],
+      "done_when": ["state/preflight.md dated today", "state/preflight.md contains a max_date row for the seller performance table"]
+    },
+    {
+      "id": "account-health.daily",
+      "dept": "account-health",
+      "trigger": {"type": "chain", "after": "ops.preflight"},
+      "servers": ["datadoe-read"],
+      "reads": ["AGENTS.md", "departments/account-health/AGENTS.md", "departments/account-health/memory/MEMORY.md", "ops/OPERATING-NOTES.md", "state/preflight.md"],
+      "steps": [
+        "If state/preflight.md shows lag_days > 2 for the seller performance table, write the state file saying so and stop.",
+        "Export the latest seller performance row for marketplace CA: AHR, ODR, late shipment, cancellation, valid tracking, on-time delivery, the policy-violation counts, each with Amazon's own target column.",
+        "Verdict per metric: AHR < 200 or any violation count > 0 => P0; any metric worse than its target => P1; else OK.",
+        "Write state/account-health.md: header dated today; ## Data = metric | value | target | verdict; ## Findings; ## Proposals written (none); ## Requests sent (none); ## Blocked.",
+        "Append one observation line per P0 or P1 to departments/account-health/memory/<today>.md with source: the export id."
+      ],
+      "writes": ["state/account-health.md", "departments/account-health/memory/*.md"],
+      "timeout_min": 12,
+      "budget": {"datadoe_exports": 1},
+      "on_failure": ["wrapper writes state/account-health.md with tools_failed", "continue the chain"],
+      "done_when": ["state/account-health.md dated today", "state/account-health.md contains '## Data'"]
+    },
+    {
+      "id": "supply-chain.daily",
+      "dept": "supply-chain",
+      "trigger": {"type": "chain", "after": "account-health.daily"},
+      "servers": ["datadoe-read"],
+      "reads": ["AGENTS.md", "departments/supply-chain/AGENTS.md", "departments/supply-chain/memory/MEMORY.md", "ops/OPERATING-NOTES.md", "state/preflight.md", "state/account-health.md"],
+      "steps": [
+        "If state/preflight.md shows lag_days > 2 for the inventory or orders table, write the state file saying so and stop.",
+        "Export FBA inventory by SKU for CA (available, inbound, reserved) and units ordered by SKU for the last 28 days.",
+        "cover_days = available / (units_28d / 28) per SKU. No smoothing, no forecast.",
+        "Flag every SKU with cover_days below 14. Rank by units per day descending.",
+        "Write state/supply-chain.md: header dated today; ## Data = sku | available | inbound | units_per_day | cover_days | flag; the other four sections.",
+        "Write no proposal today: T0, and no supplier file exists to price a PO. Append observations for every flagged SKU."
+      ],
+      "writes": ["state/supply-chain.md", "departments/supply-chain/memory/*.md"],
+      "timeout_min": 15,
+      "budget": {"datadoe_exports": 2},
+      "on_failure": ["wrapper writes state/supply-chain.md with tools_failed", "continue the chain"],
+      "done_when": ["state/supply-chain.md dated today", "state/supply-chain.md contains '## Data'"]
+    },
+    {
+      "id": "ceo.daily",
+      "dept": "ceo",
+      "trigger": {"type": "chain", "after": "supply-chain.daily"},
+      "servers": [],
+      "reads": ["AGENTS.md", "departments/ceo/AGENTS.md", "state/preflight.md", "state/account-health.md", "state/supply-chain.md"],
+      "steps": [
+        "Read every state file. Any not dated today is listed first in the brief as 'did not run', by name.",
+        "Write briefs/<today>-decisions.md: header line, then at most 5 items ranked P0 first, each one line: verb, subject, number, deadline, 'if ignored', and the state-file line it cites. An empty list is a correct answer and must say why it is empty.",
+        "Write state/ceo.md: ## Data = department | ran | dated | p0 | p1.",
+        "Do not call monday. The projection script mirrors the brief when the board exists."
+      ],
+      "writes": ["briefs/*.md", "state/ceo.md"],
+      "timeout_min": 15,
+      "budget": {},
+      "on_failure": ["wrapper writes state/ceo.md with tools_failed", "wrapper prints the brief path"],
+      "done_when": ["state/ceo.md dated today", "briefs/<today>-decisions.md exists"]
+    }
+  ]
+}

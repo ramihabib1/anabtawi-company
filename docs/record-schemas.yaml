@@ -1,182 +1,88 @@
-# record-schemas.yaml — the repository-side record formats. This is the knowledge layer's schema.
-# bin/validate-records.py checks every file against these on commit and in CI; a file that fails is rejected
-# whichever harness wrote it. monday-schema.yaml is the projection of these records; this file is the record.
-version: 1.0
+# record-schemas.yaml — the repository-side record formats. bin/validate-records.py validates the known keys of every
+# record and accepts unknown keys, so new fields are free; ids, enums and money conventions are not, so they are fixed here first.
+version: 1.1
 conventions:
-  front_matter: YAML between --- fences at the top of every markdown record
-  ids: stable, never reused; cite ids not paths in evidence
-  dates: ISO 8601 with Asia/Jerusalem offset for timestamps, YYYY-MM-DD for dates
-  money: decimal strings with currency, never floats
-  departments: [ceo, finance, supply-chain, advertising, catalog, pricing-intel, customer, account-health, expansion]
+  front_matter: "a fenced ```json block immediately after the H1 title (parses with the standard library; no YAML dependency)"
+  dates: "YYYY-MM-DD; timestamps ISO 8601 with the Asia/Jerusalem offset"
+  money: "decimal strings with two decimals plus a currency field, never floats"
+  ids:
+    observation: "obs-YYYYMMDD-<dept>-NN"
+    fact: "fact-<dept>-NN"
+    packet: "YYYYMMDD-<dept>-<action_class>-<marketplace>-<slug>"
+    work_item: "wi-YYYYMMDD-NN"
+    project: "<slug>"
+    pattern: "<scope>-<slug>"
+    request: "YYYYMMDD-HHMM-<from>-<type>"
+  enums:
+    department: [ceo, finance, supply-chain, advertising, catalog, pricing-intel, customer, account-health, expansion]
+    marketplace: [ca, us]
+    currency: [CAD, USD]
+    harness: [claude-code, codex, hands-runner, human]
+    action_class: [purchase_order, pricing_band_change, price_change, listing_change, fba_shipment, campaign_create, ad_bid_change, ad_budget_change, negative_keyword, coupon, deal, buyer_message, request_a_review, vine_enrolment, reimbursement_claim, qbo_bill, strategy]
+    request_type: [info, need-cash-check, need-margin-floor, stockout-risk, compliance-hold, blackout, data, review]
+    verdict: [hit, miss, inconclusive, unmeasurable]
+    design: [ab, prepost-matched, prepost, none]
+    knowledge_status: [hypothesis, supported, validated, playbook, decaying, falsified, archived]
 
+# ---- records in use from day 1 ----
 records:
+  state_file:
+    path: state/<dept>.md
+    header_line: "# <dept> · <YYYY-MM-DD> · job:<job id> [· tools_failed:<tool>]"
+    sections: ["## Data", "## Findings", "## Proposals written", "## Requests sent", "## Blocked"]
+    rules:
+      - "overwritten each run; a header not dated today is a failed run"
+      - "## Data is a table with the same columns every run"
 
   observation:
     path: departments/<dept>/memory/YYYY-MM-DD.md
-    form: one line per observation, append-only, never edited after the day
-    line: "- <ISO time> · obs · scope:<marketplace>/<sku|all>/<dept> · <claim> · source:<export id|report id|ledger seq> · ledger:<seq|none>"
-    required: [time, scope, claim, source]
+    line: "- <obs-id> · <ISO time> · scope:<marketplace>/<sku|all> · <claim> · source:<export id|state line> · ledger:<seq|none>"
+    required: [id, time, scope, claim, source]
+    rules: ["append-only; never edited after the day"]
 
   fact:
-    path: departments/<dept>/memory/MEMORY.md   # ≤300 lines
-    form: one bullet per fact with inline fields
-    line: "- <claim> · since:<date> · source:<id> · owner:<dept> [· superseded_by:<fact-id>] [· expires:<date>]"
-    rules:
-      - single writer per fact class; another department files a request to change it
-      - eviction when full: oldest since not cited by a pattern or skill in 90 days; log the eviction
-
-  pattern:
-    path: patterns/<scope>-<slug>.md
-    front_matter:
-      id: {type: string, required: true}
-      status: {enum: [hypothesis, supported, validated, falsified, decaying, archived], required: true}
-      claim: {type: string, required: true}
-      scope: {type: string, required: true, example: "marketplace:ca; department:advertising; skus:[ANB-017]"}
-      first_seen: {type: date, required: true}
-      last_seen: {type: date, required: true}
-      confirmations: {type: int, required: true}
-      contradictions: {type: int, required: true}
-      confidence: {type: number, computed: "confirmations/(confirmations+contradictions+1) × recency; recency 1.0 ≤30d, 0.8 ≤60d, 0.6 ≤90d, 0.3 beyond"}
-      seasonality_guard: {type: bool, required: true}
-      supersedes: {type: string|null}
-      superseded_by: {type: string|null}
-      next_test: {type: string}
-      owner: {type: dept, required: true}
-    body:
-      "## Evidence": "one line per observation: <date> · confirms|CONTRADICTS · <observation or ledger id> · <note>; append-only"
-      "## Reading": free text
-    gates:
-      supported: "≥3 confirmations, ≥2 distinct days, ≥2 distinct sources, 0 unexplained contradictions"
-      validated: "≥5 confirmations across ≥2 SKUs and ≥30 days, plus a machine-evaluable threshold written down; seasonality_guard false or non-seasonal evidence present"
-      falsified: "contradictions > confirmations, or the monthly falsification fails it"
-      decaying: "last_seen > 90 days"; archived: "last_seen > 180 days (moved to patterns/archive/)"
-
-  skill:
-    path: departments/<dept>/skills/<name>/SKILL.md   # Agent Skills format; harnesses read only name and description
-    front_matter:
-      name: {type: string, required: true, rule: "lowercase, digits, hyphens; equals folder name"}
-      description: {type: string, required: true, rule: "what it does and when to use it, ≤1024 chars"}
-      status: {enum: [draft, validated, playbook, demoted, retired]}
-      since: {type: date}
-      evidence: {type: list, items: pattern id}
-      hit_rate: {type: number|null}
-      firings_90d: {type: int}
-      last_falsified: {type: date|null}
-      scope: {type: string}
-      owner: {type: dept}
-      review_by: {type: date}
-    rules:
-      - thresholds live here as numbers, never in a charter's prose
-      - demote below 60% hit rate over ≥10 firings; retire below 40%; <10 firings in 90 days is flagged unexercised
-      - body under 5k tokens; resources in the folder
+    path: departments/<dept>/memory/MEMORY.md
+    line: "- <fact-id> · <claim> · since:<date> · source:<id> · owner:<dept> [· superseded_by:<fact-id>]"
+    rules: ["≤300 lines", "single writer per fact class", "eviction: oldest since not cited in 90 days, logged"]
 
   approval_packet:
-    path: approvals/<pending|approved|rejected|expired|failed>/<id>.md and approvals/executed/YYYY/MM/<id>.md
-    schema: docs/schemas/approval-packet.schema.json
-    scoring_fields: {goal_id: string, metric: string, scope: string, baseline: number, expected: string, measure_window: string, review_on: date, design: {enum: [ab, prepost-matched, prepost, none]}, control_set: list}
-    rule: "design: prepost alone never supports promotion of a rule"
+    path: approvals/<pending|approved|rejected|expired|failed|executed/YYYY/MM>/<id>.md
+    front_matter_schema: docs/schemas/approval-packet.schema.json
+    body: ["## Proposal", "## Evidence", "## Dry run (diff, when available)"]
+    rules:
+      - "mode is dry-run until the hands runner exists"
+      - "expires = created + 48h; expired packets are re-proposed with fresh data, never executed"
 
-  ledger_entry:
-    path: ledger/actions.jsonl
-    schema: docs/schemas/ledger-entry.schema.json
-    rules: [append-only, hash-chained, daily git_anchor, amount as decimal string, every attempted write gets a row]
+  request:
+    path: requests/<to>/inbox/<id>.md → requests/<to>/done/<id>.md when answered
+    front_matter: {id: string, from: department, to: department, type: request_type, needed_by: timestamp, goal_id: string|null}
+    body: ["## Ask", "## Answer (appended in place)"]
 
-  outcome:
-    path: ledger/outcomes.csv
-    columns: [approval_id, goal_id, metric, scope, design, baseline, expected, actual, delta, delta_net_of_control, verdict, scored_on, evidence_query]
-    verdict: {enum: [hit, miss, inconclusive, unmeasurable]}
-    rule: "unmeasurable is a schema bug and opens a work item for finance"
-
-  kpi_row:
-    path: ledger/kpis/YYYY-MM.csv   # partitioned monthly; DuckDB reads read_csv('ledger/kpis/*.csv')
-    columns: [date, marketplace, sku, units, revenue, ad_spend, acos, tacos, contribution_margin, cover_days, price, sessions, cvr, buybox_pct, bsr, rating, reviews]
-
-  sku_snapshot:
-    path: state/skus/YYYY-MM-DD.jsonl   # one line per SKU × marketplace per day, the board's 34 columns plus freshness stamps
-    rule: never a monday item
+  brief:
+    path: briefs/YYYY-MM-DD-decisions.md
+    header_line: "# decisions · <YYYY-MM-DD> · <n> items · departments ran: <list> · did not run: <list|none>"
+    item_line: "<rank>. <VERB> <subject> · <number> · deadline <when> · if ignored: <one clause> · cites: state/<dept>.md#<line>"
+    rules: ["≤5 items; an empty list states why"]
 
   product:
     path: products/<brand>/<sku>.md
     front_matter:
-      sku: {required: true}; brand: {required: true}; name: {required: true}
-      class: {enum: [hero, core, long-tail, kill]}; lifecycle: {enum: [planned, launching, active, declining, discontinued]}
-      supplier: {type: supplier id}; case_pack: int; moq: int; shelf_life_days: int; meltable: bool; hazmat: {enum: [none, review, hazmat]}
-      certifications: list; season_index: {map: multiplier, note: "ramadan and eid keyed to the lunar calendar"}
-      cost_rows: {list of: {effective_from: date, po_ref: string, cogs: money, freight: money, duty: money, prep: money, currency: CAD|USD}}
-      listings: {map by marketplace: {asin: string|null, lifecycle: string, price_band: {min: money, max: money, currency: string}, margin_floor_pct: number, safety_stock_days: int, lead_time_days: int, readiness: {map: bool}, campaign_ids: list}}
-      freshness: {map of group → date: [identity, economics, inventory, ads, listing, voc, competitors]}
-    body:
-      "## Notes": free text
-      "## Decision history": "- <date> · <approval id> · <what> · expected <metric expectation> · outcome: <pending|hit|miss|inconclusive>"
-
-  lot:
-    path: suppliers/lots/<po_ref>.md   # one file per received PO
-    front_matter:
-      po_ref: {required: true}; sku: {required: true}; supplier: string; received_on: date; units: int
-      lot_code: string; produced_on: date|null; expiry_date: {required: true}
-      destination: {enum: [fba-ca, fba-us, 3pl-ca, 3pl-us]}; fnsku_labelled: bool
-      units_remaining: int; last_counted: date
-    rules:
-      - nothing ships inbound with fewer than 90 days remaining at receipt
-      - FEFO: the nightly build derives oldest_expiry and expiry_lt90 for the SKU from open lots
-      - meltable SKUs: no inbound with a planned arrival between 1 May and 30 September
-
-  supplier:
-    path: suppliers/<id>.md
-    front_matter: {id: string, legal_name: string, country: string, contact: string, payment_terms: string, lead_time_days_quoted: int, lead_time_days_measured: {list of: {po_ref, days}}, currency: string, moq_rules: string, bank_on_file: bool}
-    rule: bank details never in the repository; bank_on_file means Rami holds them in his bank
-
-  state_file:
-    path: state/<dept>.md   # overwritten each run
-    header: "# <dept> · <YYYY-MM-DD> · slot:<slot> · harness:<harness> · run:<minutes>m · tools_failed:<list|none>"
-    sections: ["## Data (stable table, same columns every run)", "## Findings", "## Proposals written", "## Requests sent", "## Blocked"]
-    rule: a header not dated today is a failed run
-
-  request:
-    path: requests/<to>/inbox/<YYYYMMDD-HHMM>-<from>-<type>.md → done/ when answered
-    front_matter: {id: string, from: dept, to: dept, type: {enum: [info, need-cash-check, need-margin-floor, stockout-risk, compliance-hold, blackout, data, review]}, needed_by: datetime, goal_id: string|null}
-    body: ["## Ask", "## Answer (appended in place)"]
-
-  work_item:
-    path: work/<id>.md
-    front_matter:
-      id: {required: true}; type: {enum: [proposal, data, plan, fix, research, build, milestone]}
-      opened_by: {enum: departments + rami}; dept: {type: dept, required: true}
-      priority: {computed: "from KR score, due date and blocking count"}; due: date|null; needed_by: date|null; effort_est_min: int
-      project: string|null; milestone: string|null; kr_link: string|null; blocked_by: list
-      expected_output: {enum: [proposal, data, plan, change, decision]}; constraints: string
-      is_satisfied: bool; is_progress: bool; is_in_loop: bool; answer_ref: string|null
-      status: {enum: [open, in-progress, blocked, waiting-on-rami, answered, superseded, dropped, escalated]}
-    body: ["## Steps (- [ ] step · owner · evidence)", "## Log (dated lines)"]
-    rules: ["waiting-on-rami requires a matching decision or task id", "a department opens ≤5 items per other department per week"]
-
-  project:
-    path: projects/<id>.md
-    front_matter: {id: string, owner_dept: dept, objective: string, kr_link: string, start: date, end: date, status: {enum: [on-track, at-risk, late, blocked, done]}, cost_cap_cad: number, spent_cad: number, critical_path: bool, slack_days: {computed: true}}
-    body: "## Milestones — table: ms_id | owner | start | due | depends_on | gate | status | work_items | evidence"
-
-  key_result:
-    path: strategy/GOALS.md (list) and strategy/metrics/<metric_id>.md (definition)
-    fields: {id, objective, name, metric_id, definition_ref, data_source, direction: {enum: [up, down, band]}, baseline, baseline_date, target, current, as_of, owner_dept, contributing_depts, definition_of_done, review_cadence, cost_of_miss_cad, slack_weeks, status, status_since, status_rule: {enum: [R1, R2, R3]}, thrash_count, frozen_until}
-    rules: ["metric definitions are immutable; a change mints <metric>.v2", "current is written only by the owning department"]
-
-  initiative:
-    path: strategy/initiatives/<id>.md
-    fields: {id, hypothesis, serves, owner_dept, cost_cap_cad, spent_cad, decision_date, falsifier, status: {enum: [running, won, lost, killed]}, project}
-    rule: the falsifier is written before the bet runs
-
-  scorecard_week:
-    path: strategy/scorecard/YYYY-Www.md
-    table: [metric_id, kind, owner, current, prev, avg_4wk, target, status, status_rule, note]
-    rule: appended weekly, never overwritten; also projected to the monday Scorecard History board
-
-  decision_item:
-    path: briefs/YYYY-MM-DD-decisions.md   # the day's ≤5 items plus the deferred line
-    fields: {id, title, type: {enum: [approve, choose, ratify]}, department, tier, action_type, goal_id, impact_cad, impact_basis, confidence, reversibility, deadline, deadline_reason, expires, evidence: list, if_ignored, actions, approval_file, score, reproposal_of, times_reproposed}
-
-  lock:
-    path: state/locks.md
-    line: "<scope>:<id>:<dimension> | <dept> | <date> | expires <datetime> | <packet id|—>"
+      sku: {required: true}
+      brand: {required: true}
+      name: {required: true}
+      class: {enum: [hero, core, long-tail, kill]}
+      lifecycle: {enum: [planned, launching, active, declining, discontinued]}
+      supplier: {type: supplier id}
+      case_pack: int
+      moq: int
+      shelf_life_days: int
+      meltable: bool
+      hazmat: {enum: [none, review, hazmat]}
+      cost_rows: {list_of: {effective_from: date, po_ref: string, cogs: money, freight: money, duty: money, prep: money, currency: currency}}
+      fees: {map_by_marketplace: {referral_pct: number, fba_fee: money, storage_unit: money, currency: currency, as_of: date, source: string}}
+      listings: {map_by_marketplace: {asin: string|null, lifecycle: string, price_band: {min: money, max: money, currency: currency}, margin_floor_pct: number, safety_stock_days: int, lead_time_days: int}}
+    body: ["## Notes", "## Decision history"]
+    computed: {landed_cost: "sum of the current cost row", margin_after_ads_pct: "(price − landed − fees − ad_cost_per_unit) ÷ price"}
 
   operating_note:
     path: ops/OPERATING-NOTES.md
@@ -186,9 +92,112 @@ records:
     path: state/calendar.md
     line: "<kind> | <start> | <end> | <marketplace|all> | <applies_to> | <source>"
 
+  lock:
+    path: state/locks.md
+    line: "<scope>:<id>:<dimension> | <dept> | <date> | expires <datetime> | <packet id|—>"
+
+# ---- records added when their first writer exists (formats fixed now so nothing is retrofitted) ----
+  ledger_entry:
+    path: ledger/actions.jsonl
+    schema: docs/schemas/ledger-entry.schema.json
+    rules: ["append-only", "hash-chained", "only hands/ledger.py appends", "a decision row is written on every approve, reject, expire and withdraw"]
+
+  outcome:
+    path: ledger/outcomes.csv
+    columns: [approval_id, goal_id, rule_refs, metric, scope, design, baseline, expected, actual, delta, delta_net_of_control, verdict, scored_on, evidence_query]
+    rules: ["hit_rate and firings_90d of a rule are derived from this file by rule_refs"]
+
+  kpi_row:
+    path: ledger/kpis/YYYY-MM.csv
+    columns: [date, marketplace, currency, sku, units, revenue, ad_spend, acos, tacos, contribution_margin, cover_days, price, sessions, cvr, buybox_pct, bsr, rating, reviews]
+
+  sku_snapshot:
+    path: state/skus/YYYY-MM-DD.jsonl
+    rule: "one line per SKU × marketplace per day; never a monday item"
+
+  pattern:
+    path: patterns/<id>.md
+    front_matter:
+      id: {required: true}
+      status: {enum: knowledge_status}
+      claim: {required: true}
+      scope: {required: true}
+      first_seen: date
+      last_seen: date
+      confirmations: int
+      contradictions: int
+      confirming_days: int
+      confirming_sources: int
+      confirming_skus: int
+      confidence: {computed: "confirmations / (confirmations + contradictions + 1) × recency; recency 1.0 ≤30d, 0.8 ≤60d, 0.6 ≤90d, 0.3 beyond"}
+      seasonality_guard: bool
+      threshold: {type: string|null, note: "machine-evaluable expression required before validated"}
+      supersedes: string|null
+      superseded_by: string|null
+      next_test: string
+      owner: department
+    body:
+      "## Evidence": "<date> · confirms|CONTRADICTS · <obs-id|ledger seq> · <note>; append-only"
+      "## Reading": free text
+    gates:
+      supported: "confirmations ≥ 3 and confirming_days ≥ 2 and confirming_sources ≥ 2 and contradictions = 0"
+      validated: "confirmations ≥ 5 and confirming_skus ≥ 2 and last_seen − first_seen ≥ 30 days and threshold set and (seasonality_guard = false or non-seasonal evidence present)"
+      falsified: "contradictions > confirmations, or the monthly falsification fails"
+      decaying: "last_seen > 90 days"
+      archived: "last_seen > 180 days"
+
+  skill:
+    path: departments/<dept>/skills/<name>/SKILL.md
+    front_matter:
+      name: {required: true, rule: "lowercase, digits, hyphens; equals folder name"}
+      description: {required: true, rule: "what it does and when to use it, ≤1024 chars"}
+      status: {enum: [draft, validated, playbook, demoted, retired]}
+      since: date
+      evidence: {list_of: pattern id}
+      hit_rate: {computed: "from outcomes.csv rows whose rule_refs contain this skill"}
+      firings_90d: {computed: "count of packets in the last 90 days whose rule_refs contain this skill"}
+      scope: string
+      owner: department
+      review_by: date
+    rules: ["thresholds live here as numbers, never in a charter", "demote below 60% hit rate over ≥10 firings; retire below 40%"]
+
+  lot:
+    path: suppliers/lots/<po_ref>.md
+    front_matter: {po_ref: string, sku: string, supplier: string, received_on: date, units: int, lot_code: string, expiry_date: date, destination: {enum: [fba-ca, fba-us, 3pl-ca, 3pl-us]}, units_remaining: int, last_counted: date}
+    rules: ["nothing inbound with under 105 days remaining at receipt", "meltable inbound only 16 Oct – 14 Apr"]
+
+  purchase_order:
+    path: suppliers/pos/<po_ref>.md
+    front_matter: {po_ref: string, supplier: string, approval_id: string, amount: money, currency: currency, fx: object|null, skus: list, ship_date: date|null, eta: date|null, paid_on: date|null, status: {enum: [proposed, approved, paid, shipped, received, closed]}}
+    rules: ["the monthly ceiling sums amount of POs with status paid or approved in the calendar month, converted to CAD with the recorded fx"]
+
+  supplier:
+    path: suppliers/<id>.md
+    front_matter: {id: string, legal_name: string, country: string, contact: string, payment_terms: string, lead_time_days_quoted: int, lead_time_days_measured: list, currency: currency, bank_on_file: bool}
+    rules: ["no account number, IBAN or SWIFT is ever stored or rendered; a payment packet says 'compare against the saved payee in your bank'"]
+
+  work_item:
+    path: work/<id>.md
+    front_matter: {id: string, type: {enum: [proposal, data, plan, fix, research, build, milestone]}, opened_by: "department|rami", dept: department, priority: {computed: true}, due: date|null, needed_by: date|null, project: string|null, milestone: string|null, kr_link: string|null, blocked_by: list, expected_output: {enum: [proposal, data, plan, change, decision]}, status: {enum: [open, in-progress, blocked, waiting-on-rami, answered, superseded, dropped, escalated]}}
+    body: ["## Steps", "## Log"]
+    rules: ["waiting-on-rami requires a matching decision or task id", "a department opens ≤5 items per other department per week"]
+
+  project:
+    path: projects/<id>.md
+    front_matter: {id: string, owner_dept: department, objective: string, start: date, end: date, status: {enum: [on-track, at-risk, late, blocked, done]}, cost_cap_cad: money, spent_cad: money, critical_path: bool, slack_days: {computed: true}}
+    body: "## Milestones — table: ms_id | owner | start | due | depends_on | gate | status | work_items | evidence"
+
+  key_result:
+    path: strategy/CURRENT.md (this quarter) and strategy/metrics/<metric_id>.md (definitions)
+    fields: {id: string, objective: string, metric_id: string, direction: {enum: [up, down, band]}, baseline: number, target: number, current: number, as_of: date, owner_dept: department, status: {enum: [green, yellow, red, unknown]}, status_rule: {enum: [R1, R2, R3]}, cost_of_miss_cad: money, slack_weeks: number}
+    rules: ["metric definitions are immutable; a change mints <metric>.v2", "current is written only by the owning department"]
+
+  scorecard_week:
+    path: strategy/scorecard/YYYY-Www.md
+    table: [metric_id, kind, owner, current, prev, avg_4wk, target, status, status_rule, note]
+
 ci_checks:
-  - every record validates against its schema
-  - AGENTS.md plus any department charter under 28 KiB (Codex 32 KiB cap)
-  - no file over 256 KB; no secrets (pre-commit scan)
-  - evidence ids resolve (weekly link check)
-  - every state file dated today at 09:00 (watchdog)
+  - "bin/validate-records.py on every commit: state files, observations, packets, requests, briefs"
+  - "AGENTS.md plus any department charter under 28 KiB"
+  - "no file over 256 KB; no secret patterns"
+  - "state files dated today at 09:00 for the departments scheduled that weekday (docs/jobs.json)"

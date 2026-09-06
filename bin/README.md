@@ -1,1 +1,0 @@
-Adapters and builds (week 1): run-dept.sh · render-mcp.py (department.yaml → .mcp.json / config.toml / Grok bootstrap) · project-monday.py (repo → monday, and status read-back) · build-sku-profiles.py (nightly) · bootstrap-grok.py.

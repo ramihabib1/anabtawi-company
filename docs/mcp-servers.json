@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "note": "Single definition of every MCP server. bin/run-job.py renders a job's servers into a temporary .mcp.json. Variable names only, never values. A job may not use a server whose status is not_built.",
+  "servers": {
+    "datadoe-read": {
+      "transport": "http",
+      "url": "https://mcp.datadoe.com/mcp/v1",
+      "headers": {"datadoe-mcp-key": "${DATADOE_MCP_KEY}"},
+      "env": ["DATADOE_MCP_KEY"],
+      "scope": "read",
+      "allowed_tools": ["exports_sources_get", "exports_create", "exports_get", "exports_list", "exports_raw_download", "sellers_and_vendors_list"],
+      "denied_tools": ["actions_start", "actions_get", "actions_list", "exports_delete", "cogs_upsert", "cogs_delete", "plugins_memories_create", "plugins_memories_edit"],
+      "status": "unverified"
+    },
+    "monday": {
+      "transport": "http",
+      "url": "https://mcp.monday.com/mcp",
+      "headers": {"Authorization": "Bearer ${MONDAY_API_TOKEN}"},
+      "env": ["MONDAY_API_TOKEN"],
+      "scope": "boards-only",
+      "allowed_tools": ["get_board_info", "get_board_items_page", "create_item", "change_item_column_values", "create_update", "create_notification"],
+      "status": "unverified"
+    },
+    "quickbooks-read": {"status": "not_built", "note": "Intuit official server; OAuth and token store not set up"},
+    "keepa": {"status": "not_built", "note": "not bought; wrapper not written"},
+    "amazon-ads-read": {"status": "not_built", "note": "self-service Ads API credentials not applied for"},
+    "walmart-read": {"status": "not_built", "note": "CA endpoints retired 2026-07-31; keys must be regenerated first"}
+  }
+}
