@@ -196,9 +196,7 @@ VERIFIED — [Get started with monday sidekick](https://support.monday.com/hc/en
 | sidekick Plus | Included in Enterprise; purchasable on Standard/Pro | 100 messages/user/day, 2 generated images or videos/day, **account-wide context** |
 | Super sidekick | "Coming soon", purchasable on Enterprise/Pro/Standard | 500 messages/user/day, 10 assets/day |
 
-**Basic has no sidekick.** Sidekick is not supported on monday dev or monday CRM entity boards.
-
-Capabilities: take actions (send Slack messages, tag teammates, update work), analyze board data, research the web, generate docs/images, **create, edit, update and delete items, groups, columns and labels**, read subitems, voice mode with readback/confirmation on impactful changes.
+**Basic has no sidekick.** Sidekick is not supported on monday dev or monday CRM entity boards. It can take actions (Slack messages, tagging, updating work), analyze board data, research the web, generate docs and images, and **create, edit, update and delete items, groups, columns and labels**, with voice mode and confirmation readbacks on impactful changes.
 
 **5 messages/day on Pro is a toy.** Sidekick is not the automation surface; agents and the API are.
 
@@ -355,13 +353,10 @@ VERIFIED (developer docs via MCP + the tool list present in this session).
 
 VERIFIED — [monday vibe: Permissions and Pricing](https://support.monday.com/hc/en-us/articles/32833842348178-monday-vibe-Permissions-and-Pricing), [AI Permissions and Governance](https://support.monday.com/hc/en-us/articles/30934592475410-AI-Permissions-and-Governance):
 
-- AI-powered no-code app builder inside monday. Prompt → custom app; refine in chat.
-- **Any monday user can access it provided AI permissions are enabled** in Administration. Not tied to a specific plan tier in the docs (but AI is unavailable on Free).
+- AI-powered no-code app builder inside monday: prompt → custom app, refined in chat. **Any monday user can access it provided AI permissions are enabled** in Administration; not tied to a plan tier in the docs (but AI is unavailable on Free). "Publish Vibe apps" is a separate permission, on for admins, off for everyone else.
 - **Building and testing are free in "draft" mode. You pay only when you publish.** Pricing is a **paid add-on charged by the number of published apps** (tiered); the price list is only visible in-product at Administration → Vibe apps → See plans (**UNKNOWN** amount — the pricing page is egress-blocked).
-- The "Publish Vibe apps" permission is on for admins by default, off for everyone else.
-- **A Vibe app can be added as a board view** to create a custom app experience on top of board data — "an internal portal, time tracker, or interactive dashboard" (VERIFIED — [Get started with monday work management](https://support.monday.com/hc/en-us/articles/115005305649-Get-started-with-monday-work-management)). It can also be embedded via the `APP_FEATURE` dashboard widget (VERIFIED, widget schema).
+- **A Vibe app can be added as a board view** — "an internal portal, time tracker, or interactive dashboard" (VERIFIED — [Get started with monday work management](https://support.monday.com/hc/en-us/articles/115005305649-Get-started-with-monday-work-management)) — or embedded via the `APP_FEATURE` dashboard widget (VERIFIED, widget schema). A `VibeAppStorage` type exists in the GraphQL schema (VERIFIED, live introspection), so Vibe apps have **their own persistent storage**.
 - A Vibe app triggering an integration consumes **2 AI credits per trigger** (VERIFIED, Vibe article; the AI Credits article says 1 — discrepancy noted).
-- `vibe_*` tools in MCP include `vibe_create/update/get/list/delete/ask/publication` and there is a `VibeAppStorage` type in the GraphQL schema (VERIFIED, live introspection) — meaning **Vibe apps have their own persistent storage**.
 
 **Can it host a custom SKU-profile app?** Yes, in the sense that a Vibe app can be a board view or dashboard widget rendering SKU data with its own storage, built from a prompt, without leaving monday. Cost is per published app and unquantified. It is a presentation/interaction layer, not a place to run your business logic.
 
@@ -535,7 +530,7 @@ Costs (USD, annual billing, as of 2026-09-06; seat prices REPORTED, structure VE
 
 | Scenario | Seats billed | Seat cost/mo | AI credits/mo | Total/mo |
 |---|---|---|---|---|
-| **Now — Rami alone** | current account is a legacy 2-seat Pro bucket; a new purchase would be the **3-seat minimum** | 2 × $19 = **$38** (legacy) or 3 × $19 = **$57** (new) | 6,000 one-time trial ≈ 750 AI-block actions, then a Pro pack — REPORTED minimum 3,000 credits ≈ **$30** | **$38–57**, rising to **~$68–87** once the trial burns out |
+| **Now — Rami alone** | account is on a legacy 2-seat Pro bucket; a fresh purchase would be the **3-seat minimum** | ~2 × $19 = **~$38** (legacy bucket — check the actual invoice) or 3 × $19 = **$57** (new) | 6,000 one-time trial ≈ 750 AI-block actions, then a Pro pack — REPORTED minimum 3,000 credits ≈ **$30** | **~$38–57**, rising to **~$68–87** once the trial burns out |
 | **Later — 3 seats** | 3 (still inside the minimum bucket) | 3 × $19 = **$57** | 3,000–8,000 credits = **$30–80** | **$87–137** |
 | **If a 4th seat is ever added** | jumps to the **5-seat bucket** | 5 × $19 = **$95** | as above | **$125–175** |
 

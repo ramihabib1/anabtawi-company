@@ -46,26 +46,26 @@ All times Asia/Jerusalem. Amazon's business day closes 07:00 local, so the daily
 
 | Day / time | Department | Job | Data source | Output |
 |---|---|---|---|---|
-| Daily 07:15 | Account Health & Compliance | Exception scan: AHR, policy violations, suppressed/stranded/unfulfillable, listing issues | DataDoe (Account Health, Listings), SP-API `LISTINGS_ITEM_ISSUES_CHANGE` when available | `state/compliance.md`; T3 escalation file if any violation |
-| Daily 07:20 | Supply Chain | Units on hand + inbound, days of cover per SKU vs floor, restock-limit headroom | DataDoe FBA Inventory / Restock report | `state/supply-chain.md`; reorder alert if cover < floor |
-| Daily 07:25 | Advertising | Spend pacing vs daily cap, yesterday's ACoS/TACoS by campaign, zero-impression and runaway campaigns | Amazon Ads MCP / Ads API | T1 bid & budget actions logged to `ledger/actions.jsonl` |
-| Daily 07:30 | Pricing & Market Intel | Buy Box status, competitor offer changes, price-band breaches | SP-API `ANY_OFFER_CHANGED` / `PRICING_HEALTH`; Keepa API | Alert or T2 price proposal |
-| Daily 07:40 | CEO / Chief of Staff | Assemble the ranked decision list from all departments | `state/*.md`, `approvals/pending/` | `briefs/<date>-daily.md` — Rami's one screen |
-| **Mon 08:00** | **Advertising** | **Weekly PPC review: search-term harvest, negatives, keyword promotion, placement modifiers, bid ladder** | Ads API search-term report; SQP | Bid/negative changes (T1); new-campaign proposals (T2) |
-| Mon 09:00 | Catalog / Creative | SQP click-share & purchase-share deltas on top-20 ASINs; conversion diagnosis; A+/image backlog | Brand Analytics SQP; Business Reports | Listing change proposals (T2) |
-| Mon 10:00 | Customer | VOC/NCX review, new negative reviews, returns reasons, buyer messages | DataDoe VOC / Returns | CX fix tickets; requests to Catalog/Supply Chain |
-| Mon 11:00 | Chief of Staff | Weekly Business Review: input metrics deck, forecast vs actual, decisions queued | All `state/*.md` | `meetings/<date>-wbr.md`; approvals batch for Rami |
-| Tue 08:00 | Supply Chain | Forecast refresh, reorder-point recalculation, PO proposals, expiry/FEFO aging report | DataDoe inventory + sales history; supplier lead-time log | PO proposals (T2/T3) in `approvals/pending/` |
-| Tue 10:00 | Pricing | Weekly price/promo review, Automate Pricing band audit, coupon/deal ROI check | SP-API pricing; Keepa; ledger | Price proposals (T2) |
-| Wed 08:00 | Expansion | US launch workstream (until Feb 2027), then Walmart; compliance and logistics milestones | Project plan in repo | `state/expansion.md`; milestone requests |
-| Wed 10:00 | Finance | Cash, ad-spend burn vs cap, fee anomaly scan, reimbursement candidates | DataDoe payments/fee reports; QuickBooks | Reimbursement claim proposals (T2) |
-| Thu 08:00 | Advertising | Mid-week bid check + budget re-pacing; dayparting review | Ads API | T1 actions logged |
-| Thu 10:00 | Catalog | Listing hygiene sweep: suppressed attributes, image count, keyword coverage, variation health | DataDoe Listings | Fix proposals |
-| Fri 08:00 | Finance | Weekly contribution-margin-per-unit refresh by SKU; TACoS by SKU; flag SKUs below floor | Fee + sales + ad data | `state/finance.md` |
-| Fri 10:00 | Chief of Staff | Approval hygiene: expire >48h proposals, re-propose with fresh data; ledger audit | `approvals/`, `ledger/actions.jsonl` | Clean approval queue |
+| Daily 07:15 | Account Health & Compliance | Exception scan: AHR, violations, suppressed/stranded/unfulfillable | DataDoe; SP-API `LISTINGS_ITEM_ISSUES_CHANGE` | `state/compliance.md`; T3 escalation if any violation |
+| Daily 07:20 | Supply Chain | On-hand + inbound, cover vs floor, restock headroom | DataDoe FBA Inventory/Restock | `state/supply-chain.md`; reorder alert if cover < floor |
+| Daily 07:25 | Advertising | Spend pacing vs cap, ACoS by campaign, runaway/zero-impression campaigns | Ads MCP / Ads API | T1 actions logged to `ledger/actions.jsonl` |
+| Daily 07:30 | Pricing & Market Intel | Buy Box, competitor offer changes, band breaches | SP-API `ANY_OFFER_CHANGED`/`PRICING_HEALTH`; Keepa | Alert or T2 price proposal |
+| Daily 07:40 | CEO / Chief of Staff | Assemble the ranked decision list | `state/*.md`, `approvals/pending/` | `briefs/<date>-daily.md` — Rami's one screen |
+| **Mon 08:00** | **Advertising** | **Weekly PPC review: search-term harvest, negatives, promotions, placements, bid ladder** | Ads search-term report; SQP | Bid/negative changes (T1); campaign proposals (T2) |
+| Mon 09:00 | Catalog / Creative | SQP click/purchase-share deltas on top-20 ASINs; conversion diagnosis | Brand Analytics SQP; Business Reports | Listing proposals (T2) |
+| Mon 10:00 | Customer | VOC/NCX, new negative reviews, return reasons, buyer messages | DataDoe VOC/Returns | CX tickets; requests to Catalog/Supply Chain |
+| Mon 11:00 | Chief of Staff | WBR: input-metric deck, forecast vs actual, decisions queued | All `state/*.md` | `meetings/<date>-wbr.md`; approvals batch |
+| Tue 08:00 | Supply Chain | Forecast refresh, reorder points, PO proposals, FEFO aging | DataDoe inventory + sales history; lead-time log | PO proposals (T2/T3) |
+| Tue 10:00 | Pricing | Price/promo review, Automate Pricing band audit, deal ROI | SP-API pricing; Keepa; ledger | Price proposals (T2) |
+| Wed 08:00 | Expansion | US launch workstream (to Feb 2027), then Walmart | Project plan in repo | `state/expansion.md`; milestone requests |
+| Wed 10:00 | Finance | Cash, ad burn vs cap, fee anomalies, reimbursement candidates | DataDoe payments/fees; QuickBooks | Reimbursement proposals (T2) |
+| Thu 08:00 | Advertising | Mid-week bid check, budget re-pacing, dayparting | Ads API | T1 actions logged |
+| Thu 10:00 | Catalog | Hygiene sweep: suppressed attributes, images, keyword coverage, variations | DataDoe Listings | Fix proposals |
+| Fri 08:00 | Finance | CM-per-unit and TACoS refresh by SKU; flag SKUs below floor | Fee + sales + ad data | `state/finance.md` |
+| Fri 10:00 | Chief of Staff | Approval hygiene: expire >48h proposals, re-propose fresh; ledger audit | `approvals/`, `ledger/` | Clean approval queue |
 | Fri 11:00 | All | Memory pass: observations → `memory/<date>.md` | — | Daily memory files |
-| **Mon (monthly, 1st Mon)** | **Finance + CoS** | **MBR: full P&L by SKU, fee-line analysis, target revision, guardrail re-tune** | All | `meetings/<date>-mbr.md` |
-| Quarterly (1st Mon of quarter) | All | Assortment review, playbook falsification, supplier re-measurement, T2→T1 ratchet review | 90 days of ledger + outcomes | `meetings/<date>-qbr.md`; playbook diffs |
+| **Mon (monthly, 1st Mon)** | **Finance + CoS** | **MBR: P&L by SKU, fee-line analysis, target revision, guardrail re-tune** | All | `meetings/<date>-mbr.md` |
+| Quarterly (1st Mon of quarter) | All | Assortment, playbook falsification, supplier re-measurement, ratchet review | 90 days of ledger + outcomes | `meetings/<date>-qbr.md`; playbook diffs |
 
 ---
 
@@ -243,14 +243,14 @@ For a solo operator who wants zero babysitting: **automate what is reversible, h
 
 | Class | Own end-to-end (T0/T1) | Propose (T2) | Rami only (T3) |
 |---|---|---|---|
-| **Monitoring & reporting** | Everything. All state files, all metric assembly, the ranked daily decision list, anomaly detection, WBR/MBR deck generation | — | — |
-| **Advertising** | Bid ±15%, budget +25%/action to cap, negatives above threshold, pausing zero-converting targets, budget throttling at cap, search-term harvesting (after ratchet) | New campaigns, new ad types, placement modifiers, structural rebuilds, seasonal budget step-changes | Total monthly ad budget |
-| **Inventory** | Forecast, reorder-point calculation, cover/limit/fee-corridor monitoring, FEFO aging, removal-order *recommendations*, restock-limit tracking | POs, FBA shipment creation, removal/disposal orders, inbound placement choice | POs above the CAD 15,000 monthly ceiling, supplier terms |
-| **Pricing** | Monitoring band breaches, Buy Box loss detection, promo ROI post-mortems, maintaining Automate Pricing rules *within* an approved band | Any price change, band changes, coupons, deals, Prime Exclusive Discounts, S&S tier changes | Anything >20% in 24h (Amazon's floor), portfolio-wide repricing |
+| **Monitoring & reporting** | Everything: state files, metric assembly, the ranked daily decision list, anomaly detection, WBR/MBR decks | — | — |
+| **Advertising** | Bid ±15%, budget +25%/action to cap, negatives above threshold, pausing zero-converting targets, throttling at cap, search-term harvesting (after ratchet) | New campaigns, new ad types, placement modifiers, structural rebuilds, seasonal budget step-changes | Total monthly ad budget |
+| **Inventory** | Forecast, reorder points, cover/fee-corridor monitoring, FEFO aging, removal *recommendations*, restock tracking | POs, FBA shipment creation, removal/disposal orders, inbound placement choice | POs above the CAD 15,000 monthly ceiling, supplier terms |
+| **Pricing** | Band-breach and Buy Box-loss detection, promo ROI post-mortems, maintaining Automate Pricing rules *within* an approved band | Any price change, band changes, coupons, deals, Prime Exclusive Discounts, S&S tier changes | Anything >20% in 24h (Amazon's floor), portfolio-wide repricing |
 | **Catalog** | Listing-health monitoring, keyword research, draft copy and A+ layouts, suppression detection | All published listing text, images, A+, variations, new ASINs | Brand Registry actions |
-| **Customer** | Review/return/NCX analysis, root-cause attribution, drafting responses, Request-a-Review on eligible orders (strong T1 candidate after ratchet — it is a single sanctioned button with no message content) | Buyer messages, response templates, Vine enrolment | — |
-| **Compliance** | Daily AHR/violation scan, label-requirement checks, expiry-risk scoring, evidence packet assembly, POA drafting | Reimbursement claims, listing reinstatement requests | All appeals, POAs, IP responses, regulatory filings |
-| **Expansion** | Milestone tracking, research, document preparation, vendor comparison | Programme enrolments (New Selection, Vine) | New marketplaces, entity/tax/legal, contracts, IOR and bond |
+| **Customer** | Review/return/NCX analysis, root-cause attribution, drafting responses, Request-a-Review on eligible orders (a strong T1 candidate after ratchet — one sanctioned button, no message content) | Buyer messages, response templates, Vine enrolment | — |
+| **Compliance** | Daily AHR/violation scan, label checks, expiry-risk scoring, evidence-packet assembly, POA drafting | Reimbursement claims, listing reinstatement requests | All appeals, POAs, IP responses, regulatory filings |
+| **Expansion** | Milestone tracking, research, document prep, vendor comparison | Programme enrolments (New Selection, Vine) | New marketplaces, entity/tax/legal, contracts, IOR and bond |
 
 **Three highest-value automations, in order:** (1) the inventory fee-and-expiry corridor (§7) — four simultaneous constraints, weekly recomputation, real money, no judgement required; (2) the PPC negative-keyword bridge (§6.1) — mechanical and compounding; (3) the daily exception scan (§1.2) — not hard, but exactly what a human stops doing in week three.
 
