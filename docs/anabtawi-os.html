@@ -1,0 +1,370 @@
+<title>Anabtawi OS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F3F4F0; --paper:#FBFBF8; --ink:#17201C; --ink-2:#4A554F; --ink-3:#7C867F;
+  --line:#D9DDD6; --accent:#3E6B3A; --accent-ink:#2C4F2A; --accent-soft:#E4EDE0;
+  --gold:#B8862B; --gold-soft:#F4EBD6; --red:#9E3B2E; --red-soft:#F5E1DC;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121815; --paper:#181F1B; --ink:#E6EBE5; --ink-2:#B4BDB6; --ink-3:#7E8882;
+    --line:#2C3530; --accent:#8CBF84; --accent-ink:#B7DBB0; --accent-soft:#1F2E1D;
+    --gold:#D9A94A; --gold-soft:#2E2610; --red:#E08A7C; --red-soft:#3A1F1A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121815; --paper:#181F1B; --ink:#E6EBE5; --ink-2:#B4BDB6; --ink-3:#7E8882;
+  --line:#2C3530; --accent:#8CBF84; --accent-ink:#B7DBB0; --accent-soft:#1F2E1D;
+  --gold:#D9A94A; --gold-soft:#2E2610; --red:#E08A7C; --red-soft:#3A1F1A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+a{color:var(--accent-ink)}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 96px}
+.prose{max-width:68ch}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(38px,6vw,64px);letter-spacing:-0.01em}
+h2{font-size:clamp(26px,3.4vw,34px);margin-top:72px;padding-top:24px;border-top:1px solid var(--line)}
+h3{font-size:20px;margin-top:32px}
+p{margin:14px 0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.lede{font-size:21px;line-height:1.45;color:var(--ink-2);max-width:60ch;margin-top:18px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:22px;font-family:var(--mono);font-size:13px;color:var(--ink-3)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:36px 0 8px}
+.fact{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.fact .k{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase}
+.fact .v{font-family:var(--display);font-size:28px;margin-top:4px;font-variant-numeric:tabular-nums}
+.fact .s{font-size:14px;color:var(--ink-2);margin-top:2px}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:16px 0}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:14px}
+tr.win td{background:var(--accent-soft);font-weight:600}
+.scroll{overflow-x:auto}
+figure{margin:28px 0;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px}
+figure svg{max-width:100%;height:auto;display:block;color:var(--ink)}
+figcaption{font-size:14px;color:var(--ink-2);margin-top:12px;max-width:80ch}
+.pill{display:inline-block;font-family:var(--mono);font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);margin-right:6px}
+.pill.v{background:var(--accent-soft);border-color:transparent;color:var(--accent-ink)}
+.pill.r{background:var(--gold-soft);border-color:transparent;color:var(--gold)}
+.pill.u{background:var(--red-soft);border-color:transparent;color:var(--red)}
+ol.steps{padding-left:0;list-style:none;counter-reset:s;max-width:74ch}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+ol.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);color:var(--accent);font-size:14px;padding-top:3px}
+ol.steps b{font-weight:600}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px 18px;font-family:var(--mono);font-size:13.5px;line-height:1.5;white-space:pre-wrap;color:var(--ink)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin:6px 0}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:26px;font-size:14px}
+.toc a{text-decoration:none;color:var(--ink-2);border-bottom:1px dotted var(--line)}
+.note{border-left:3px solid var(--gold);padding:8px 14px;background:var(--gold-soft);border-radius:0 6px 6px 0;margin:18px 0;max-width:74ch}
+.foot{margin-top:64px;font-size:14px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion: no-preference){ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px} }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Design v1.0 · 6 September 2026 · for Rami's approval before anything is built</div>
+  <h1>Anabtawi OS</h1>
+  <p class="lede">A company of nine AI departments, defined as text in one repository, run unattended on the Mac mini, managed in one monday.com workspace, with a deterministic hands runner that is the only thing allowed to touch money or Amazon.</p>
+  <div class="meta">
+    <span>full document: <code>docs/ANABTAWI-OS-DESIGN.md</code></span>
+    <span>schema: <code>docs/monday-schema.yaml</code></span>
+    <span>research: <code>docs/os-research/01–10</code></span>
+  </div>
+  <nav class="toc">
+    <a href="#decision">Decision</a><a href="#scoring">Scoring</a><a href="#arch">Architecture</a><a href="#monday">monday workspace</a><a href="#money">Money path</a><a href="#day">Rami's day</a><a href="#cadence">Cadence</a><a href="#cost">Cost</a><a href="#build">Build order</a><a href="#verify">Verify first</a>
+  </nav>
+
+  <div class="facts">
+    <div class="fact"><div class="k">Decisions a day</div><div class="v">≤ 5</div><div class="s">hard cap, drops to 3 on thrash, may be empty</div></div>
+    <div class="fact"><div class="k">Rami's time</div><div class="v">10 min</div><div class="s">evening, on the phone</div></div>
+    <div class="fact"><div class="k">Money moves</div><div class="v">T3</div><div class="s">bank payments by Rami only, forever</div></div>
+    <div class="fact"><div class="k">New tools</div><div class="v">~CAD 350</div><div class="s">per month after month 6</div></div>
+    <div class="fact"><div class="k">Ramadan 2027</div><div class="v">8 Feb</div><div class="s">US stock sellable by ~10 Jan</div></div>
+    <div class="fact"><div class="k">Second brand</div><div class="v">1 afternoon</div><div class="s">one schema file, one API key</div></div>
+  </div>
+
+  <h2 id="decision">The decision</h2>
+  <div class="prose">
+    <p><b>What we build.</b> Nine departments (CEO, finance, supply chain, advertising, catalog, pricing and market intel, customer, account health, expansion) are folders of text: a charter, a machine-readable <code>department.yaml</code>, skills with thresholds, memory. Claude Code runs them headless on the Max subscription under <code>launchd</code>, inside the carve-out Anthropic's compliance page documents. They read the business through MCP (DataDoe for Amazon, Keepa for competitors, Intuit's QuickBooks server for the books) with read-only keys, and write only files and a monday projection.</p>
+    <p><b>Rami's surface</b> is one monday workspace: Strategy, Key Results, Scorecard, Decisions, Tasks, Products, SKU Profiles, Suppliers and POs, Calendar, Run Health, plus three dashboards and one form. Every row carries the repo path and commit it came from. His three gestures are a status tap, a form submission, and, if monday is down, a file edit.</p>
+    <p><b>The hands runner</b> is deterministic Python with no model inside. Every five minutes it polls the Decisions board and the repo, re-validates each approved packet against live data, dry-runs it, executes through the official API with an idempotency key, verifies by read-back, and appends a hash-chained ledger row. Nothing is inbound to the Mac mini. Money leaving a bank never enters this path: Rami pays from a packet on his own device.</p>
+    <p><b>The CEO layer</b> is a scoring function plus four files. Key results have immutable metric ids. The scorecard changes status only under statistical rules. Decisions are gated, scored, ordered and capped at five, with a P0 lane outside the cap. Knowledge compounds in git: observations become patterns with reproducible confidence, patterns become skills with evidence, and every decision declares the metric that will judge it.</p>
+  </div>
+
+  <h3>What changes from the brief</h3>
+  <ul class="tight">
+    <li><b>Ramadan 2027 starts about 8 February</b>, not 17 February. The US critical path moves nine days earlier; sailing by late November.</li>
+    <li><b>Register the private SP-API app and self-service Ads API this month.</b> The USD 1,400 developer fee was announced and then cancelled (May 2026, reported). DataDoe stays core; the registration is the exit.</li>
+    <li><b>Five decisions, derived not assumed:</b> a ten-minute read at 90–120 seconds per honestly judged item. Money packets budgeted separately at three new a day.</li>
+    <li><b>Runs are placed after the data lands</b> (DataDoe refreshes North America about 05:00 marketplace time, early afternoon in Jerusalem): main runs 15:30–17:05, card at 17:05, a light 07:15 exception scan.</li>
+    <li><b>Amazon's Automate Pricing is the pricing engine.</b> Rami approves bands; agents propose band changes only.</li>
+    <li><b>monday agents are not a harness.</b> Verified: they cannot reach DataDoe or any external MCP server, and monday's code sandbox cannot leave <code>api.monday.com</code>.</li>
+  </ul>
+
+  <h2 id="scoring">Finalists against Rami's weights</h2>
+  <div class="scroll">
+  <table>
+    <tr><th>Finalist</th><th class="num">Strategy 20</th><th class="num">Decisions 20</th><th class="num">Unattended 20</th><th class="num">Subs / lock-in 15</th><th class="num">Portability 10</th><th class="num">Audit 10</th><th class="num">Maturity 5</th><th class="num">Total</th></tr>
+    <tr class="win"><td>B · Git spine, monday surface, Mac mini hands</td><td class="num">9</td><td class="num">9</td><td class="num">8</td><td class="num">9</td><td class="num">9</td><td class="num">9</td><td class="num">7</td><td class="num">87</td></tr>
+    <tr><td>C · Orchestrator platform (Paperclip-class control plane)</td><td class="num">7</td><td class="num">7</td><td class="num">8</td><td class="num">6</td><td class="num">6</td><td class="num">7</td><td class="num">3</td><td class="num">68</td></tr>
+    <tr><td>D · Hosted vendor agents, no machine</td><td class="num">5</td><td class="num">5</td><td class="num">5</td><td class="num">6</td><td class="num">4</td><td class="num">5</td><td class="num">5</td><td class="num">51</td></tr>
+    <tr><td>A · monday-native (monday agents as departments)</td><td class="num">7</td><td class="num">6</td><td class="num">4</td><td class="num">3</td><td class="num">3</td><td class="num">4</td><td class="num">6</td><td class="num">48</td></tr>
+  </table>
+  </div>
+  <p class="prose">B wins the three heavy criteria because strategy and decisions are files plus a deterministic score any harness can run, and because only B holds a durable approval object with expiry, re-validation and a ledger. C loses on a second source of truth and a credential-holding process the vendor terms forbid; it survives as an optional UI that may launch the CLI but never hold the token. B borrows D's safety nets: DataDoe recurring exports and anomaly email, and a cloud Routine as backup for the daily card.</p>
+
+  <h2 id="arch">Architecture</h2>
+  <figure>
+    <svg viewBox="0 0 1000 620" role="img" aria-label="Six layers: Rami's phone on top, the monday workspace as a projection, the brain (nine departments on the Mac mini) and the hands runner side by side, and data, knowledge and write paths at the bottom. Arrows show reads, projections, decisions and writes.">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker>
+      </defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">
+        <!-- Rami -->
+        <rect x="80" y="20" width="840" height="64" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="100" y="45" font-size="13" font-weight="600">RAMI · phone</text>
+        <text x="100" y="66">Cockpit · Decisions (tap Approve / Reject) · SKU card · Tasks · Telegram for P0 and failures</text>
+
+        <!-- monday -->
+        <rect x="80" y="130" width="840" height="86" rx="8" fill="none" stroke="#3E6B3A" stroke-width="2"/>
+        <text x="100" y="155" font-size="13" font-weight="600" fill="#3E6B3A">MANAGEMENT SURFACE · monday.com Pro · one workspace per brand</text>
+        <text x="100" y="178">Boards: Strategy · Key Results · Scorecard · Decisions · Tasks · Work Items · Products · SKU Profiles · Suppliers &amp; POs · Calendar · Run Health</text>
+        <text x="100" y="200">Docs: Strategy · Weekly Review · Playbooks     Dashboards: Cockpit · Finance · US Launch     Form: Ask the company</text>
+
+        <!-- arrows Rami<->monday -->
+        <line x1="300" y1="130" x2="300" y2="84" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+        <text x="308" y="112" font-size="11">push · card · views</text>
+        <line x1="700" y1="84" x2="700" y2="130" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+        <text x="708" y="112" font-size="11">status tap · form</text>
+
+        <!-- brain -->
+        <rect x="80" y="270" width="500" height="130" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="100" y="295" font-size="13" font-weight="600">BRAIN · Mac mini, user ops, launchd</text>
+        <text x="100" y="318">9 departments = folders of text (AGENTS.md · department.yaml · skills · memory)</text>
+        <text x="100" y="340">Claude Code headless on Max · Codex 2nd opinion · Routine backup</text>
+        <text x="100" y="362">read-only credentials only · writes: repo + monday projection</text>
+        <text x="100" y="384">CEO run last: gates → score → order → cap 5 → card</text>
+
+        <!-- hands -->
+        <rect x="620" y="270" width="300" height="130" rx="8" fill="none" stroke="#B8862B" stroke-width="2"/>
+        <text x="640" y="295" font-size="13" font-weight="600" fill="#B8862B">HANDS · runner.py · no model</text>
+        <text x="640" y="318">every 5 min: pull → poll Decisions</text>
+        <text x="640" y="340">→ re-validate live → dry-run</text>
+        <text x="640" y="362">→ execute (idempotency key)</text>
+        <text x="640" y="384">→ read-back → hash-chained ledger</text>
+
+        <!-- arrows monday<->brain/hands -->
+        <line x1="200" y1="270" x2="200" y2="216" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+        <text x="208" y="248" font-size="11">projection (repo → monday)</text>
+        <line x1="760" y1="216" x2="760" y2="270" stroke="#B8862B" stroke-width="1.6" marker-end="url(#arr)"/>
+        <text x="768" y="248" font-size="11" fill="#B8862B">Approved? (poll, nothing inbound)</text>
+        <!-- git between brain and hands -->
+        <line x1="580" y1="335" x2="620" y2="335" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+        <text x="572" y="322" font-size="11">git</text>
+
+        <!-- bottom row -->
+        <rect x="80" y="460" width="250" height="120" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="100" y="485" font-size="13" font-weight="600">DATA · read</text>
+        <text x="100" y="508">DataDoe MCP (core)</text>
+        <text x="100" y="528">Keepa API · QuickBooks MCP</text>
+        <text x="100" y="548">Ads MCP (read) · Walmart API</text>
+        <text x="100" y="568">nightly exports as file drop</text>
+
+        <rect x="360" y="460" width="290" height="120" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="380" y="485" font-size="13" font-weight="600">KNOWLEDGE · git, private, the record</text>
+        <text x="380" y="508">strategy/ departments/ products/</text>
+        <text x="380" y="528">patterns/ playbooks/ state/ approvals/</text>
+        <text x="380" y="548">ledger/ (actions.jsonl · kpis · outcomes)</text>
+        <text x="380" y="568">harness memory OFF · DuckDB at query time</text>
+
+        <rect x="680" y="460" width="240" height="120" rx="8" fill="none" stroke="#B8862B" stroke-width="2"/>
+        <text x="700" y="485" font-size="13" font-weight="600" fill="#B8862B">WRITE PATHS</text>
+        <text x="700" y="508">DataDoe Actions (dryRun first)</text>
+        <text x="700" y="528">Amazon Ads MCP · SP-API private app</text>
+        <text x="700" y="548">Automate Pricing bands</text>
+        <text x="700" y="568">QuickBooks bills (later) · never a bank</text>
+
+        <!-- arrows bottom -->
+        <line x1="205" y1="460" x2="205" y2="400" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+        <text x="212" y="435" font-size="11">MCP reads, cached daily</text>
+        <line x1="505" y1="400" x2="505" y2="460" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+        <text x="512" y="435" font-size="11">commit / pull</text>
+        <line x1="800" y1="400" x2="800" y2="460" stroke="#B8862B" stroke-width="1.6" marker-end="url(#arr)"/>
+        <text x="808" y="435" font-size="11" fill="#B8862B">official APIs, op run</text>
+
+        <text x="80" y="608" font-size="11" fill="currentColor" opacity=".7">Safety nets: GitHub Actions staleness watchdog · Healthchecks dead-man pings · DataDoe anomaly email · Routine backup for the card · ops/PAUSE kill file</text>
+      </g>
+    </svg>
+    <figcaption>Two arrows cross the monday boundary in each direction: the repo projects state up, Rami's status taps come down through a five-minute poll. The brain never holds a write credential; the hands runner never contains a model.</figcaption>
+  </figure>
+
+  <h3>Components and what each beat</h3>
+  <div class="scroll">
+  <table>
+    <tr><th>Component</th><th>Chosen</th><th>Beat</th><th>Because</th></tr>
+    <tr><td>Harness</td><td>Claude Code headless on Max, launchd</td><td>monday agents · Paperclip · Routines as primary · Grok bots</td><td>only verified legal path for unattended subscription use with local files and MCP; no credential brokering</td></tr>
+    <tr><td>Scheduler</td><td>launchd + GitHub Actions watchdog</td><td>n8n · Trigger.dev · Inngest · Temporal · Desktop tasks</td><td>zero maintenance; the watchdog is the failure-notification layer the Mac lacks</td></tr>
+    <tr><td>Hands trigger</td><td>5-minute poll, nothing inbound</td><td>webhook + tunnel · automation → webhook</td><td>a poll fails into delay, a webhook into silent loss; approvals are never latency-sensitive</td></tr>
+    <tr><td>Amazon read</td><td>DataDoe MCP + recurring exports</td><td>SP-API only · Helium 10 MCP · Sellerboard · Pacvue</td><td>first-party MCP, Seller + Vendor + Ads, 735-day backfill, USD 97 flat for unlimited accounts</td></tr>
+    <tr><td>Amazon write</td><td>DataDoe Actions now; own Ads API and SP-API app registered now; Automate Pricing for bands</td><td>DataDoe only · a repricer · hosted guardrail vendors</td><td>redundancy both ways; bands remove the largest approval class</td></tr>
+    <tr><td>Competitor data</td><td>Keepa API</td><td>Jungle Scout · SmartScout · any scraper</td><td>the only legal, non-substitutable price and BSR history under BSA §19</td></tr>
+    <tr><td>Books</td><td>QuickBooks + Intuit's official MCP + Link My Books</td><td>A2X · Sellerboard</td><td>official, Apache-2.0, local, write flags; A2X is 3× the price at this volume</td></tr>
+    <tr><td>Knowledge</td><td>git markdown + monthly CSV + DuckDB; monday docs as projection</td><td>Mem0 · Letta · Zep · Supabase · Obsidian Sync · monday docs as store</td><td>six of eight knowledge classes need exact or time-series retrieval; 36/45 vs ≤30</td></tr>
+    <tr><td>SKU profile</td><td>Products + SKU Profiles boards + one git file per SKU; nightly build writes numbers</td><td>monday-only · Postgres + mirror · Vibe app as store</td><td>Pro forgets its log after a year; snapshots would exhaust 10k items in 83 days</td></tr>
+    <tr><td>CEO layer</td><td>YAML objects + deterministic gate, score, cap</td><td>an LLM that re-ranks daily · monday AI · OKR SaaS</td><td>a ranking re-derived every morning thrashes; a function is diffable and portable</td></tr>
+    <tr><td>Approval object</td><td>markdown packet with front matter, mirrored to Decisions</td><td>DataDoe's in-chat "reply apply" · monday-only status</td><td>durable, expiring, re-validated at execution, two approval paths, one record</td></tr>
+  </table>
+  </div>
+
+  <h2 id="monday">The monday workspace</h2>
+  <figure>
+    <svg viewBox="0 0 1000 400" role="img" aria-label="Eleven boards in four folders with the connections between them: Strategy to Key Results to Work Items and Decisions; Products to SKU Profiles to Decisions; Suppliers and POs to Products; Run Health and Calendar standalone; Requests fed by the Ask the company form.">
+      <defs><marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">
+        <text x="40" y="28" font-size="11" opacity=".7">1 COMMAND</text>
+        <rect x="40" y="40" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="52" y="60" font-weight="600">Strategy</text><text x="52" y="77" font-size="11">objectives · cost of miss</text>
+        <rect x="40" y="120" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="52" y="140" font-weight="600">Key Results</text><text x="52" y="157" font-size="11">≤8 · immutable metric ids</text>
+        <rect x="40" y="200" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="52" y="220" font-weight="600">Work Items</text><text x="52" y="237" font-size="11">CEO → departments</text>
+        <rect x="40" y="280" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="52" y="300" font-weight="600">Scorecard</text><text x="52" y="317" font-size="11">15 rows · R1 R2 R3</text>
+
+        <rect x="300" y="120" width="190" height="86" rx="6" fill="none" stroke="#3E6B3A" stroke-width="2"/><text x="312" y="142" font-weight="600" fill="#3E6B3A">Decisions</text><text x="312" y="160" font-size="11">rank · score · impact · deadline</text><text x="312" y="176" font-size="11">if_ignored · dry-run diff</text><text x="312" y="192" font-size="11" font-weight="600">decision: Rami taps</text>
+        <rect x="300" y="240" width="190" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="312" y="260" font-weight="600">Tasks for Rami</text><text x="312" y="277" font-size="11">why_human required</text>
+
+        <text x="600" y="28" font-size="11" opacity=".7">2 CATALOG</text>
+        <rect x="600" y="40" width="160" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="612" y="60" font-weight="600">Products</text><text x="612" y="77" font-size="11">1 per SKU · shelf life · meltable</text>
+        <rect x="600" y="120" width="160" height="66" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="612" y="140" font-weight="600">SKU Profiles</text><text x="612" y="157" font-size="11">1 per SKU × marketplace</text><text x="612" y="173" font-size="11">34 plain columns · nightly</text>
+        <rect x="600" y="220" width="160" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="612" y="240" font-weight="600">Suppliers &amp; POs</text><text x="612" y="257" font-size="11">owner-only · PO subitems</text>
+
+        <text x="820" y="28" font-size="11" opacity=".7">3 OPERATIONS</text>
+        <rect x="820" y="40" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="832" y="60" font-weight="600">Run Health</text><text x="832" y="77" font-size="11">9 items · alive battery</text>
+        <rect x="820" y="120" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="832" y="140" font-weight="600">Calendar</text><text x="832" y="157" font-size="11">lunar dates to 2032</text>
+        <rect x="820" y="200" width="150" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.3"/><text x="832" y="220" font-weight="600">Requests</text><text x="832" y="237" font-size="11">mirror + form target</text>
+        <rect x="820" y="280" width="150" height="46" rx="6" fill="none" stroke="#B8862B" stroke-width="1.6" stroke-dasharray="5 4"/><text x="832" y="300" font-weight="600" fill="#B8862B">Ask the company</text><text x="832" y="317" font-size="11">the one form</text>
+
+        <!-- connections -->
+        <line x1="115" y1="86" x2="115" y2="120" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr2)"/>
+        <line x1="115" y1="166" x2="115" y2="200" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr2)"/>
+        <line x1="190" y1="143" x2="300" y2="150" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr2)"/><text x="205" y="138" font-size="10">goal_id</text>
+        <line x1="600" y1="150" x2="490" y2="150" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr2)"/><text x="505" y="143" font-size="10">SKUs</text>
+        <line x1="680" y1="86" x2="680" y2="120" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr2)"/>
+        <line x1="680" y1="220" x2="680" y2="186" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr2)"/>
+        <line x1="895" y1="280" x2="895" y2="246" stroke="#B8862B" stroke-width="1.4" marker-end="url(#arr2)"/>
+        <line x1="395" y1="240" x2="395" y2="206" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr2)"/>
+
+        <text x="40" y="365" font-size="11" opacity=".8">Dashboards: Cockpit (battery · numbers · lists, mobile-first) · Finance · US Launch.   Automations: notify on new decision, expiry, failed run, due task. No AI blocks, no monday agents, no workflows in v1.</text>
+        <text x="40" y="385" font-size="11" opacity=".8">Every row carries repo_path + commit. No number behind a formula or mirror column. Stable column ids from docs/monday-schema.yaml. Stay on Pro; family members as free viewers or guests.</text>
+      </g>
+    </svg>
+    <figcaption>The Decisions board is the only place a human writes a value the system acts on. Everything else on these boards is regenerated from the repository, which is why the exit from monday is two days.</figcaption>
+  </figure>
+
+  <h2 id="money">The money path</h2>
+  <ol class="steps">
+    <li><span><b>Detect.</b> A department, in its slot, with read-only tools, after reading state, locks and the calendar.</span></li>
+    <li><span><b>Dry-run.</b> The tool's own preview (DataDoe <code>dryRun</code> works even with the action type disabled). The diff is captured.</span></li>
+    <li><span><b>Propose.</b> <code>approvals/pending/&lt;id&gt;.md</code>: idempotency key, preconditions with <code>revalidate</code>, guardrail arithmetic, marketplace and currency, evidence, impact, <code>if_ignored</code>, the metric that will judge it, 48-hour expiry.</span></li>
+    <li><span><b>Validate (machine).</b> Schema, expiry, guardrails recomputed, budget from the ledger not the packet, Amazon floors, duplicate keys, the pending cap.</span></li>
+    <li><span><b>Present.</b> The CEO run gates, scores, ranks and projects the item to Decisions. Push and Telegram carry the card.</span></li>
+    <li><span><b>Decide.</b> Rami taps Approved or Rejected, or edits the file. Two paths, one record.</span></li>
+    <li><span><b>Re-validate at execution.</b> The runner re-reads every precondition live. Moved numbers send the packet back with a note. Over CAD 5,000 or T3 waits a 12-hour cooling period.</span></li>
+    <li><span><b>Execute once.</b> <code>op run</code> injects the credential for the seconds it is needed; one call with the idempotency key; batches chunked per SKU.</span></li>
+    <li><span><b>Verify by read-back,</b> then a hash-chained ledger row, then the file moves to <code>executed/</code> and the monday item shows the ledger sequence.</span></li>
+    <li><span><b>Bank payments fork at step 6 and never rejoin.</b> Rami receives a payment packet and pays on his own device. No agent, runner or API touches a bank.</span></li>
+  </ol>
+  <div class="two">
+    <div>
+      <h3>Tiers</h3>
+      <table>
+        <tr><th>Tier</th><th>Meaning</th></tr>
+        <tr><td>T0</td><td>observe and report; no account writes</td></tr>
+        <tr><td>T1</td><td>act inside guardrails, logged, reversible (ads hygiene after the ratchet; Request-a-Review)</td></tr>
+        <tr><td>T2</td><td>propose; Rami approves; hands executes (bands, POs to CAD 15k, listings, shipments, coupons)</td></tr>
+        <tr><td>T3</td><td>Rami only (bank payments, contracts, marketplaces, appeals, spend over ceiling)</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>The ratchet</h3>
+      <p>Promote T2 → T1 only when all six hold: 30 days, 20 approvals, under 5% rejected, zero failed read-backs, zero policy events, no edits to the last ten packets. Rami confirms by editing one line. Demote on any one of six signals, automatically. No money-moving class ever promotes.</p>
+      <p>Kill switches, softest first: disable action types in DataDoe; <code>touch ops/PAUSE</code> from the GitHub app; unload launchd; revoke keys.</p>
+    </div>
+  </div>
+
+  <h2 id="day">Rami's evening, on the phone</h2>
+  <div class="card">ANABTAWI · Sun 6 Sep · 3 decisions · 1 task · scorecard 1 red
+1. APPROVE PO 480u ANB-017 · CAD 4,800 · deadline Tue 10:00 · if ignored: stockout ~15 Sep
+2. APPROVE band change ANB-021 CA 14.99–17.49 → 15.49–17.99 · margin 16→19% · one-way? no
+3. CHOOSE prep partner shortlist (2 of 4) · why you: contract · due Fri
+TASK  read Account Health Rating in Seller Central (BSA §19) · 2 min · due Tue
+RED   min hero cover 11d (ANB-017) — item 1 fixes it
+deferred: 2 (1 coupon, 1 listing) · all departments ran · data fresh 15:41</div>
+  <p class="prose">Twelve lines, no links needed to act. Each item opens a Decision with <code>if_ignored</code> first, three evidence lines and the dry-run diff, and a status to tap. Then Tasks due in three days. The scorecard only if red. A quiet day says "Nothing needs you today" and proves it: every department ran, data fresh.</p>
+  <div class="note">Score = 100 × confidence × (0.40·value + 0.25·deadline + 0.15·cost of delay + 0.20·irreversibility) × 0.9<sup>days open</sup>. Deadlines inside 24h float up; at most two items per department; anything a department could have done at T1 never reaches the list and is logged as a tier bug that feeds the ratchet.</div>
+
+  <h2 id="cadence">Cadence (Asia/Jerusalem)</h2>
+  <div class="scroll">
+  <table>
+    <tr><th>When</th><th>Run</th><th>Why here</th></tr>
+    <tr><td>07:15–07:30</td><td>account-health, advertising, supply-chain exception scans</td><td>P0 detectors on intraday data; protective throttles only</td></tr>
+    <tr><td>15:30</td><td>nightly build: DataDoe + Keepa + Ads → snapshots, KPI CSVs, SKU Profiles, integrity check</td><td>after DataDoe's North-American refresh (about 05:00 marketplace time)</td></tr>
+    <tr><td>15:45–16:55</td><td>finance (scoring first), supply-chain, pricing-intel, advertising, catalog, customer, account-health, expansion</td><td>one at a time; each reads state written minutes before</td></tr>
+    <tr><td>17:05</td><td>CEO: gates, score, cap, card, projection, push</td><td>Rami reads in the evening; hands executes overnight</td></tr>
+    <tr><td>every 5 min</td><td>hands runner</td><td>poll, validate, execute, ledger</td></tr>
+    <tr><td>Mon 06:00 / 17:05</td><td>librarian pass / weekly review</td><td>patterns before the week; scorecard and IDS issues after</td></tr>
+    <tr><td>1st business day</td><td>monthly review: falsification, thrash, ratchet, guardrails</td><td>Rami's 30 minutes</td></tr>
+    <tr><td>Dec 15 · Mar 15 · Jun 15 · Sep 15</td><td>quarterly packet</td><td>Rami's 60 minutes; the only time objectives change</td></tr>
+    <tr><td>09:00 daily</td><td>GitHub Actions watchdog</td><td>a stale state file becomes an issue and an email</td></tr>
+  </table>
+  </div>
+
+  <h2 id="cost">Tools and monthly cost</h2>
+  <div class="scroll">
+  <table>
+    <tr><th>Tool</th><th>Role</th><th class="num">Months 1–6</th><th class="num">Month 7+</th></tr>
+    <tr><td>DataDoe</td><td>Amazon read layer, first write path, exports, anomaly email</td><td class="num">USD 97</td><td class="num">USD 97</td></tr>
+    <tr><td>Keepa API</td><td>competitor price, BSR, review history</td><td class="num">USD 53</td><td class="num">USD 53</td></tr>
+    <tr><td>Link My Books</td><td>settlements into QuickBooks</td><td class="num">USD 41</td><td class="num">USD 41</td></tr>
+    <tr><td>Helium 10 Platinum</td><td>US keyword research, then cancelled</td><td class="num">USD 99</td><td class="num">0</td></tr>
+    <tr><td>Anthropic API credits</td><td>overflow lane</td><td class="num">USD 50</td><td class="num">USD 50</td></tr>
+    <tr><td>Vault, monitoring, Telegram, GitHub</td><td></td><td class="num">~USD 10</td><td class="num">~USD 10</td></tr>
+    <tr><td>SP-API app · Ads API · Ads MCP · Automate Pricing · QuickBooks MCP · Getida</td><td>free or success-fee</td><td class="num">0</td><td class="num">0</td></tr>
+    <tr class="win"><td>Total new</td><td>on top of monday Pro, Claude Max, ChatGPT, SuperGrok, QuickBooks already held</td><td class="num">~USD 350 · CAD 485</td><td class="num">~USD 250 · CAD 350</td></tr>
+  </table>
+  </div>
+  <p class="prose">Skipped on arithmetic or auditability: Pacvue, Perpetua, Intentwise, m19 (10–45% of ad spend, black-box bidding); SoStocked; A2X; Sellerboard (no export API); n8n, Zapier, Make (logic outside the repo); every memory vendor; tax SaaS while Amazon is the marketplace facilitator. Minimal stack if only three things are bought: Keepa, Link My Books, Getida.</p>
+
+  <h2 id="build">Build order</h2>
+  <div class="scroll">
+  <table>
+    <tr><th>Week</th><th>Build</th><th>Rami</th><th>Exit test</th></tr>
+    <tr><td>1 Foundations</td><td>Mac mini, vault, launchd, watchdog, secret scan, ledger verifier; department.yaml for nine; DataDoe connected and freshness measured, all action types disabled; monday workspace from the schema file</td><td>register SP-API and Ads API; paste BSA §19 and Anthropic terms; confirm guardrails; answer the twelve DataDoe unknowns</td><td>all nine run at T0 with dated state; watchdog fires on a deliberately stale file</td></tr>
+    <tr><td>2 Truth</td><td>nightly build fills SKU Profiles (CA live, US planned); integrity check; Keepa cache; QBO read; Link My Books; scorecard; shadow decision list; kill-switch drill</td><td>grade the shadow list three evenings; set cost of miss per objective; classify meltable, hazmat, FOP SKUs</td><td>integrity passes; ranking disagrees with Rami on fewer than 2 of 5</td></tr>
+    <tr><td>3 Decisions</td><td>card live at cap 3; poller and hands live; bands into Automate Pricing; DataDoe dry-run-validated ads packets at T2</td><td>approve or reject on the phone; prep-partner shortlist</td><td>first packet executed end to end with read-back and a chained row</td></tr>
+    <tr><td>4 Cascade</td><td>cap 5; work items from red KRs; weekly review and librarian live; outcomes scored; Getida; US gate checklist</td><td>quarterly packet for 2026-Q4</td><td>thirty days of fresh state begins counting</td></tr>
+    <tr><td>5–6 US path</td><td>Helium 10 keyword pass; Listings Restrictions pre-flight; US labels and FDA panel tasks; Ramadan PO packets on the 8 Feb anchor; prep classification per SKU; Walmart keys</td><td>IOR, bond, FSVP agent, grocery approval; launch PO</td><td>sailing date locked no later than late November</td></tr>
+    <tr><td>7–8 Ratchet</td><td>advertising's 30-day evidence; promotion proposal; DataDoe ads action enabled only then; official Ads MCP if credentialed; Routine backup; Solicitations carve-out</td><td>edit one line, or not</td><td>first T1 class live with demotion armed</td></tr>
+    <tr><td>Month 3</td><td>family seat boards; Vibe SKU card if wanted; brand-two dry run</td><td></td><td>second brand instantiated in an afternoon</td></tr>
+  </table>
+  </div>
+
+  <h2 id="verify">Verify in week one</h2>
+  <p class="prose">The research environment could open GitHub, Anthropic's docs and the live monday API, but not Amazon, DataDoe, OpenAI, xAI or monday's help centre. The design carries those claims as reported, and week one closes them.</p>
+  <div class="two">
+    <div>
+      <p><span class="pill u">Amazon</span> BSA §19 text; the 20%/24h and 500-ASIN floors; any agent registration or self-identification step; SP-API fee cancellation on an Amazon page; private developer timeline; whether the Ads MCP accepts self-service credentials; FBA New Selection 2026 deadline; 105-day and 50-day expiry rules.</p>
+      <p><span class="pill u">DataDoe</span> freshness time at 15:00 Jerusalem; a budget action; placement and hourly data; a real approval queue; token allowance and the USD 0 default; key scopes; review tables; BSA §19 self-identification in writing; Walmart date. Ban the search-auditor skill.</p>
+    </div>
+    <div>
+      <p><span class="pill r">Vendors</span> Anthropic consumer terms clause pasted; OpenAI and xAI terms for unattended plan use; monday agent pricing and AI-credit minimums; Button column on the mobile card; Keepa free tier; Getida API; SQP on amazon.ca.</p>
+      <p><span class="pill v">Only Rami knows</span> meltable and hazmat SKUs; Canada FOP threshold SKUs; measured door-to-sellable lead time; Ramadan 2026 Canadian lift by SKU; USPTO status; the cost of missing the US launch.</p>
+    </div>
+  </div>
+
+  <div class="foot">Anabtawi OS design v1.0 · nothing is built in monday until this is approved · full text, schema and the ten research reports are in the repository on branch <code>claude/anabtawi-ai-os-design-cpbt2g</code>.</div>
+</div>
