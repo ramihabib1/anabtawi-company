@@ -1,0 +1,10 @@
+name: customer
+owns: "reviews, voice of the customer, returns, buyer messages, Request-a-Review"
+schedule:   # Asia/Jerusalem
+  - {slot: daily, at: "16:35", prompt: prompts/daily.md, timeout_min: 15}
+harness: {default: claude-code, fallbacks: [routine, claude-code-api, codex-api]}
+model: {default: sonnet, escalate_to: opus}
+mcp: [datadoe-read, keepa]
+reads_state: []
+budgets: {datadoe_tokens_per_run: 6, monday_calls_per_run: 40, resident_tokens: 20000}
+tier: {}   # every class T0 until the ratchet in AGENTS.md §5; the CEO run proposes, Rami edits this line

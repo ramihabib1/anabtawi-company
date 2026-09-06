@@ -1,0 +1,6 @@
+.exports/
+*.duckdb
+ops/PAUSE
+.env
+*.log
+.DS_Store

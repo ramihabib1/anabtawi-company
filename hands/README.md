@@ -1,0 +1,1 @@
+The hands runner (week 3): runner.py · validate.py · monday_sync.py · ledger.py. Deterministic Python, no model, write credentials via `op run`, polls every 5 minutes, nothing inbound. Spec: design §9.

@@ -1,0 +1,17 @@
+name: staleness-watchdog
+on:
+  schedule: [{cron: "0 6 * * *"}]   # 09:00 Asia/Jerusalem in summer; adjust for DST in week 1
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: every state file must carry today's date
+        run: |
+          today=$(TZ=Asia/Jerusalem date +%F); bad=0
+          for d in ceo finance supply-chain advertising catalog pricing-intel customer account-health expansion; do
+            f=state/$d.md
+            if [ ! -f "$f" ] || ! head -3 "$f" | grep -q "$today"; then echo "STALE: $f"; bad=1; fi
+          done
+          exit $bad

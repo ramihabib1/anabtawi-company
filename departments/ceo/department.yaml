@@ -1,0 +1,13 @@
+name: ceo
+owns: "strategy, key results, scorecard, the daily decision list, work items, weekly/monthly/quarterly reviews, the librarian pass, approval hygiene, the ratchet"
+schedule:   # Asia/Jerusalem
+  - {slot: daily, at: "17:05", prompt: prompts/daily.md, timeout_min: 25}
+  - {slot: librarian, on: Mon, at: "06:00", prompt: prompts/librarian.md, timeout_min: 30}
+  - {slot: weekly, on: Mon, at: "17:05", prompt: prompts/weekly.md, timeout_min: 40, model: opus}
+  - {slot: monthly, on: first-business-day, at: "17:30", prompt: prompts/monthly.md, timeout_min: 60, model: opus}
+harness: {default: claude-code, fallbacks: [routine, claude-code-api, codex-api]}
+model: {default: sonnet, escalate_to: opus}
+mcp: [datadoe-read, monday]
+reads_state: []
+budgets: {datadoe_tokens_per_run: 6, monday_calls_per_run: 40, resident_tokens: 20000}
+tier: {}   # every class T0 until the ratchet in AGENTS.md §5; the CEO run proposes, Rami edits this line
