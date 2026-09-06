@@ -48,7 +48,7 @@ Source: [Linkage limitations for the Connect Boards Column](https://support.mond
 
 ### Columns
 
-The full column type list is enumerable from the API (VERIFIED, live introspection via `get_column_type_info` enum): `auto_number, board_relation, button, checkbox, color_picker, country, creation_log, date, dependency, direct_doc, doc, dropdown, email, file, formula, group, hour, integration, item_assignees, item_id, last_updated, link, location, long_text, mirror, name, numbers, people, phone, progress, rating, status, subtasks, tags, team, text, time_tracking, timeline, unsupported, vote, week, world_clock`.
+42 column types are enumerable from the API (VERIFIED, live introspection via `get_column_type_info`), including the ones that matter here: `board_relation` (connect boards), `mirror`, `formula`, `dependency`, `timeline`, `file`, `doc`/`direct_doc`, `button`, `status`, `numbers`, `people`, `subtasks`, `time_tracking`, `item_id`, `creation_log`, `last_updated`, `auto_number`, `integration`.
 
 Plan gating (VERIFIED, [Work Management plan article](https://support.monday.com/hc/en-us/articles/115005320209-Available-plan-types-on-Work-Management)):
 - **Free and Basic**: "Limited Column Center — most columns available *except* the Formula Column and the Time Tracking Column."
@@ -153,7 +153,7 @@ Explicit note in the tool output: **OAuth/third-party triggers (Slack, Gmail, Sa
 
 VERIFIED (dev docs). Created via UI (Automations → Integrations → webhooks app) or `create_webhook(board_id, url, event, config)` with scope `webhooks:write`. monday POSTs a `challenge` string on registration which your endpoint must echo back.
 
-Supported events: `create_item, change_name, item_archived, item_deleted, item_moved_to_any_group, item_moved_to_specific_group, item_restored, change_column_value, change_specific_column_value, change_status_column_value, create_column, create_subitem, change_subitem_name, change_subitem_column_value, move_subitem, subitem_archived, subitem_deleted, create_update, edit_update, delete_update, create_subitem_update`.
+21 supported events, covering item create/rename/archive/delete/restore/move, column value changes (any / specific / status), column creation, the full subitem equivalents, and update create/edit/delete. `change_specific_column_value`, `change_status_column_value` and `item_moved_to_specific_group` take a JSON `config` to narrow the trigger.
 
 Payload is a single `event` object: `userId, boardId, pulseId, pulseName, groupId, groupName, columnId, columnType, columnTitle, value, previousValue, changedAt, app, type, triggerTime, subscriptionId, triggerUuid, originalTriggerUuid` (+ `parentItemId`/`parentItemBoardId` for subitems). `originalTriggerUuid` is your loop-prevention hook.
 
@@ -316,7 +316,7 @@ VERIFIED (developer docs via MCP):
 - Storage: **key-value Storage API** (per account, token-scoped), **Secure Storage API** (encrypted), plus **document DB and object storage**. `mapps storage:remove-data` exists for GDPR purges.
 - Secrets and env vars: `mapps code:secret -m set -k <KEY> -v <VALUE>`, `mapps code:env`, read server-side via the SDK.
 - **`mapps scheduler:create | list | run | update | delete` — monday code has its own cron.**
-- CLI is `npm install -g @mondaycom/apps-cli`, then `mapps init -t <TOKEN>`. Key commands: `code:push` (`--client-side` for static), `code:status`, `code:logs`, `code:report`, `app:create|list|scaffold|promote`, `app-version:list|builds`, `app-features:create|list|build`, `storage:search|export`, `database:connection-string`, `tunnel:create`, `manifest:export|import`.
+- CLI: `npm i -g @mondaycom/apps-cli`, `mapps init -t <TOKEN>`, then `code:push` / `code:status` / `code:logs`, `app:*`, `app-version:*`, `app-features:*`, `storage:*`, `database:connection-string`, `tunnel:create`, `manifest:export|import`.
 
 **This is a real alternative to the Mac mini for the always-on parts** — a hosted, region-pinned Node backend with encrypted secret storage and a scheduler, inside the same vendor as the management surface. It does not solve the Amazon-credential question (secrets must still live in a vault under monday's terms), and it is lock-in beyond "monday as management surface", so treat it as a fallback if the Mac mini proves unreliable, not as the default.
 
