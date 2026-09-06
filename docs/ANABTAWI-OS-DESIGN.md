@@ -1,6 +1,6 @@
 # Anabtawi OS — the operating system that runs the company
 
-**Version 1.0 — 2026-09-06 — for Rami's approval before anything is built in monday.**
+**Version 1.1 — 2026-09-06 — designed from a blank page; for Rami's approval before anything is built in monday. This repository is the company; nothing in it descends from an earlier design.**
 
 This is the design document. It is the output of a founding engagement that started from a blank page, ran ten parallel research surveys (in `docs/os-research/01..10`), scored four finalist architectures against Rami's weights, and chose one. Every component below names the alternatives it beat. Every claim that could not be opened at its primary source today is marked and collected in §14 as a week-one verification list, because the research environment could reach GitHub, Anthropic's docs and the live monday API but not Amazon, DataDoe, OpenAI, xAI or monday's help centre.
 
@@ -210,6 +210,8 @@ Column ids are the identifiers the runner and departments use. Types are monday 
 
 **Strategy** (groups = quarters; items = objectives) — `quarter` dropdown · `status` status · `owner_dept` dropdown · `cost_of_miss_cad` numbers · `slack_weeks` numbers · `frozen_until` date · `narrative` long_text · `key_results` board_relation → Key Results · `repo_path` · `commit`. Plus one status column `proposal` (None · Proposed) that Rami may set to signal "I want to change this" — the only human input on the board; the CEO run turns it into a request.
 
+**Scorecard History** (append-only, 15 rows a week, about 780 a year, archived yearly) — `week` week · `metric_id` text · `kind` status · `value` numbers · `target_num` numbers · `status` status · `as_of` date. Exists only so Chart widgets can show a 13-week trend on the phone; the record is `strategy/scorecard/`.
+
 **Scorecard** (15 items, one per metric) — `metric_id` text · `kind` status (Lead · Lag) · `owner_dept` dropdown · `current` numbers · `prev` numbers · `avg_4wk` numbers · `target` text · `status` status (Green · Yellow · Red) · `status_rule` dropdown · `unit` text · `note` text · `as_of` date. History appended in `strategy/scorecard/YYYY-Www.md`, never here.
 
 **Tasks for Rami** (groups: This week · Next · Waiting · Done) — `why_human` long_text (required) · `est_minutes` numbers · `due` date · `hard_deadline` checkbox · `consequence` long_text · `dept` dropdown · `status` status (Open · Done · Won't do) · `kr_link` board_relation · `evidence` link · `repo_path`. Rami sets `status`; nothing else.
@@ -287,7 +289,7 @@ Estimated consumption: under 600 actions a month. No AI blocks are used; every A
 | Sales family member | — | **guest** on Wholesale Pipeline (edit content), viewer on Products |
 | Accountant | — | viewer on Finance dashboard |
 
-Suppliers & POs, Strategy and Key Results stay owner-only. Column-level permissions are Enterprise; the Pro workaround is separate boards, which is why Suppliers & POs is its own board.
+Decisions, Suppliers & POs, Strategy, Key Results and Initiatives stay owner-only. Column-level permissions are Enterprise, so on Pro the `decision` column is protected only by board permissions: never grant edit rights on the Decisions board to a seat or guest. The general workaround is separate boards, which is why Suppliers & POs is its own board.
 
 ### 4.9 Mobile
 
@@ -523,7 +525,7 @@ tier: {bid_change: T1, budget_change: T1, negative_add: T1, campaign_create: T2,
 | Claude Code Routine (cloud) | backup for the 17:05 CEO card only | allowed on Max; research preview, 1-hour floor, daily cap | committed `.mcp.json`; clones the repo |
 | Claude Code on API key | overflow when a 5-hour window would starve Rami's interactive work; brand two | commercial terms | same wrapper, `ANTHROPIC_API_KEY` instead of the OAuth token |
 | Codex CLI | expansion's second opinion; fallback for research-shaped work | GREY on a ChatGPT plan for unattended use (terms unreachable today); use an OpenAI API key for anything scheduled | `codex exec` with `config.toml` rendered from the same YAML; reads `AGENTS.md` natively (32 KiB cap enforced in CI) |
-| Grok bots | T0 read-only pilots only | terms unreachable; the repo already records a Grok Build secret-upload incident | generated `runtimes/grok/BOOTSTRAP.md`; no secrets beyond a read-only DataDoe key |
+| Grok bots | T0 read-only pilots only | terms unreachable; a Grok Build client incident uploading repositories with secret files was reported in July 2026 | generated `runtimes/grok/BOOTSTRAP.md`; no secrets beyond a read-only DataDoe key |
 | Claude Cowork | Rami's review surface, not a runner | | none |
 
 Moving a department is one line in `department.yaml` (`harness.default`). Nothing a harness offers beyond reading files and calling MCP tools is a dependency: no subagents, no hooks, no harness memory (Claude Code auto-memory is switched off in `.claude/settings.json`), no in-harness scheduling. Exit from any model vendor is the same day: swap the credential in the wrapper.
@@ -609,6 +611,8 @@ Every artifact starts with a card of at most twelve lines that can be acted on w
 
 ### 8.1 Eight classes, one rule each
 
+Every record format below, and every other file the company writes, is defined in `docs/record-schemas.yaml`: front matter fields, enums, computed fields, promotion gates and CI checks. That file is the schema of the knowledge layer; `docs/monday-schema.yaml` is its projection. `bin/validate-records.py` rejects a malformed file whichever harness wrote it, which is what makes harness portability enforceable rather than hoped for.
+
 | Class | Lives in | Retrieval | Rule |
 |---|---|---|---|
 | Raw observations | `departments/<d>/memory/YYYY-MM-DD.md` | grep by scope and date | never edited, never loaded whole |
@@ -617,6 +621,7 @@ Every artifact starts with a card of at most twelve lines that can be acted on w
 | Playbooks / skills | `departments/<d>/skills/*/SKILL.md`, `playbooks/` | description-matched trigger | thresholds live in skills with `evidence:`, `hit_rate:`, `review_by:` front matter |
 | Decisions and outcomes | `approvals/executed/YYYY/MM/`, `ledger/outcomes.csv` | exact by id; SQL by class | every approval declares `metric`, `baseline`, `expected`, `review_on`, `design` |
 | SKU histories | `state/skus/*.jsonl`, `ledger/kpis/YYYY-MM.csv`, SKU file decision history | DuckDB at query time | partitioned monthly from day one |
+| Inventory lots | `suppliers/lots/<po_ref>.md` | exact by PO; FEFO derived nightly | expiry is a lot fact, never a SKU scalar |
 | Strategy state | `strategy/**` + `CHANGELOG.md` | loaded as a 400-token extract | changes only at boundaries |
 | Operating notes | `ops/OPERATING-NOTES.md` | loaded whole | what flakes, what formats work |
 
@@ -860,13 +865,14 @@ Nothing is built in monday until Rami approves this document. Weeks count from a
 ├── hands/  runner.py validate.py monday_sync.py ledger.py
 ├── bin/  run-dept.sh project-monday.py build-sku-profiles.py render-mcp.py bootstrap-grok.py
 ├── ops/  OPERATING-NOTES.md PAUSE (absent unless paused) launchd/*.plist
-├── docs/  ANABTAWI-OS-DESIGN.md monday-schema.yaml SKU-SCHEMA.yaml CONVENTIONS.md policy/ os-research/
+├── docs/  ANABTAWI-OS-DESIGN.md monday-schema.yaml record-schemas.yaml schemas/ policy/ research/
+├── suppliers/<id>.md   suppliers/lots/<po_ref>.md
 └── .github/workflows/staleness.yml  .exports/ (gitignored)
 ```
 
 ## Appendix B. Approval packet and ledger schemas
 
-The normative JSON Schemas are in `docs/os-research/07-approvals-money-path.md` §6 and will be copied to `docs/schemas/` at build time. Required packet fields: `id, schema_version, department, tier, action_class, status, created, expires, marketplace, currency, idempotency_key, payload, preconditions[], guardrails, evidence[], impact, if_ignored`, plus `metric, baseline, expected, review_on, design` for scoring. Required ledger fields: `seq, ts, schema_version, department, tier, action_class, runtime, target, input, output, approval_id, reason, idempotency_key, prev_hash, hash`, with `amount` always a decimal string.
+The normative JSON Schemas are in `docs/schemas/approval-packet.schema.json` and `docs/schemas/ledger-entry.schema.json` (drafted in research report 07 §6). Required packet fields: `id, schema_version, department, tier, action_class, status, created, expires, marketplace, currency, idempotency_key, payload, preconditions[], guardrails, evidence[], impact, if_ignored`, plus `metric, baseline, expected, review_on, design` for scoring. Required ledger fields: `seq, ts, schema_version, department, tier, action_class, runtime, target, input, output, approval_id, reason, idempotency_key, prev_hash, hash`, with `amount` always a decimal string.
 
 ## Appendix C. Research index
 

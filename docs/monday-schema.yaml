@@ -5,7 +5,7 @@ version: 1.0
 workspace: "{brand} OS"
 folders:
   - name: "1 Command"
-    boards: [strategy, key_results, initiatives, scorecard, decisions, tasks_for_rami]
+    boards: [strategy, key_results, initiatives, scorecard, scorecard_history, decisions, tasks_for_rami]
     docs: [strategy_doc, weekly_review, monthly_review]
   - name: "1b Work"
     boards: [projects, work_items]
@@ -54,6 +54,7 @@ boards:
     views:
       - {name: Today, type: table, filter: {group: Today}, sort: [rank]}
       - {name: History, type: table, filter: {group: [Executed, Closed]}}
+    permissions: "board owner only (Rami). Pro has no column permissions, so the decision column is protected by board permissions; never grant edit on this board to a seat or guest."
     automations:
       - "when item created in group Today → notify Rami"
       - "when decision changes to Approved or Rejected → notify Rami (receipt)"
@@ -120,6 +121,22 @@ boards:
       - {id: note, type: text}
       - {id: as_of, type: date}
     writer: ceo
+
+  scorecard_history:
+    name: Scorecard History
+    note: "Append-only: 15 rows a week (~780 a year), so Chart widgets can show trends on the phone. History of record is strategy/scorecard/. Archive yearly."
+    groups: "one per quarter"
+    columns:
+      - {id: week, type: week}
+      - {id: metric_id, type: text}
+      - {id: kind, type: status, labels: [Lead, Lag]}
+      - {id: value, type: numbers}
+      - {id: target_num, type: numbers}
+      - {id: status, type: status, labels: [Green, Yellow, Red]}
+      - {id: as_of, type: date}
+    writer: ceo
+    views:
+      - {name: Trend by metric, type: chart, graph_type: line, x: as_of, y: value, group_by: metric_id}
 
   tasks_for_rami:
     name: Tasks for Rami
@@ -428,6 +445,7 @@ dashboards:
       - {kind: LISTVIEW, board: tasks_for_rami, view: "Due ≤3 days"}
       - {kind: NUMBER, board: work_items, count: {status: [Blocked, Waiting on Rami]}, name: Work stuck}
       - {kind: NUMBER, board: knowledge, count: {status: Validated, last_seen: within_last_30_days}, name: Validated this month}
+      - {kind: CHART, board: scorecard_history, graph_type: line, x: as_of, y: value, filter: {metric_id: [net_revenue_ca_7d, margin_after_ads_ca]}, name: 13-week trend}
   finance:
     boards: [scorecard, sku_profiles, suppliers_pos]
     widgets:
@@ -474,7 +492,7 @@ permissions:
   rami: admin
   viewers_later: {finance_family: [finance dashboard, scorecard, decisions(view)], accountant: [finance dashboard]}
   guests_later: {sales_family: [wholesale_pipeline(edit content), products(view)]}
-  owner_only: [suppliers_pos, strategy, key_results, initiatives]
+  owner_only: [decisions, suppliers_pos, strategy, key_results, initiatives]
 
 api_budget:
   daily_calls_pro: 10000
