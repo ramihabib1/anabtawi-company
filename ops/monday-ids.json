@@ -1,1 +1,17 @@
-{"note": "written by bin/build-monday.py --init; board ids per key; column ids are the schema ids", "workspace_id": null, "boards": {}}
+{
+  "note": "Created 2026-09-06 from the monday MCP with Rami (108169876) as board owner. Column ids are the schema ids. Never reuse a deleted column id.",
+  "account_slug": "ramikhalaile10s-team-company",
+  "workspace_id": "7563810",
+  "owner_user_id": "108169876",
+  "dashboards": {"cockpit": "12987702"},
+  "boards": {
+    "decisions": {"id": "5103659531", "name": "Decisions", "groups": {"Today": "group_mm6yhaag", "This week": "group_mm6yxg0m", "Deferred": "group_mm6y4630", "Done": "group_mm6yp4dg"}, "views": {"Today": "56952329"}},
+    "sku_profiles": {"id": "5103659533", "name": "SKU Profiles", "groups": {"Hero": "group_mm6yyvyq", "Core": "group_mm6ynbh8", "Long-tail": "group_mm6ys5d9", "Kill": "group_mm6yten", "Planned (US)": "group_mm6ywceq"}, "views": {"Rami — today": "56952330"}},
+    "run_health": {"id": "5103659534", "name": "Run Health", "groups": {"Departments": "topics"}},
+    "tasks_for_rami": {"id": "5103659535", "name": "Tasks for Rami", "groups": {"This week": "group_mm6ykt7y", "Next": "group_mm6y6tcd", "Waiting": "group_mm6y17t", "Done": "group_mm6ywhdw"}, "views": {"Due soon": "56952331"}},
+    "work_items": {"id": "5103659536", "name": "Work Items", "groups": {"Open": "group_mm6yygjx", "In progress": "group_mm6y9e4k", "Blocked": "group_mm6y494p", "Waiting on Rami": "group_mm6yjrad", "Done": "group_mm6yy2rv", "Dropped": "group_mm6yd0h9"}},
+    "projects": {"id": "5103659537", "name": "Projects & Milestones", "groups": {"US launch 2027": "group_mm6yk9mc", "10 Canadian activations": "group_mm6y8gj5", "Walmart CA monitor": "group_mm6yhm2q", "Prep partner selection": "group_mm6yby6k", "Brand two dry run": "group_mm6yh637", "Anabtawi OS build": "group_mm6y2n09"}},
+    "knowledge": {"id": "5103659538", "name": "Knowledge", "groups": {"Hypothesis": "group_mm6yyhdj", "Supported": "group_mm6ytk3r", "Validated": "group_mm6ymtkw", "Playbook": "group_mm6ynhsa", "Decaying": "group_mm6y3ks9", "Falsified": "group_mm6yvr00"}}
+  },
+  "automations": {"decisions_new_in_today_notify": "1718878212", "decisions_approved_notify": "1718878217", "run_health_failed_notify": "1718878222"}
+}

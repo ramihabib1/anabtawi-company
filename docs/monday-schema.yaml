@@ -3,7 +3,7 @@
 # Ids can never be reused after deletion, so nothing here is ever renamed; later additions are new boards or new columns.
 # Verified against the account on 2026-09-06: Pro tier; views creatable by API are TABLE/FORM/DOC only; dashboard widgets cannot be
 # filtered by API (filters are one-time UI clicks); no date-window filter operator exists (a build-written status stands in).
-version: 2.0
+version: 2.1   # built 2026-09-06: 7 boards + Cockpit; ids in ops/monday-ids.json
 workspace: "Anabtawi OS"
 board_kind: public          # Main boards, so the workspace can be saved as a template later
 owner_user_id: "108169876"  # Rami; every board is created with this owner
@@ -98,9 +98,25 @@ dashboards:
       - {kind: LISTVIEW, board: tasks_for_rami, name: Tasks}
     ui_clicks_after_init: ["filter Decisions widgets to group Today", "filter Min cover days to class Hero", "filter Tasks to view Due soon"]
 
+  work_items:
+    name: Work Items
+    built: 2026-09-06
+    groups: [Open, In progress, Blocked, Waiting on Rami, Done, Dropped]
+    columns: [wi_id text, type status, opened_by dropdown, dept dropdown, priority numbers, due date, needed_by date, expected_output status, status status, project text, blocked_by text, answer_ref link]
+  projects:
+    name: Projects & Milestones
+    built: 2026-09-06
+    groups: "one per project (US launch 2027, 10 Canadian activations, Walmart CA monitor, Prep partner selection, Brand two dry run, Anabtawi OS build); items are milestones"
+    columns: [ms_id text, owner_dept dropdown, timeline timeline, due date, gate checkbox, status status, depends_on text, slack_days numbers, evidence link]
+  knowledge:
+    name: Knowledge
+    built: 2026-09-06
+    groups: [Hypothesis, Supported, Validated, Playbook, Decaying, Falsified]
+    columns: [kind status, claim long_text, scope text, owner_dept dropdown, status status, confidence numbers, confirmations numbers, contradictions numbers, first_seen date, last_seen date, hit_rate numbers, firings_ninety_d numbers, next_test text, review_by date, evidence link]
+
 later:
   note: "Added as new boards or columns, never renames. Column ideas are in docs/archive/DESIGN-2026-09.md §4."
-  boards: [Strategy, Key Results, Initiatives, Scorecard, Scorecard History, Work Items, Projects & Milestones, Products, Suppliers & POs, Knowledge, Calendar & Blackouts, Requests, Cockpit (one-item numbers board)]
+  boards: [Strategy, Key Results, Initiatives, Scorecard, Scorecard History, Products, Suppliers & POs, Calendar & Blackouts, Requests, Cockpit (one-item numbers board)]
   form: "Ask the company (create_form creates its own board; route by the projection)"
   dashboards: [Finance, US Launch]
   permissions: "Decisions and any money board become Private boards when a second seat is added; until then the single seat is Rami"
