@@ -210,6 +210,8 @@ Column ids are the identifiers the runner and departments use. Types are monday 
 
 **Strategy** (groups = quarters; items = objectives) — `quarter` dropdown · `status` status · `owner_dept` dropdown · `cost_of_miss_cad` numbers · `slack_weeks` numbers · `frozen_until` date · `narrative` long_text · `key_results` board_relation → Key Results · `repo_path` · `commit`. Plus one status column `proposal` (None · Proposed) that Rami may set to signal "I want to change this" — the only human input on the board; the CEO run turns it into a request.
 
+**Scorecard History** (append-only, 15 rows a week, about 780 a year, archived yearly) — `week` week · `metric_id` text · `kind` status · `value` numbers · `target_num` numbers · `status` status · `as_of` date. Exists only so Chart widgets can show a 13-week trend on the phone; the record is `strategy/scorecard/`.
+
 **Scorecard** (15 items, one per metric) — `metric_id` text · `kind` status (Lead · Lag) · `owner_dept` dropdown · `current` numbers · `prev` numbers · `avg_4wk` numbers · `target` text · `status` status (Green · Yellow · Red) · `status_rule` dropdown · `unit` text · `note` text · `as_of` date. History appended in `strategy/scorecard/YYYY-Www.md`, never here.
 
 **Tasks for Rami** (groups: This week · Next · Waiting · Done) — `why_human` long_text (required) · `est_minutes` numbers · `due` date · `hard_deadline` checkbox · `consequence` long_text · `dept` dropdown · `status` status (Open · Done · Won't do) · `kr_link` board_relation · `evidence` link · `repo_path`. Rami sets `status`; nothing else.
@@ -287,7 +289,7 @@ Estimated consumption: under 600 actions a month. No AI blocks are used; every A
 | Sales family member | — | **guest** on Wholesale Pipeline (edit content), viewer on Products |
 | Accountant | — | viewer on Finance dashboard |
 
-Suppliers & POs, Strategy and Key Results stay owner-only. Column-level permissions are Enterprise; the Pro workaround is separate boards, which is why Suppliers & POs is its own board.
+Decisions, Suppliers & POs, Strategy, Key Results and Initiatives stay owner-only. Column-level permissions are Enterprise, so on Pro the `decision` column is protected only by board permissions: never grant edit rights on the Decisions board to a seat or guest. The general workaround is separate boards, which is why Suppliers & POs is its own board.
 
 ### 4.9 Mobile
 
@@ -609,6 +611,8 @@ Every artifact starts with a card of at most twelve lines that can be acted on w
 
 ### 8.1 Eight classes, one rule each
 
+Every record format below, and every other file the company writes, is defined in `docs/record-schemas.yaml`: front matter fields, enums, computed fields, promotion gates and CI checks. That file is the schema of the knowledge layer; `docs/monday-schema.yaml` is its projection. `bin/validate-records.py` rejects a malformed file whichever harness wrote it, which is what makes harness portability enforceable rather than hoped for.
+
 | Class | Lives in | Retrieval | Rule |
 |---|---|---|---|
 | Raw observations | `departments/<d>/memory/YYYY-MM-DD.md` | grep by scope and date | never edited, never loaded whole |
@@ -617,6 +621,7 @@ Every artifact starts with a card of at most twelve lines that can be acted on w
 | Playbooks / skills | `departments/<d>/skills/*/SKILL.md`, `playbooks/` | description-matched trigger | thresholds live in skills with `evidence:`, `hit_rate:`, `review_by:` front matter |
 | Decisions and outcomes | `approvals/executed/YYYY/MM/`, `ledger/outcomes.csv` | exact by id; SQL by class | every approval declares `metric`, `baseline`, `expected`, `review_on`, `design` |
 | SKU histories | `state/skus/*.jsonl`, `ledger/kpis/YYYY-MM.csv`, SKU file decision history | DuckDB at query time | partitioned monthly from day one |
+| Inventory lots | `suppliers/lots/<po_ref>.md` | exact by PO; FEFO derived nightly | expiry is a lot fact, never a SKU scalar |
 | Strategy state | `strategy/**` + `CHANGELOG.md` | loaded as a 400-token extract | changes only at boundaries |
 | Operating notes | `ops/OPERATING-NOTES.md` | loaded whole | what flakes, what formats work |
 
@@ -860,7 +865,8 @@ Nothing is built in monday until Rami approves this document. Weeks count from a
 ├── hands/  runner.py validate.py monday_sync.py ledger.py
 ├── bin/  run-dept.sh project-monday.py build-sku-profiles.py render-mcp.py bootstrap-grok.py
 ├── ops/  OPERATING-NOTES.md PAUSE (absent unless paused) launchd/*.plist
-├── docs/  ANABTAWI-OS-DESIGN.md monday-schema.yaml SKU-SCHEMA.yaml CONVENTIONS.md policy/ os-research/
+├── docs/  ANABTAWI-OS-DESIGN.md monday-schema.yaml record-schemas.yaml schemas/ policy/ research/
+├── suppliers/<id>.md   suppliers/lots/<po_ref>.md
 └── .github/workflows/staleness.yml  .exports/ (gitignored)
 ```
 
