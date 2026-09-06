@@ -10,7 +10,7 @@ Read §0 first. It is one page and it is the whole decision.
 
 ## 0. The decision on one page
 
-**What we build.** A company of nine AI departments defined entirely as text in one git repository, run headless on Rami's Claude Max subscription by `launchd` on the Mac mini, reading the business through MCP servers (DataDoe for Amazon, Keepa for competitors, Intuit's QuickBooks MCP for the books, the official Amazon Ads MCP when credentials land), and writing everything a human needs to see into one monday.com workspace. A separate deterministic "hands" runner on the same machine, with no language model inside it, is the only process that holds a write credential. It polls the monday Decisions board and the repo every five minutes, re-validates each approved packet against live data, executes it through the official API, verifies by read-back, and appends a hash-chained line to the ledger. A CEO layer, itself just a scoring function plus four files, owns strategy and key results, produces a weekly scorecard, and hands Rami at most five ranked decisions a day with evidence, impact, deadline and an approve/reject status he taps on his phone.
+**What we build.** A company of nine AI departments defined entirely as text in one git repository, run headless on Rami's Claude Max subscription by `launchd` on the Mac mini, reading the business through MCP servers (DataDoe for Amazon, Keepa for competitors, Intuit's QuickBooks MCP for the books, the official Amazon Ads MCP when credentials land), and writing everything a human needs to see into one monday.com workspace: strategy, key results, projects and milestones, work items, decisions, the SKU catalog, and the knowledge the company has validated. A separate deterministic "hands" runner on the same machine, with no language model inside it, is the only process that holds a write credential. It polls the monday Decisions board and the repo every five minutes, re-validates each approved packet against live data, executes it through the official API, verifies by read-back, and appends a hash-chained line to the ledger. A CEO layer, itself just a scoring function plus four files, owns strategy and key results, produces a weekly scorecard, and hands Rami at most five ranked decisions a day with evidence, impact, deadline and an approve/reject status he taps on his phone.
 
 **Why this beat the alternatives.** It scored 87 of 100 against Rami's weights. "monday-native" (monday agents as departments) scored 48: verified today, a monday agent cannot reach DataDoe or any external MCP server, monday's code sandbox is network-locked to `api.monday.com`, and Pro keeps the activity log for one year. "Orchestrator platform" (Paperclip-class control plane with its own database) scored 68: it adds a second source of truth, a six-month-old dependency shipping nightly, and a credential-holding process the vendor terms forbid. "Hosted vendor agents" (DataDoe scheduled agents plus Claude Routines, no Mac mini) scored 51: nothing in that stack holds a durable approval object, and Routines are a research preview capped at one run per hour with a daily allowance. Custom software was excluded on Rami's own evidence.
 
@@ -165,9 +165,10 @@ Workspace **`Anabtawi OS`** (one per brand; brand two gets `<Brand> OS`). Four f
 
 | Folder | Boards | Docs |
 |---|---|---|
-| **1 Command** | Strategy · Key Results · Scorecard · Decisions · Tasks for Rami · Work Items | Strategy (mirror of `strategy/STRATEGY.md`) · Weekly Review (one doc per week) · Monthly Review |
+| **1 Command** | Strategy · Key Results · Initiatives · Scorecard · Decisions · Tasks for Rami | Strategy (mirror of `strategy/STRATEGY.md`) · Weekly Review (one doc per week) · Monthly Review |
+| **1b Work** | Projects & Milestones · Work Items | Project briefs (attached to each project) |
 | **2 Catalog** | Products · SKU Profiles · Suppliers & POs | SKU decision docs (one per SKU, attached to the item) |
-| **3 Operations** | Calendar & Blackouts · Run Health · Requests (inter-department, read-only mirror) | Playbook Index · Operating Notes |
+| **3 Operations** | Knowledge · Calendar & Blackouts · Run Health · Requests (inter-department, read-only mirror) | Playbook Index · Patterns Digest · Operating Notes |
 | **4 Later** | Wholesale Pipeline (sales seat, month 3+) · Finance Close (finance seat, month 3+) | — |
 
 Dashboards: **Cockpit** (Rami's home), **Finance**, **US Launch**. Forms: **Ask the company**. All boards are Main boards (not private) so the workspace can be saved as a template for brand two; sensitive columns are handled by keeping Suppliers & POs on a separate board with view-only permissions for guests.
@@ -213,7 +214,13 @@ Column ids are the identifiers the runner and departments use. Types are monday 
 
 **Tasks for Rami** (groups: This week · Next · Waiting · Done) — `why_human` long_text (required) · `est_minutes` numbers · `due` date · `hard_deadline` checkbox · `consequence` long_text · `dept` dropdown · `status` status (Open · Done · Won't do) · `kr_link` board_relation · `evidence` link · `repo_path`. Rami sets `status`; nothing else.
 
-**Work Items** (CEO → departments) — `kr_link` board_relation · `dept` dropdown · `expected_output` status (Proposal · Data · Plan) · `needed_by` date · `constraints` long_text · `is_satisfied` checkbox · `is_progress` checkbox · `is_in_loop` checkbox · `answer_ref` link · `status` status.
+**Work Items** (anyone → anyone; see §4.11) — `wi_id` · `type` status (Proposal · Data · Plan · Fix · Research · Build · Milestone) · `opened_by` dropdown (nine departments or rami) · `dept` dropdown (assigned) · `priority` numbers (computed) · `due` · `needed_by` · `effort_est` numbers · `project` board_relation → Projects · `milestone` text · `kr_link` board_relation · `blocked_by` dependency (self) · `expected_output` status · `constraints` long_text · `is_satisfied` / `is_progress` / `is_in_loop` checkboxes · `answer_ref` link · `status` status (Open · In progress · Blocked · Waiting on Rami · Answered · Superseded · Dropped · Escalated) · `last_touch` · `repo_path`. Subitems are steps (step, owner, status, evidence). Groups: Open · In progress · Blocked · Waiting on Rami · Done · Dropped.
+
+**Projects & Milestones** (§4.11) — `project_id` · `owner_dept` · `objective` board_relation → Strategy · `kr_link` · `timeline` timeline · `status` status (On track · At risk · Late · Blocked · Done) · `progress` numbers (milestones done %) · `next_milestone` text · `next_due` date · `slack_days` numbers (computed) · `critical_path` checkbox · `cost_cap_cad` · `spent_cad` · `brief` doc · `repo_path`. Milestone subitems: `ms_id` · `owner_dept` · `timeline` · `due` · `depends_on` dependency · `gate` checkbox (needs Rami's decision to pass) · `status` (Todo · Doing · Done · Late · Blocked) · `work_items` board_relation · `evidence` link. Seeded projects: US launch 2027 (fifteen milestones from trademark check to post-season sell-down, sailing by 25 Nov, stock sellable by 10 Jan, Ramadan 8 Feb), ten CA activations, Walmart CA monitor, prep-partner selection, brand-two dry run.
+
+**Initiatives** (bets) — `init_id` · `hypothesis` long_text · `serves` board_relation → Key Results · `owner_dept` · `cost_cap_cad` · `spent_cad` · `decision_date` date · `falsifier` long_text · `status` (Running · Won · Lost · Killed) · `project` board_relation · `repo_path`. Killed or renewed at every monthly review.
+
+**Knowledge** (read-only mirror of `patterns/` and skill governance front matter; groups Hypothesis · Supported · Validated · Playbook · Decaying · Falsified) — `kind` status (Pattern · Playbook · Skill · Fact) · `claim` long_text · `scope` text · `owner_dept` · `status` · `confidence` numbers (the reproducible formula) · `confirmations` · `contradictions` · `first_seen` · `last_seen` · `hit_rate` · `firings_90d` · `seasonality_guard` checkbox · `next_test` text · `review_by` date · `evidence` link · `decisions` board_relation → Decisions (the decisions this rule produced) · `repo_path` · `commit`. Views: "What changed this week", "Up for review", "Falsified". No human edits; a disagreement goes through the form and becomes a contradiction with a source.
 
 **Products** (one item per SKU, marketplace-independent) — `sku` text · `brand` dropdown · `category` dropdown · `case_pack` numbers · `moq` numbers · `shelf_life_days` numbers · `meltable` status (Yes · No) · `hazmat` status · `certifications` text · `unit_dims` text · `pkg_dims` text · `supplier` board_relation → Suppliers & POs · `lifecycle` status (Planned · Launching · Active · Declining · Discontinued) · `class` status (Hero · Core · Long-tail · Kill) · `profile` link (git file) · `listings` board_relation → SKU Profiles.
 
@@ -234,12 +241,15 @@ Column ids are the identifiers the runner and departments use. Types are monday 
 - Tasks for Rami: "Due ≤3 days".
 - Key Results: "Reds and yellows".
 - Run Health: single table sorted by status.
+- Work Items: kanban by status; "Blocked"; "Waiting on Rami"; table grouped by assigned department.
+- Projects: timeline view; "Critical path".
+- Knowledge: "What changed this week"; "Up for review"; "Falsified".
 
 ### 4.5 Dashboards and widgets
 
-**Cockpit** (mobile-first, ≤8 widgets): Battery over Run Health status ("company alive") · Number: decisions pending today · Number: min hero cover days · Number: blended margin after ads · Number: 7-day net revenue CA · Chart: scorecard status counts · List: Decisions "Today" · List: Tasks due ≤3 days.
+**Cockpit** (mobile-first, ≤10 widgets): Battery over Run Health status ("company alive") · Number: decisions pending today · Number: min hero cover days · Number: blended margin after ads · Number: 7-day net revenue CA · Chart: scorecard status counts · List: Decisions "Today" · List: Tasks due ≤3 days · Number: work items blocked or waiting on Rami · Number: patterns validated this month.
 **Finance**: Numbers for cash available, PO ceiling used, TACoS, reimbursements pending · Chart of margin by class · List of SKUs below margin floor.
-**US Launch**: Number: SKUs through readiness gate of 15 · Number: slack days to 10 Jan 2027 · Chart: readiness by gate · List: Tasks for Rami tagged expansion · Calendar widget over Calendar & Blackouts.
+**US Launch**: Number: SKUs through readiness gate of 15 · Number: slack days to 10 Jan 2027 · Chart: readiness by gate · Gantt over the US launch project's milestones · List: blocked or late work items on the project · List: Tasks for Rami tagged expansion · Calendar widget over Calendar & Blackouts.
 All widgets read plain Numbers and Status columns. Chart, Gantt and Workload views are browser-only on mobile, so the Cockpit uses Number, Battery and List widgets.
 
 ### 4.6 Automations (board recipes, all inside the 25,000 actions a month)
@@ -254,6 +264,8 @@ All widgets read plain Numbers and Status columns. Chart, Gantt and Workload vie
 | Tasks for Rami | when `due` arrives and status Open → notify Rami at 08:00 Asia/Jerusalem | |
 | Key Results | when `status` changes to Red → create item in Work Items? **No.** The CEO run does this in the repo, so the two stay consistent. | |
 | Suppliers & POs (subitems) | when `status` changes to Paid → notify Rami's finance view and set `paid_on` to today | |
+| Work Items | when `status` changes to Waiting on Rami → notify Rami; when `needed_by` arrives and not answered → set Escalated and notify | escalation without a chat |
+| Projects (milestones) | when `due` arrives and status not Done → set Late; notify Rami only if `gate` | the critical path announces itself |
 
 Estimated consumption: under 600 actions a month. No AI blocks are used; every AI action costs 8 credits and the reasoning already happens in Claude Code, where monday MCP consumes zero credits.
 
@@ -262,7 +274,7 @@ Estimated consumption: under 600 actions a month. No AI blocks are used; every A
 - **Workflows (Pro builder):** none in v1. The multi-board engine cannot reach outside monday; every cross-board update is done by the projection. Revisit if an approval-routing workflow with delay blocks proves useful for the family seats.
 - **monday agents:** none in v1. Their model and cost are opaque, they cannot call DataDoe or the Ads MCP, and `run` is fire-and-forget. One candidate later: a "Weekly digest" agent reading the Weekly Review doc, only if Rami wants a monday-native summary.
 - **External agent registration:** an upgrade in month three. `connect_external_agent_sync` (pre-release, `API-Version: dev`) would let Rami @mention `@Finance` on a SKU item and have the Mac mini answer. It requires an HTTPS callback, which is exactly the inbound exposure §9 avoids, so it waits until there is a reason.
-- **Forms:** one WorkForm, **Ask the company**, writing to a hidden group on the Requests board: `question` long_text · `about` dropdown (SKU · Strategy · Money · Other) · `sku` text · `urgency` status. The projection copies it into `requests/ceo/inbox/` on the next poll. This is Rami's only free-text input path and it is deliberately one form.
+- **Forms:** one WorkForm, **Ask the company**, writing to a hidden group on the Requests board: `question` long_text · `about` dropdown (SKU · Strategy · Money · Other) · `sku` text · `urgency` status · `wants` status (An answer · A change · A project). The projection copies it into `requests/ceo/inbox/` on the next poll and, when Rami wants a change or a project, opens a Work Item with `opened_by: rami` so he can watch it move. This is Rami's only free-text input path and it is deliberately one form.
 - **Vibe:** none in v1. A Vibe item view rendering the one-screen SKU card (§5.5) is the first candidate if the mobile item page proves too loose after a month.
 
 ### 4.8 Permissions
@@ -284,6 +296,20 @@ Rami's phone home is the Cockpit dashboard. Approval is two taps: open the pushe
 ### 4.10 Export and exit
 
 Everything on these boards is regenerated from the repo by `bin/project-monday.py`. The exit is: `create_board_export` for each board and `export_markdown_from_doc` for each doc into `exports/monday/`, then stop paying. Two days, verified primitives, and nothing the departments need lives only in monday.
+
+### 4.11 Project management, work tracking and visible knowledge
+
+Three boards make the company's work and learning visible without giving monday any authority over them.
+
+**Work Items** is the general work-tracking object. Anyone opens one: the CEO run from a red key result or a project milestone; any department for itself or for another department (at most five a week per pair, more is a request to the CEO run); Rami through the form. The record is `work/<id>.md` in the repo; the projection mirrors it and reads back only the status Rami may set. A work item has a type, an assigned department, a computed priority (from the key result's score, the due date and how many items it blocks; there is no manual priority column, by design), steps as subitems, `blocked_by` as a dependency on other work items, and the progress-ledger checkboxes. `Waiting on Rami` is a status that must correspond to a Decision or a Task for Rami; the projection refuses it otherwise, so nothing waits on him invisibly. Unanswered past `needed_by` becomes Escalated and reaches his card.
+
+**Projects & Milestones** holds multi-step work with a timeline. A project is owned by one department, serves an objective, has a cost cap, and carries a computed `slack_days` on its critical path. Milestones are subitems with timeline, dependency, owner and a `gate` flag; a gate milestone cannot pass without a Decision. Work items link to the milestone they serve, so the US Launch dashboard shows the Gantt, the blocked items and the days of float in one place. The record is `projects/<id>.md`, and the expansion department's weekly run updates it; the CEO run derives work items from milestones that are due inside two weeks and unstarted.
+
+**Initiatives** are the bets from §7.1 as a board, so the monthly "kill or renew" is a status change Rami can see coming (`decision_date`) with the falsifier written before the bet ran.
+
+**Knowledge** is the compounding loop made visible. Every pattern and every governed playbook or skill is one item, grouped by status from Hypothesis to Falsified, with confidence, confirmations, contradictions, hit rate, firings, `next_test`, `review_by`, and a relation to the Decisions the rule produced. The librarian pass writes it on Mondays and the monthly review rewrites the Playbook group. Rami never edits it: a disagreement goes through the form and becomes a contradiction with a source, which is how a human observation enters the same loop as an agent's. The Patterns Digest doc is the weekly "what we learned" in prose.
+
+What monday does not get: authority. Priority, slack, confidence and status transitions are computed in the repo and written to plain Numbers and Status columns, for the same reason as every other number on these boards.
 
 ---
 
@@ -459,6 +485,8 @@ tier: {bid_change: T1, budget_change: T1, negative_add: T1, campaign_create: T2,
 
 - **Blackboard:** `state/<dept>.md`, overwritten each run, with a stable `## Data` table. Stale means failed.
 - **Typed requests:** `requests/<dept>/inbox/<YYYYMMDD-HHMM>-<from>-<type>.md`, types enumerated in `docs/CONVENTIONS.md`, `needed-by`, `goal_id`, answer appended in place. Unanswered past `needed-by` escalates to the CEO run.
+- **Work items:** `work/<id>.md` for anything that must be tracked to done rather than merely answered: a step in a project, a fix, a build, research. Opened by any department, the CEO run or Rami's form; steps, blockers and a computed priority; mirrored to the Work Items board (§4.11). A request asks a question; a work item owns an outcome.
+- **Projects:** `projects/<id>.md` for multi-step work with a timeline and gates, mirrored to Projects & Milestones. The US launch is the first.
 - **Locks:** `state/locks.md`, key `<scope>:<id>:<dimension>`, one change per SKU per dimension per day, expiring at the next data-day boundary. The hands runner refuses a packet whose lock another department holds, which makes the lock enforceable.
 - **Precedence:** account-health beats everything; supply-chain beats advertising on stockout; finance beats supply-chain on cash; pricing beats catalog on price and catalog beats pricing on content; a blackout beats any pricing action; ties go to the earlier packet.
 - **Sequencing:** departments run one at a time in fixed slots so every run reads state written earlier the same afternoon. The CEO run is last.
@@ -560,7 +588,7 @@ The CEO layer publishes its own six thrash metrics weekly in `state/ceo.md` (rev
 
 ### 7.6 Cascade and escalation
 
-Weekly, for every KR not green, the CEO writes a work item into the owning department's inbox: gap, constraints, expected output, `needed-by`. Departments derive their job list from standing duties plus open work items ordered by KR score. Every work item is answered, superseded or dropped with a reason at the next weekly run; the progress ledger tracks `is_satisfied`, `is_progress`, `is_in_loop`, and a loop escalates to the monthly review rather than re-planning. Rami's only input path is the "Ask the company" form or a `Proposed` status on the Strategy board.
+Weekly, for every KR not green, and for every project milestone due inside two weeks and unstarted, the CEO opens a work item (`work/<id>.md`, mirrored to the Work Items board) for the owning department: gap, constraints, expected output, `needed-by`, computed priority. Departments derive their job list from standing duties plus open work items ordered by KR score. Every work item is answered, superseded or dropped with a reason at the next weekly run; the progress ledger tracks `is_satisfied`, `is_progress`, `is_in_loop`, and a loop escalates to the monthly review rather than re-planning. Rami's only input path is the "Ask the company" form or a `Proposed` status on the Strategy board.
 
 Escalation lanes: **P0 wake now** (suspension, AHR under 200, hero listing takedown, hero stockout inside lead time with no PO possible, fraud or unauthorised access, payment hold, a write that failed mid-execution, a vendor notice about automated access, ad spend over 2× cap) via Telegram and monday push, one per six hours, single-source P0 permitted only for that enumerated list and labelled as unconfirmed; **P1** the daily card; **P2** the weekly card; **P3** silence in state and memory. A department that did not run is a visible line at the top of the card. Quiet must be provably quiet.
 
@@ -606,7 +634,7 @@ No vector database and no memory vendor in year one: six of eight classes need e
 
 ### 8.3 monday's role in knowledge
 
-Docs are a projection: `strategy/CURRENT.md`, the Weekly Review, the Playbook Index and each SKU's decision history are published nightly with `add_content_to_doc_from_markdown` and stamped `generated_from: <commit>`. Doc version history and diffs are a convenience; docs are excluded from monday's full account export, which is one more reason the repo is the record.
+Docs are a projection: `strategy/CURRENT.md`, the Weekly Review, the Patterns Digest, the Playbook Index and each SKU's decision history are published nightly with `add_content_to_doc_from_markdown` and stamped `generated_from: <commit>`. The Knowledge board (§4.11) mirrors every pattern and governed playbook with its status, confidence, contradictions and hit rate, so compounding is visible on a phone and a future seat can see what the company believes and why. Doc version history and diffs are a convenience; docs are excluded from monday's full account export, which is one more reason the repo is the record.
 
 ### 8.4 Size and what breaks first
 
@@ -825,6 +853,7 @@ Nothing is built in monday until Rami approves this document. Weeks count from a
 ├── products/<brand>/<sku>.md   suppliers/   markets/
 ├── state/  <dept>.md integrity.md locks.md calendar.md skus/YYYY-MM-DD.jsonl
 ├── requests/<dept>/inbox|done/
+├── work/<id>.md            projects/<id>.md
 ├── approvals/  pending/ approved/ rejected/ expired/ executed/YYYY/MM/ failed/
 ├── ledger/  actions.jsonl kpis/YYYY-MM.csv outcomes.csv decisions.md
 ├── patterns/   playbooks/   briefs/   meetings/

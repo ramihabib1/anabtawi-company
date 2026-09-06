@@ -5,13 +5,16 @@ version: 1.0
 workspace: "{brand} OS"
 folders:
   - name: "1 Command"
-    boards: [strategy, key_results, scorecard, decisions, tasks_for_rami, work_items]
+    boards: [strategy, key_results, initiatives, scorecard, decisions, tasks_for_rami]
     docs: [strategy_doc, weekly_review, monthly_review]
+  - name: "1b Work"
+    boards: [projects, work_items]
+    docs: [project_briefs]
   - name: "2 Catalog"
     boards: [products, sku_profiles, suppliers_pos]
   - name: "3 Operations"
-    boards: [calendar, run_health, requests]
-    docs: [playbook_index, operating_notes]
+    boards: [knowledge, calendar, run_health, requests]
+    docs: [playbook_index, patterns_digest, operating_notes]
   - name: "4 Later"
     boards: [wholesale_pipeline, finance_close]
 
@@ -137,18 +140,141 @@ boards:
 
   work_items:
     name: Work Items
+    note: >
+      Anything that must get done and tracked. Opened by the CEO run (from red KRs and project milestones),
+      by any department (for itself or another department), or by Rami through the Ask the company form.
+      The record is work/<id>.md in the repo; the projection mirrors it both ways for status only.
+    groups: [Open, In progress, Blocked, Waiting on Rami, Done, Dropped]
     columns:
-      - {id: kr_link, type: board_relation, to: key_results}
-      - {id: dept, type: dropdown, labels: *departments}
-      - {id: expected_output, type: status, labels: [Proposal, Data, Plan]}
+      - {id: wi_id, type: text}
+      - {id: type, type: status, labels: [Proposal, Data, Plan, Fix, Research, Build, Milestone]}
+      - {id: opened_by, type: dropdown, labels: [ceo, finance, supply-chain, advertising, catalog, pricing-intel, customer, account-health, expansion, rami]}
+      - {id: dept, type: dropdown, labels: *departments, title: Assigned department}
+      - {id: priority, type: numbers, note: "computed in repo from KR score, due date and blocking count; no manual priority column"}
+      - {id: due, type: date}
       - {id: needed_by, type: date}
+      - {id: effort_est, type: numbers, title: Effort (agent minutes)}
+      - {id: project, type: board_relation, to: projects}
+      - {id: milestone, type: text, note: "milestone id inside the project"}
+      - {id: kr_link, type: board_relation, to: key_results}
+      - {id: blocked_by, type: dependency, to: work_items}
+      - {id: expected_output, type: status, labels: [Proposal, Data, Plan, Change, Decision]}
       - {id: constraints, type: long_text}
       - {id: is_satisfied, type: checkbox}
       - {id: is_progress, type: checkbox}
       - {id: is_in_loop, type: checkbox}
       - {id: answer_ref, type: link}
-      - {id: status, type: status, labels: [Open, Answered, Superseded, Dropped, Escalated]}
+      - {id: status, type: status, labels: [Open, In progress, Blocked, Waiting on Rami, Answered, Superseded, Dropped, Escalated]}
+      - {id: last_touch, type: last_updated}
+      - {id: repo_path, type: text}
+    subitems:
+      steps: [step, owner_dept, status(Todo|Doing|Done), evidence_link]
+    views:
+      - {name: My department, type: table, group_by: dept}
+      - {name: Blocked, filter: {status: Blocked}}
+      - {name: Waiting on Rami, filter: {status: Waiting on Rami}}
+      - {name: Board, type: kanban, by: status}
+    automations:
+      - "when status changes to Waiting on Rami → notify Rami"
+      - "when needed_by arrives and status not Answered/Done → set status Escalated, notify Rami"
+    rules:
+      - "a work item Waiting on Rami must also exist as a Decision or a Task for Rami; the projection enforces it"
+      - "a department may open at most 5 work items for another department per week; more is a request to the CEO run"
+
+  projects:
+    name: Projects & Milestones
+    note: "Multi-step work with a timeline: US launch, 10 CA activations, Walmart CA, prep partner, brand two. Record is projects/<id>.md."
+    groups: [Active, Planned, Done]
+    columns:
+      - {id: project_id, type: text}
+      - {id: owner_dept, type: dropdown, labels: *departments}
+      - {id: objective, type: board_relation, to: strategy}
+      - {id: kr_link, type: board_relation, to: key_results}
+      - {id: timeline, type: timeline}
+      - {id: status, type: status, labels: [On track, At risk, Late, Blocked, Done]}
+      - {id: progress, type: numbers, title: "Milestones done %"}
+      - {id: next_milestone, type: text}
+      - {id: next_due, type: date}
+      - {id: slack_days, type: numbers, note: "days of float on the critical path, computed in repo"}
+      - {id: critical_path, type: checkbox}
+      - {id: cost_cap_cad, type: numbers}
+      - {id: spent_cad, type: numbers}
+      - {id: brief, type: doc}
+      - {id: repo_path, type: text}
+    subitems:
+      milestones:
+        - {id: ms_id, type: text}
+        - {id: owner_dept, type: dropdown}
+        - {id: timeline, type: timeline}
+        - {id: due, type: date}
+        - {id: depends_on, type: dependency}
+        - {id: gate, type: checkbox, note: "a gate milestone needs Rami's decision to pass"}
+        - {id: status, type: status, labels: [Todo, Doing, Done, Late, Blocked]}
+        - {id: work_items, type: board_relation, to: work_items}
+        - {id: evidence, type: link}
+    views:
+      - {name: Timeline, type: timeline}
+      - {name: Critical path, filter: {critical_path: true}}
+    automations:
+      - "when a milestone due arrives and status not Done → set Late, notify Rami if gate"
+    seed:
+      - {project_id: us-launch-2027, timeline: "2026-09-08 → 2027-03-10", milestones: [trademark-check, ior-and-bond, fsvp-agent, grocery-approval, us-labels, launch-po, sailing(≤2026-11-25), prior-notice, fba-inbound-plan, stock-sellable(≤2027-01-10), vine, ppc-live, ramadan-start(2027-02-08), eid(2027-03-09), post-season-selldown]}
+      - {project_id: ca-activations-10, timeline: "2026-09-15 → 2027-03-31"}
+      - {project_id: walmart-ca-monitor, timeline: "2026-10-01 → 2027-02-28"}
+      - {project_id: prep-partner-selection, timeline: "2026-09-15 → 2026-11-15"}
+      - {project_id: brand-two-dry-run, timeline: "2026-12-01 → 2026-12-15"}
+
+  initiatives:
+    name: Initiatives
+    note: "Bets with falsifiers. Record is strategy/initiatives/<id>.md. Killed or renewed at the monthly review."
+    groups: [Running, Won, Lost, Killed]
+    columns:
+      - {id: init_id, type: text}
+      - {id: hypothesis, type: long_text}
+      - {id: serves, type: board_relation, to: key_results}
+      - {id: owner_dept, type: dropdown, labels: *departments}
+      - {id: cost_cap_cad, type: numbers}
+      - {id: spent_cad, type: numbers}
+      - {id: decision_date, type: date}
+      - {id: falsifier, type: long_text}
+      - {id: status, type: status, labels: [Running, Won, Lost, Killed]}
+      - {id: project, type: board_relation, to: projects}
+      - {id: repo_path, type: text}
     writer: ceo
+
+  knowledge:
+    name: Knowledge
+    note: >
+      Read-only mirror of patterns/ and the skills' governance front matter so Rami and a future seat can see
+      what the company believes, how sure it is, and what was falsified. Written by the librarian pass and the monthly review.
+    groups: [Hypothesis, Supported, Validated, Playbook, Decaying, Falsified]
+    columns:
+      - {id: kind, type: status, labels: [Pattern, Playbook, Skill, Fact]}
+      - {id: claim, type: long_text}
+      - {id: scope, type: text, note: "marketplace / department / SKUs"}
+      - {id: owner_dept, type: dropdown, labels: *departments}
+      - {id: status, type: status, labels: [Hypothesis, Supported, Validated, Playbook, Decaying, Falsified, Archived]}
+      - {id: confidence, type: numbers, note: "reproducible formula: confirmations/(confirmations+contradictions+1) × recency"}
+      - {id: confirmations, type: numbers}
+      - {id: contradictions, type: numbers}
+      - {id: first_seen, type: date}
+      - {id: last_seen, type: date}
+      - {id: hit_rate, type: numbers, note: "playbooks: realised hit rate over ≥10 firings"}
+      - {id: firings_90d, type: numbers}
+      - {id: seasonality_guard, type: checkbox}
+      - {id: next_test, type: text}
+      - {id: review_by, type: date}
+      - {id: evidence, type: link, note: "pattern file in the repo; evidence lines live there"}
+      - {id: decisions, type: board_relation, to: decisions, note: "decisions this rule produced"}
+      - {id: repo_path, type: text}
+      - {id: commit, type: text}
+    views:
+      - {name: What changed this week, filter: {last_seen: within_last_7_days}, sort: [status, confidence]}
+      - {name: Up for review, filter: {review_by: within_next_14_days}}
+      - {name: Falsified, filter: {status: Falsified}}
+    writer: ceo
+    rules:
+      - "no human edits; a disagreement is filed through the Ask the company form and becomes a contradiction with a source"
 
   products:
     name: Products
@@ -300,6 +426,8 @@ dashboards:
       - {kind: CHART, board: scorecard, graph_type: donut, x: status, name: Scorecard}
       - {kind: LISTVIEW, board: decisions, view: Today}
       - {kind: LISTVIEW, board: tasks_for_rami, view: "Due ≤3 days"}
+      - {kind: NUMBER, board: work_items, count: {status: [Blocked, Waiting on Rami]}, name: Work stuck}
+      - {kind: NUMBER, board: knowledge, count: {status: Validated, last_seen: within_last_30_days}, name: Validated this month}
   finance:
     boards: [scorecard, sku_profiles, suppliers_pos]
     widgets:
@@ -310,12 +438,14 @@ dashboards:
       - {kind: CHART, board: sku_profiles, graph_type: column, x: class, y: margin_pct, calc: average}
       - {kind: LISTVIEW, board: sku_profiles, filter: {margin_pct: below margin_floor}}
   us_launch:
-    boards: [sku_profiles, tasks_for_rami, calendar, key_results]
+    boards: [sku_profiles, tasks_for_rami, calendar, key_results, projects, work_items]
     widgets:
       - {kind: NUMBER, name: US SKUs through gate of 15}
       - {kind: NUMBER, name: Slack days to 2027-01-10}
       - {kind: CHART, name: Readiness by gate}
       - {kind: LISTVIEW, board: tasks_for_rami, filter: {dept: expansion}}
+      - {kind: GANTT, board: projects, filter: {project_id: us-launch-2027}, name: US launch timeline}
+      - {kind: LISTVIEW, board: work_items, filter: {project: us-launch-2027, status: [Blocked, Late]}}
       - {kind: CALENDAR, board: calendar}
 
 forms:
@@ -327,12 +457,16 @@ forms:
       - {id: about, type: dropdown, labels: [SKU, Strategy, Money, Other]}
       - {id: sku, type: text}
       - {id: urgency, type: status, labels: [Today, This week, Whenever]}
+      - {id: wants, type: status, labels: [An answer, A change, A project]}
+    routing: "projection turns a submission into requests/ceo/inbox/ and, when wants ≠ An answer, into a Work Item opened_by rami"
 
 docs:
   strategy_doc: {source: strategy/CURRENT.md, refresh: nightly}
   weekly_review: {source: meetings/<date>-weekly.md, refresh: weekly}
   monthly_review: {source: meetings/<date>-monthly.md, refresh: monthly}
   playbook_index: {source: playbooks/INDEX.md, refresh: weekly}
+  patterns_digest: {source: memory/weekly/<week>.md, refresh: weekly, note: "what was promoted, contradicted, decayed"}
+  project_briefs: {attached_to: projects.brief, source: projects/<id>.md, refresh: on change}
   operating_notes: {source: ops/OPERATING-NOTES.md, refresh: nightly}
   sku_decisions: {attached_to: sku_profiles.decisions_doc, source: "products/<brand>/<sku>.md#decision-history", refresh: on decision}
 
@@ -340,7 +474,7 @@ permissions:
   rami: admin
   viewers_later: {finance_family: [finance dashboard, scorecard, decisions(view)], accountant: [finance dashboard]}
   guests_later: {sales_family: [wholesale_pipeline(edit content), products(view)]}
-  owner_only: [suppliers_pos, strategy, key_results]
+  owner_only: [suppliers_pos, strategy, key_results, initiatives]
 
 api_budget:
   daily_calls_pro: 10000
