@@ -69,11 +69,11 @@ ul.tight li{margin:6px 0}
 </style>
 
 <div class="wrap">
-  <div class="eyebrow">Design v1.0 · 6 September 2026 · for Rami's approval before anything is built</div>
+  <div class="eyebrow">Design · 6 September 2026 · audited; SPEC.md and docs/PLAN.md are normative where this page differs</div>
   <h1>Anabtawi OS</h1>
   <p class="lede">A company of nine AI departments, defined as text in one repository, run unattended on the Mac mini, managed in one monday.com workspace, with a deterministic hands runner that is the only thing allowed to touch money or Amazon.</p>
   <div class="meta">
-    <span>full document: <code>docs/ANABTAWI-OS-DESIGN.md</code></span>
+    <span>spec: <code>SPEC.md</code> · plan: <code>docs/PLAN.md</code></span>
     <span>schema: <code>docs/monday-schema.yaml</code></span>
     <span>research: <code>docs/research/01–10</code></span>
   </div>
@@ -130,7 +130,7 @@ ul.tight li{margin:6px 0}
         <!-- Rami -->
         <rect x="80" y="20" width="840" height="64" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
         <text x="100" y="45" font-size="13" font-weight="600">RAMI · phone</text>
-        <text x="100" y="66">Cockpit · Decisions (tap Approve / Reject) · SKU card · Tasks · Telegram for P0 and failures</text>
+        <text x="100" y="66">Cockpit · Decisions (tap Approve / Reject) · SKU card · Tasks · monday push for P0 and failures</text>
 
         <!-- monday -->
         <rect x="80" y="130" width="840" height="86" rx="8" fill="none" stroke="#3E6B3A" stroke-width="2"/>
@@ -280,7 +280,7 @@ ul.tight li{margin:6px 0}
     <li><span><b>Dry-run.</b> The tool's own preview (DataDoe <code>dryRun</code> works even with the action type disabled). The diff is captured.</span></li>
     <li><span><b>Propose.</b> <code>approvals/pending/&lt;id&gt;.md</code>: idempotency key, preconditions with <code>revalidate</code>, guardrail arithmetic, marketplace and currency, evidence, impact, <code>if_ignored</code>, the metric that will judge it, 48-hour expiry.</span></li>
     <li><span><b>Validate (machine).</b> Schema, expiry, guardrails recomputed, budget from the ledger not the packet, Amazon floors, duplicate keys, the pending cap.</span></li>
-    <li><span><b>Present.</b> The CEO run gates, scores, ranks and projects the item to Decisions. Push and Telegram carry the card.</span></li>
+    <li><span><b>Present.</b> The CEO run gates, scores, ranks and projects the item to Decisions. monday push carries the card.</span></li>
     <li><span><b>Decide.</b> Rami taps Approved or Rejected, or edits the file. Two paths, one record.</span></li>
     <li><span><b>Re-validate at execution.</b> The runner re-reads every precondition live. Moved numbers send the packet back with a note. Over CAD 5,000 or T3 waits a 12-hour cooling period.</span></li>
     <li><span><b>Execute once.</b> <code>op run</code> injects the credential for the seconds it is needed; one call with the idempotency key; batches chunked per SKU.</span></li>
@@ -341,7 +341,7 @@ deferred: 2 (1 coupon, 1 listing) · all departments ran · data fresh 15:41</di
     <tr><td>Link My Books</td><td>settlements into QuickBooks</td><td class="num">USD 41</td><td class="num">USD 41</td></tr>
     <tr><td>Helium 10 Platinum</td><td>US keyword research, then cancelled</td><td class="num">USD 99</td><td class="num">0</td></tr>
     <tr><td>Anthropic API credits</td><td>overflow lane</td><td class="num">USD 50</td><td class="num">USD 50</td></tr>
-    <tr><td>Vault, monitoring, Telegram, GitHub</td><td></td><td class="num">~USD 10</td><td class="num">~USD 10</td></tr>
+    <tr><td>Vault, monitoring, GitHub</td><td></td><td class="num">~USD 10</td><td class="num">~USD 10</td></tr>
     <tr><td>SP-API app · Ads API · Ads MCP · Automate Pricing · QuickBooks MCP · Getida</td><td>free or success-fee</td><td class="num">0</td><td class="num">0</td></tr>
     <tr class="win"><td>Total new</td><td>on top of monday Pro, Claude Max, ChatGPT, SuperGrok, QuickBooks already held</td><td class="num">~USD 350 · CAD 485</td><td class="num">~USD 250 · CAD 350</td></tr>
   </table>
