@@ -2,7 +2,7 @@
 
 **Version 1.1 — 2026-09-06 — designed from a blank page; for Rami's approval before anything is built in monday. This repository is the company; nothing in it descends from an earlier design.**
 
-This is the design document. It is the output of a founding engagement that started from a blank page, ran ten parallel research surveys (in `docs/research/01..10`), scored four finalist architectures against Rami's weights, and chose one. Every component below names the alternatives it beat. Every claim that could not be opened at its primary source today is marked and collected in §14 as a week-one verification list, because the research environment could reach GitHub, Anthropic's docs and the live monday API but not Amazon, DataDoe, OpenAI, xAI or monday's help centre.
+This is the design document. It is the output of a founding engagement that started from a blank page, ran ten parallel research surveys (in `docs/os-research/01..10`), scored four finalist architectures against Rami's weights, and chose one. Every component below names the alternatives it beat. Every claim that could not be opened at its primary source today is marked and collected in §14 as a week-one verification list, because the research environment could reach GitHub, Anthropic's docs and the live monday API but not Amazon, DataDoe, OpenAI, xAI or monday's help centre.
 
 Read §0 first. It is one page and it is the whole decision.
 
