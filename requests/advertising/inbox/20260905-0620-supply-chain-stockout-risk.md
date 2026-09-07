@@ -23,3 +23,10 @@ Hero SKUs still under the 14-day cover floor (lead time TBD=0): 18-116Z-1R77, T8
 Inbound progress: IN_TRANSIT FBA19NZ90PPZ (2026-09-05) for 5G-ZW6Q-WOZG, FO-SE3J-T74M, KP-MEL9-XYGW, ZK-4NDS-MNA9; RECEIVING still open on older plans. YE-HCDW-4UYW inbound lot still expires 2026-11-23.
 Estimated CA OOS lost revenue ~CAD 1252.43/day. Prefer not to scale spend until fulfillable > 0 on heroes.
 Context: state/inventory.md 2026-09-06.
+
+## Update 2026-09-07
+Hero SKUs under the 14-day cover floor (lead time TBD=0): 18-116Z-1R77, ASW-H50, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. All remain fulfillable 0 on CA (GG now under floor even with inbound 22).
+Monday weekly PO proposals filed for all 10 heroes (ASSUMED sizing; Freightos landed cost PENDING). Prefer not to scale spend until fulfillable > 0 on heroes under floor.
+Inbound: IN_TRANSIT FBA19NZ90PPZ still open; RECEIVING still open on older plans. YE-HCDW-4UYW inbound lot still expires 2026-11-23.
+Estimated CA OOS lost revenue ~CAD 1297.31/day.
+Context: state/inventory.md 2026-09-07.
