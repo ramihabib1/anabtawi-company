@@ -42,3 +42,9 @@ Hero SKUs under the 14-day cover floor (lead time TBD=0): 18-116Z-1R77, ASW-H50,
 Hero watch: EU-Z87B-ZRBZ, FO-SE3J-T74M, TB-PIST-120. Hero inbound cover ≥ floor (still OOS fulfillable): 5G-ZW6Q-WOZG, H8-PWJ0-3B1Y. Prefer not to scale spend until fulfillable > 0 on heroes under floor.
 Inbound unchanged pattern: IN_TRANSIT FBA19NZ90PPZ still open; RECEIVING still open on older plans; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted. YE-HCDW-4UYW inbound lot still expires 2026-11-23.
 Estimated CA OOS lost revenue ~CAD 1316.31/day. Monday PO proposals still pending. Context: state/inventory.md 2026-09-08 (daily cover check).
+
+## Update 2026-09-09 daily
+Hero SKUs under the 14-day cover floor (lead time TBD=0): 18-116Z-1R77, ASW-H50, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. All remain fulfillable 0 on CA. GG-0DC1-SKHG cover_adjusted ~13.39 (critical) with inbound 22; TB-PIST-120 watch ~15.00 with inbound 30.
+Hero watch: EU-Z87B-ZRBZ, FO-SE3J-T74M, TB-PIST-120. Hero inbound cover ≥ floor (still OOS fulfillable): 5G-ZW6Q-WOZG, H8-PWJ0-3B1Y. Prefer not to scale spend until fulfillable > 0 on heroes under floor.
+Inbound unchanged pattern: IN_TRANSIT FBA19NZ90PPZ still open; RECEIVING still open on older plans; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted. YE-HCDW-4UYW inbound lot still expires 2026-11-23.
+Estimated CA OOS lost revenue ~CAD 1316.70/day. Monday PO proposals still pending. Context: state/inventory.md 2026-09-09 (daily cover check).

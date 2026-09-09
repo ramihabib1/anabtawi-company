@@ -1,13 +1,13 @@
 ---
 department: supply-chain
-date: 2026-09-08
+date: 2026-09-09
 run: scheduled
 runtime: grok-bot
 status: ok
 tools_failed: []
 ---
 ## Headline
-Daily cover check: CA Inventory Health latest snap 2026-09-07; estimated OOS lost revenue about CAD 1316.31/day. Hero under floor (lead TBD=0 for status): 18-116Z-1R77, ASW-H50, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. Stranded 0; aged>180: 0C-45D7-6JUB (1); expiry within 90d: YE-HCDW-4UYW inbound 2026-11-23. Monday hero PO proposals remain pending; stockout-risk request updated. Manufacturer IN_TRANSIT FBA19NZ90PPZ still open; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted.
+Daily cover check: CA Inventory Health latest snap 2026-09-07; estimated OOS lost revenue about CAD 1316.70/day. Hero under floor (lead TBD=0 for status): 18-116Z-1R77, ASW-H50, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. Stranded 0; aged>180: 0C-45D7-6JUB (1); expiry within 90d: YE-HCDW-4UYW inbound 2026-11-23. Monday hero PO proposals remain pending; stockout-risk request updated. Manufacturer IN_TRANSIT FBA19NZ90PPZ still open; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted.
 
 ## Data
 Sellers: CA `5692b95f-f3f0-4063-9c1c-40177c54f408 (ANABTAWI SWEETS CA)`; US `822ebf46-c2bc-4350-86d3-dcf1bc8d5469 (ANABTAWI SWEETS US)`. Floor: 14 days. Lead time: TBD (suppliers/anabtawi.md). Seasonal buffer not active (Ramadan ~2027-02-08). Currency: CAD for CA.
@@ -15,13 +15,13 @@ velocity_30: if fulfillable>0 use last-30 calendar units÷30; if stockout in win
 Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health latest snapshot date in export: 2026-09-07.
 
 ### Export citations
-- DataDoe export FBA Inventory Health (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-31 to 2026-09-08 job 61abacd8-b82c-4896-8da4-953554400bb7
-- DataDoe export Order Line Items (amazon_order_items_with_cogs / 89b27535d2) 2026-06-10 to 2026-09-08 job b51c6585-f686-45e7-9af9-a2abe2ee945d (444 raw rows)
-- DataDoe export FBA Inbound Shipments (amazon_fba_inbound_shipments / 8bc6f4bd09) snapshot job 1f71fe0a-82c1-42be-8404-1347c1fba714 (17 raw rows; RECEIVING counted in full; IN_TRANSIT vs READY_TO_SHIP near-duplicate plans took IN_TRANSIT)
-- DataDoe export FBA Stranded Inventory (amazon_fba_stranded_inventory / a4d08771c8) snapshot job 052001dd-4ba3-4981-bfe8-dbaf6ec461b4 (0 rows)
-- DataDoe export FBA Inventory Health US (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-31 to 2026-09-08 job d2e95cc1-5590-4b2e-96df-a9076f2e96ad
-- DataDoe export Order Line Items US job b7642f01-9115-4349-8bb0-f46f68055ec3 (0 rows)
-- DataDoe export FBA Inbound Shipments US snapshot job 92298c5d-1806-49a2-808e-cefb0376d034
+- DataDoe export FBA Inventory Health (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-31 to 2026-09-09 job 596e639b-8311-451c-a3fb-fc66b9832a98
+- DataDoe export Order Line Items (amazon_order_items_with_cogs / 89b27535d2) 2026-06-11 to 2026-09-09 job a10bc2f7-f530-47f3-ab3c-0820d43de75a (441 raw rows)
+- DataDoe export FBA Inbound Shipments (amazon_fba_inbound_shipments / 8bc6f4bd09) snapshot job b5d1e82b-7d02-47d4-a8da-3b8f66136dfd (17 raw rows; RECEIVING counted in full; IN_TRANSIT vs READY_TO_SHIP near-duplicate plans took IN_TRANSIT)
+- DataDoe export FBA Stranded Inventory (amazon_fba_stranded_inventory / a4d08771c8) snapshot job 277545ea-0beb-48e8-bde5-c0db400c6828 (0 rows)
+- DataDoe export FBA Inventory Health US (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-31 to 2026-09-09 job 72222720-6684-4e1e-8be5-00afea1631ad
+- DataDoe export Order Line Items US job e434592a-c860-491c-b077-e60984e4ae6b (0 rows)
+- DataDoe export FBA Inbound Shipments US snapshot job 6204b095-3b56-4d31-9455-30d2c99ea5e6
 
 ### Heroes (top 10 by 90-day CA revenue)
 | rank | sku | rev_90_CAD | units_90 |
@@ -33,8 +33,8 @@ Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health l
 | 5 | YE-HCDW-4UYW | 899.85 | 15 |
 | 6 | ASW-H50 | 839.86 | 14 |
 | 7 | GG-0DC1-SKHG | 689.77 | 23 |
-| 8 | T8-2W2X-INOK | 652.85 | 15 |
-| 9 | 18-116Z-1R77 | 493.81 | 19 |
+| 8 | T8-2W2X-INOK | 607.86 | 14 |
+| 9 | 18-116Z-1R77 | 441.83 | 17 |
 | 10 | TB-PIST-120 | 389.70 | 30 |
 
 ### Cover table (CA) — under floor / OOS / watch / risk / critical
@@ -47,14 +47,14 @@ Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health l
 | 5 | ca | H8-PWJ0-3B1Y | true | 0 | 64 | receiving-now | 2.6000 | 25 | 24.62 | 24.62 | 14 | TBD | on-or-before-2026-08-30 | 32.99 | 2.6000 | 85.77 | ok |
 | 6 | ca | C5-TXQU-Y67R | false | 0 | 0 | none | 2.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 39.99 | 2.0000 | 79.98 | critical |
 | 7 | ca | YE-HCDW-4UYW | true | 0 | 8 | receiving-now | 1.2500 | 12 | 6.40 | 6.40 | 14 | TBD | on-or-before-2026-08-30 | 59.99 | 1.2500 | 74.99 | critical |
-| 8 | ca | T8-2W2X-INOK | true | 0 | 0 | none | 1.3636 | 11 | 0.00 | 0.00 | 14 | TBD | unknown (no FBA inventory rows in export window) | 42.99 | 1.3636 | 58.62 | critical |
+| 8 | ca | T8-2W2X-INOK | true | 0 | 0 | none | 1.4000 | 10 | 0.00 | 0.00 | 14 | TBD | unknown (no FBA inventory rows in export window) | 42.99 | 1.4000 | 60.19 | critical |
 | 9 | ca | KL-GDUL-HEA1 | false | 0 | 0 | none | 2.5000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 21.99 | 2.5000 | 54.97 | critical |
 | 10 | ca | GG-0DC1-SKHG | true | 0 | 22 | receiving-now | 1.6429 | 14 | 13.39 | 13.39 | 14 | TBD | on-or-before-2026-08-30 | 29.99 | 1.6429 | 49.27 | critical |
 | 11 | ca | W3-UQRU-PGRR | false | 0 | 0 | none | 1.6667 | 6 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 27.99 | 1.6667 | 46.65 | critical |
 | 12 | ca | AN-9938-NXOT | false | 0 | 0 | none | 1.7143 | 7 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 26.99 | 1.7143 | 46.27 | critical |
 | 13 | ca | 9Z-KUHZ-FU2I | false | 0 | 0 | none | 1.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 42.99 | 1.0000 | 42.99 | critical |
 | 14 | ca | 1S-ITGB-CZFR | false | 0 | 0 | none | 1.0000 | 3 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 39.99 | 1.0000 | 39.99 | critical |
-| 15 | ca | 18-116Z-1R77 | true | 0 | 0 | none | 1.4615 | 13 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 25.99 | 1.4615 | 37.99 | critical |
+| 15 | ca | 18-116Z-1R77 | true | 0 | 0 | none | 1.4167 | 12 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 25.99 | 1.4167 | 36.82 | critical |
 | 16 | ca | E3-DSPC-O2UN | false | 0 | 0 | none | 1.0000 | 4 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 34.99 | 1.0000 | 34.99 | critical |
 | 17 | ca | BU-6GOS-GW5Q | false | 0 | 0 | none | 1.6250 | 8 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 17.99 | 1.6250 | 29.23 | critical |
 | 18 | ca | Y4-Y8EE-VEOD | false | 0 | 0 | none | 1.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-30 | 28.99 | 1.0000 | 28.99 | critical |
@@ -129,7 +129,7 @@ Stranded: FBA Stranded Inventory export returned 0 rows.
 - OOS velocity: when no days-in-stock in the last 30 Inventory Health snaps, use up to last 30 historical sale days (not sparse in-window sale days alone).
 
 ## Requests sent
-- updated 20260905-0620-supply-chain-stockout-risk → advertising (## Update 2026-09-08 daily)
+- updated 20260905-0620-supply-chain-stockout-risk → advertising (## Update 2026-09-09 daily)
 - prior unanswered: requests/advertising/inbox/20260903-1955-supply-chain-stockout-risk.md
 - prior unanswered: requests/advertising/inbox/20260904-0625-supply-chain-stockout-risk.md
 - prior unanswered: requests/finance/inbox/20260907-0610-supply-chain-need-cash-check.md (from Monday weekly)
