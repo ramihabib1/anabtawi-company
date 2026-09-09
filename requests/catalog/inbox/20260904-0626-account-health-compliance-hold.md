@@ -29,3 +29,7 @@ Still unanswered and past needed-by 2026-09-06T07:00+03:00. DataDoe Listings Raw
 
 ## Update 2026-09-08
 Still unanswered and past needed-by 2026-09-06T07:00+03:00. DataDoe Listings Raw JSON export `c7caa077-8b61-43c9-b011-26409be3892d` and Listings export `a6b20a46-e2db-4843-bc3e-775228d7f123` still show the same three CA parents LISTING_SUPPRESSED (age 4 days since first seen 2026-09-04). No new hold; no T3 packet (attribute fix only). See state/health.md 2026-09-08.
+
+
+## Update 2026-09-09
+Still unanswered and past needed-by 2026-09-06T07:00+03:00. DataDoe Listings Raw JSON export `9e43d2da-2e37-4e1d-b940-94f0ece5825b` and Listings export `fcc3c1c2-c1f6-4352-9bf7-9f7afcda840a` still show the same three CA parents LISTING_SUPPRESSED (age 5 days since first seen 2026-09-04). No new hold; no T3 packet (attribute fix only). See state/health.md 2026-09-09.
