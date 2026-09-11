@@ -10,3 +10,4 @@ Facts and patterns this department relies on. Each entry: `- since: YYYY-MM-DD �
 - since: 2026-09-05 · source: DataDoe inbound export · CA inbound plan FBA19NSL8M11 READY_TO_SHIP selected delivery window 2026-09-11→2026-09-17.
 - since: 2026-09-06 · source: DataDoe inbound export · CA inbound confirmation FBA19NZ90PPZ IN_TRANSIT (plan updated 2026-09-05) for KP-MEL9-XYGW, ZK-4NDS-MNA9, 5G-ZW6Q-WOZG, FO-SE3J-T74M; near-duplicate of READY_TO_SHIP FBA19NSL8M11.
 - since: 2026-09-07 · source: departments/supply-chain/.mcp.json · Freightos MCP is listed but not connected on grok-bot; Monday PO proposals must mark landed cost PENDING until connected.
+- since: 2026-09-11 · source: DataDoe inbound export · CA inbound confirmation FBA19NZ90PPZ DELIVERED (was IN_TRANSIT) for KP-MEL9-XYGW, ZK-4NDS-MNA9, 5G-ZW6Q-WOZG, FO-SE3J-T74M; READY_TO_SHIP FBA19NSL8M11 still treated as near-duplicate.
