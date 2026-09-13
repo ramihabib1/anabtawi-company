@@ -66,3 +66,9 @@ Hero SKUs under the 14-day cover floor (lead time TBD=0): 18-116Z-1R77, ASW-H50,
 Hero watch: TB-PIST-120. Hero inbound cover ≥ floor (still OOS fulfillable): 5G-ZW6Q-WOZG, H8-PWJ0-3B1Y. Prefer not to scale spend until fulfillable > 0 on heroes under floor.
 Inbound: FBA19NZ90PPZ still DELIVERED; RECEIVING still open on older plans; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted. YE-HCDW-4UYW inbound lot still expires 2026-11-23.
 Estimated CA OOS lost revenue ~CAD 1368.28/day. Monday PO proposals still pending. Context: state/inventory.md 2026-09-12 (daily cover check).
+
+## Update 2026-09-13 daily
+Hero SKUs under the 14-day cover floor (lead time TBD=0): 18-116Z-1R77, ASW-H50, EU-Z87B-ZRBZ, FO-SE3J-T74M, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. All remain fulfillable 0 on CA. 18-116Z-1R77 cover_adjusted ~0.00 (critical) with inbound 0; ASW-H50 cover_adjusted ~0.00 (critical) with inbound 0; EU-Z87B-ZRBZ cover_adjusted ~9.82 (critical) with inbound 36; FO-SE3J-T74M cover_adjusted ~12.05 (critical) with inbound 53; GG-0DC1-SKHG cover_adjusted ~11.00 (critical) with inbound 22; T8-2W2X-INOK cover_adjusted ~0.00 (critical) with inbound 0; YE-HCDW-4UYW cover_adjusted ~6.40 (critical) with inbound 8; TB-PIST-120 watch ~15.00 with inbound 30.
+Hero watch: TB-PIST-120. Hero inbound cover ≥ floor (still OOS fulfillable): 5G-ZW6Q-WOZG, H8-PWJ0-3B1Y. Prefer not to scale spend until fulfillable > 0 on heroes under floor.
+Inbound: FBA19NZ90PPZ still DELIVERED; RECEIVING still open on older plans; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted. YE-HCDW-4UYW inbound lot still expires 2026-11-23.
+Estimated CA OOS lost revenue ~CAD 1368.28/day. Monday PO proposals still pending. Context: state/inventory.md 2026-09-13 (daily cover check).
