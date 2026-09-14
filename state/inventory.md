@@ -3,26 +3,25 @@ department: supply-chain
 date: 2026-09-14
 run: scheduled
 runtime: grok-bot
-status: degraded
-tools_failed: [freightos]
+status: ok
+tools_failed: []
 ---
 ## Headline
-Monday weekly: 12-week forecast refreshed from CA shipped orders 2026-06-16..2026-09-14; ROP recomputed with ASSUMED lead=21d/MOQ=1/case=1 (suppliers/anabtawi.md still TBD). Estimated OOS lost revenue about CAD 1363.95/day. Hero under floor (lead TBD=0 for status): AN-9938-NXOT, ASW-H50, EU-Z87B-ZRBZ, FO-SE3J-T74M, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. 10 hero PO proposals written as T2 files with product cash from COGS where known; Freightos landed cost blocked (MCP not connected) so status degraded. Manufacturer FBA19NZ90PPZ still DELIVERED; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted.
+Daily cover check: CA Inventory Health latest snap 2026-09-13; estimated OOS lost revenue about CAD 1363.95/day. Hero under floor (lead TBD=0 for status): AN-9938-NXOT, ASW-H50, EU-Z87B-ZRBZ, FO-SE3J-T74M, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. Stranded 0; aged>180: 0C-45D7-6JUB (1); expiry within 90d: YE-HCDW-4UYW inbound 2026-11-23. Monday 20260914 hero PO proposals remain pending; stockout-risk request updated. Manufacturer FBA19NZ90PPZ still DELIVERED; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted. Reused same-morning Monday DataDoe export jobs (no duplicate identical job).
 
 ## Data
 Sellers: CA `5692b95f-f3f0-4063-9c1c-40177c54f408` (ANABTAWI SWEETS CA); US `822ebf46-c2bc-4350-86d3-dcf1bc8d5469` (ANABTAWI SWEETS US). Floor: 14 days. Lead time: TBD (suppliers/anabtawi.md). Seasonal buffer not active (Ramadan ~2027-02-08). Currency: CAD for CA.
 velocity_30: if fulfillable>0 use last-30 calendar units÷30; if stockout, units sold on afn_fulfillable in-stock days ÷ those unique days when >0; else up to last 30 historical sale days (vel_denom). Prefer shipped order lines. cover_days=(fulfillable+inbound)÷velocity_30. cover_adjusted=cover_days (no seasonal multiplier).
 Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health latest snapshot date in export: 2026-09-13.
-PO sizing ASSUMED (labeled in proposals): lead 21d, review 7d, buffer 14d, MOQ 1, case pack 1 — replace when suppliers/anabtawi.md is filled.
 
 ### Export citations
-- DataDoe export FBA Inventory Health (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-15 to 2026-09-14 job 0f39fcb5-61cd-40e8-9452-c68958898e66
-- DataDoe export Order Line Items (amazon_order_items_with_cogs / 89b27535d2) 2026-06-16 to 2026-09-14 job 5a4823aa-7eff-44f4-88fb-2ef4b55f4916 (432 raw rows; 367 shipped used)
-- DataDoe export FBA Inbound Shipments (amazon_fba_inbound_shipments / 8bc6f4bd09) snapshot job b7db61a9-0d3e-4553-868f-3863212edc30 (17 raw rows; RECEIVING counted in full; DELIVERED preferred over IN_TRANSIT/READY_TO_SHIP near-duplicates)
-- DataDoe export FBA Stranded Inventory (amazon_fba_stranded_inventory / a4d08771c8) snapshot job 60c437b9-2f07-4ce4-9408-03357061c7a2 (0 rows)
-- DataDoe export FBA Inventory Health US (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-15 to 2026-09-14 job 7c9b67f1-ba19-4bf8-b3fe-d2041864bde2
-- DataDoe export Order Line Items US job 44038378-90ec-4864-8908-6000aaf8ae5d (0 rows)
-- DataDoe export FBA Inbound Shipments US snapshot job 148e82de-d9ec-4888-a610-d2c18f4650fb
+- DataDoe export FBA Inventory Health (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-15 to 2026-09-14 job 0f39fcb5-61cd-40e8-9452-c68958898e66 (reused Monday morning job)
+- DataDoe export Order Line Items (amazon_order_items_with_cogs / 89b27535d2) 2026-06-16 to 2026-09-14 job 5a4823aa-7eff-44f4-88fb-2ef4b55f4916 (432 raw rows; 367 shipped used; reused Monday morning job)
+- DataDoe export FBA Inbound Shipments (amazon_fba_inbound_shipments / 8bc6f4bd09) snapshot job b7db61a9-0d3e-4553-868f-3863212edc30 (17 raw rows; RECEIVING counted in full; DELIVERED preferred over IN_TRANSIT/READY_TO_SHIP near-duplicates; reused Monday morning job)
+- DataDoe export FBA Stranded Inventory (amazon_fba_stranded_inventory / a4d08771c8) snapshot job 60c437b9-2f07-4ce4-9408-03357061c7a2 (0 rows; reused Monday morning job)
+- DataDoe export FBA Inventory Health US (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-15 to 2026-09-14 job 7c9b67f1-ba19-4bf8-b3fe-d2041864bde2 (reused Monday morning job)
+- DataDoe export Order Line Items US job 44038378-90ec-4864-8908-6000aaf8ae5d (0 rows; reused Monday morning job)
+- DataDoe export FBA Inbound Shipments US snapshot job 148e82de-d9ec-4888-a610-d2c18f4650fb (reused Monday morning job)
 
 ### Heroes (top 10 by 90-day CA revenue)
 | rank | sku | rev_90_CAD | units_90 |
@@ -37,50 +36,6 @@ PO sizing ASSUMED (labeled in proposals): lead 21d, review 7d, buffer 14d, MOQ 1
 | 8 | T8-2W2X-INOK | 607.86 | 14 |
 | 9 | TB-PIST-120 | 389.70 | 30 |
 | 10 | AN-9938-NXOT | 330.88 | 12 |
-
-### 12-week forecast (heroes) — weekly units
-Method: mean of last up to 8 ISO weeks of CA shipped units; forward 12 weeks = flat mean (playbooks/ has only us-launch.md; no CA seasonality multipliers; no launches in state/calendar.md).
-| sku | avg_weekly | fwd_weekly_x12 | recent_hist (week:units) |
-|---|---:|---|---|
-| H8-PWJ0-3B1Y | 7.25 | 7.25 × 12 | 2026-W34:0.0, 2026-W35:0.0, 2026-W36:0.0, 2026-W37:0.0 |
-| EU-Z87B-ZRBZ | 4.38 | 4.38 × 12 | 2026-W34:24.0, 2026-W35:2.0, 2026-W36:0.0, 2026-W37:0.0 |
-| FO-SE3J-T74M | 4.62 | 4.62 × 12 | 2026-W34:28.0, 2026-W35:1.0, 2026-W36:0.0, 2026-W37:0.0 |
-| 5G-ZW6Q-WOZG | 4.12 | 4.12 × 12 | 2026-W34:3.0, 2026-W35:0.0, 2026-W36:0.0, 2026-W37:0.0 |
-| YE-HCDW-4UYW | 0.88 | 0.88 × 12 | 2026-W34:1.0, 2026-W35:0.0, 2026-W36:0.0, 2026-W37:0.0 |
-| ASW-H50 | 1.75 | 1.75 × 12 | 2026-W34:1.0, 2026-W35:12.0, 2026-W36:1.0, 2026-W37:0.0 |
-| GG-0DC1-SKHG | 2.62 | 2.62 × 12 | 2026-W34:13.0, 2026-W35:1.0, 2026-W36:0.0, 2026-W37:0.0 |
-| T8-2W2X-INOK | 0.00 | 0.00 × 12 | 2026-W34:0.0, 2026-W35:0.0, 2026-W36:0.0, 2026-W37:0.0 |
-| TB-PIST-120 | 3.75 | 3.75 × 12 | 2026-W34:0.0, 2026-W35:0.0, 2026-W36:0.0, 2026-W37:0.0 |
-| AN-9938-NXOT | 0.00 | 0.00 × 12 | 2026-W34:0.0, 2026-W35:0.0, 2026-W36:0.0, 2026-W37:0.0 |
-
-### Reorder points (ASSUMED lead 21d + review 7d)
-| sku | hero | velocity_30 | ROP_units | target_units (ROP+buffer14) | fulfillable | inbound | po_qty_assumed | status |
-|---|---|---:|---:|---:|---:|---:|---:|---|
-| FO-SE3J-T74M | true | 4.4000 | 123.2 | 184.8 | 0 | 53 | 132 | critical |
-| EU-Z87B-ZRBZ | true | 3.6667 | 102.7 | 154.0 | 0 | 36 | 118 | critical |
-| AN-9938-NXOT | true | 1.7143 | 48.0 | 72.0 | 0 | 0 | 72 | critical |
-| GG-0DC1-SKHG | true | 2.0000 | 56.0 | 84.0 | 0 | 22 | 62 | critical |
-| T8-2W2X-INOK | true | 1.4000 | 39.2 | 58.8 | 0 | 0 | 59 | critical |
-| TB-PIST-120 | true | 2.0000 | 56.0 | 84.0 | 0 | 30 | 54 | watch |
-| 5G-ZW6Q-WOZG | true | 2.7500 | 77.0 | 115.5 | 0 | 68 | 48 | ok |
-| H8-PWJ0-3B1Y | true | 2.6000 | 72.8 | 109.2 | 0 | 64 | 46 | ok |
-| YE-HCDW-4UYW | true | 1.2500 | 35.0 | 52.5 | 0 | 8 | 45 | critical |
-| ASW-H50 | true | 0.7143 | 20.0 | 30.0 | 0 | 0 | 30 | critical |
-| KL-GDUL-HEA1 | false | 2.5000 | 70.0 | 105.0 | 0 | 0 | 105 | critical |
-| C5-TXQU-Y67R | false | 2.0000 | 56.0 | 84.0 | 0 | 0 | 84 | critical |
-| W3-UQRU-PGRR | false | 2.0000 | 56.0 | 84.0 | 0 | 0 | 84 | critical |
-| BU-6GOS-GW5Q | false | 1.6250 | 45.5 | 68.2 | 0 | 0 | 69 | critical |
-| 3I-SHTN-9CKQ | false | 1.4286 | 40.0 | 60.0 | 0 | 0 | 60 | critical |
-| 18-116Z-1R77 | false | 1.3333 | 37.3 | 56.0 | 0 | 0 | 56 | critical |
-| 09-AJOP-CS83 | false | 1.0000 | 28.0 | 42.0 | 0 | 0 | 42 | critical |
-| 1S-ITGB-CZFR | false | 1.0000 | 28.0 | 42.0 | 0 | 0 | 42 | critical |
-| 9Z-KUHZ-FU2I | false | 1.0000 | 28.0 | 42.0 | 0 | 0 | 42 | critical |
-| E3-DSPC-O2UN | false | 1.0000 | 28.0 | 42.0 | 0 | 0 | 42 | critical |
-| FX-M8MA-MMSA | false | 1.0000 | 28.0 | 42.0 | 0 | 0 | 42 | critical |
-| O3-V1B9-CH1H | false | 1.0000 | 28.0 | 42.0 | 0 | 0 | 42 | critical |
-| Y4-Y8EE-VEOD | false | 1.0000 | 28.0 | 42.0 | 0 | 0 | 42 | critical |
-| KP-MEL9-XYGW | false | 1.2222 | 34.2 | 51.3 | 0 | 18 | 34 | watch |
-| 0C-45D7-6JUB | false | 0.0333 | 0.9 | 1.4 | 1 | 0 | 1 | ok |
 
 ### Cover table (CA) — under floor / OOS / watch / risk / critical
 | rank | marketplace | sku | hero | fulfillable | inbound_qty | inbound_eta | velocity_30 | vel_denom | cover_days | cover_adjusted | floor | lead_time | last_in_stock | price_CAD | lost_units_day | lost_rev_day_CAD | status |
@@ -117,15 +72,17 @@ Method: mean of last up to 8 ISO weeks of CA shipped units; forward 12 weeks = f
 ### Cover OK (CA fulfillable > 0 and status ok)
 | marketplace | sku | fulfillable | inbound_qty | inbound_eta | velocity_30 | cover_days | cover_adjusted | last_in_stock | price_CAD | status |
 |---|---|---:|---:|---|---:|---:|---:|---|---:|---|
-| ca | 0C-45D7-6JUB | 1 | 0 | none | 0.0333 | 30.00 | 30.00 | 2026-09-13 | 59.99 | ok |
 | ca | OA-26MX-IHV0 | 43 | 54 | receiving-now | 0.2000 | 485.00 | 485.00 | 2026-09-13 | 21.00 | ok |
 | ca | 26-JITG-E4FU | 19 | 18 | receiving-now | 0.1000 | 370.00 | 370.00 | 2026-09-13 | 19.99 | ok |
+| ca | 0C-45D7-6JUB | 1 | 0 | none | 0.0333 | 30.00 | 30.00 | 2026-09-13 | 59.99 | ok |
 
 ### OOS fulfillable but inbound cover ≥ floor (still not sellable)
 | marketplace | sku | hero | inbound_qty | cover_days | status |
 |---|---|---|---:|---:|---|
 | ca | 5G-ZW6Q-WOZG | true | 68 | 24.73 | ok |
 | ca | H8-PWJ0-3B1Y | true | 64 | 24.62 | ok |
+| ca | TB-PIST-120 | true | 30 | 15.00 | watch |
+| ca | KP-MEL9-XYGW | false | 18 | 14.73 | watch |
 
 ### US marketplace
 | marketplace | sku | fulfillable | inbound_qty | velocity_30 | cover_days | status | note |
@@ -165,31 +122,31 @@ Stranded: FBA Stranded Inventory export returned 0 rows.
 
 ## Exceptions
 - Inventory Health latest date in export window is 2026-09-13; Amazon business day closes 07:00 Asia/Jerusalem.
-- Freightos MCP is configured in departments/supply-chain/.mcp.json but is not connected on this grok-bot runtime — landed cost cannot be computed; PO proposals include product cash (COGS×qty) only and mark landed cost PENDING.
-- suppliers/anabtawi.md lead time/MOQ/case pack/payment terms TBD — PO quantities use ASSUMED lead 21d, MOQ 1, case pack 1.
-- state/cash.md has never been run; need-cash-check sent to finance, unanswered at write time.
-- products/ empty — heroes by 90-day CA revenue (shipped lines); this week #10 is AN-9938-NXOT (18-116Z-1R77 drops to #11 on current 90d window).
+- Daily cover check reused Monday 06:10 DataDoe export jobs still COMPLETED (datadoe-export skill: do not create a second identical job).
+- suppliers/anabtawi.md lead time/MOQ/case pack/payment terms TBD — status thresholds use lead TBD=0.
+- products/ empty — heroes by 90-day CA revenue (shipped lines); #10 is AN-9938-NXOT.
 - Inventory Health inbound_* columns remain unreliable vs FBA Inbound Shipments; cover uses inbound shipments export with DELIVERED > IN_TRANSIT > READY_TO_SHIP near-duplicate dedupe.
 - US: orders export 0 rows; inbound export returns CA confirmation IDs under US seller — not used for US cover.
 - Capacity/IPI unavailable.
-- Prior Monday 20260907 pending PO files are expired (>48h); left in place; fresh 20260914 proposals written.
+- Fresh Monday PO proposals dated 20260914 remain pending; no new PO files written on this daily run.
+- finance need-cash-check 20260914-0610 still unanswered at write time.
 
 ## Requests sent
-- updated 20260905-0620-supply-chain-stockout-risk → advertising (## Update 2026-09-14 weekly)
-- new 20260914-0610-supply-chain-need-cash-check → finance
+- updated 20260905-0620-supply-chain-stockout-risk → advertising (## Update 2026-09-14 daily)
 - prior unanswered: requests/advertising/inbox/20260903-1955-supply-chain-stockout-risk.md
 - prior unanswered: requests/advertising/inbox/20260904-0625-supply-chain-stockout-risk.md
 - prior unanswered: requests/finance/inbox/20260907-0610-supply-chain-need-cash-check.md
+- prior unanswered: requests/finance/inbox/20260914-0610-supply-chain-need-cash-check.md
 
 ## Proposals written
-- approvals/pending/20260914-supply-chain-po-EU-Z87B-ZRBZ.md (qty 118; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-FO-SE3J-T74M.md (qty 132; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-5G-ZW6Q-WOZG.md (qty 48; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-H8-PWJ0-3B1Y.md (qty 46; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-YE-HCDW-4UYW.md (qty 45; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-T8-2W2X-INOK.md (qty 59; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-GG-0DC1-SKHG.md (qty 62; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-AN-9938-NXOT.md (qty 72; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-ASW-H50.md (qty 30; landed cost PENDING Freightos)
-- approvals/pending/20260914-supply-chain-po-TB-PIST-120.md (qty 54; landed cost PENDING Freightos)
-- departments/supply-chain/drafts/20260914-supplier-restock-anabtawi.md
+- none (daily cover check; Monday 20260914 hero PO proposals already pending)
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-EU-Z87B-ZRBZ.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-FO-SE3J-T74M.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-5G-ZW6Q-WOZG.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-H8-PWJ0-3B1Y.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-YE-HCDW-4UYW.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-T8-2W2X-INOK.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-GG-0DC1-SKHG.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-AN-9938-NXOT.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-ASW-H50.md
+- still pending from Monday: approvals/pending/20260914-supply-chain-po-TB-PIST-120.md
