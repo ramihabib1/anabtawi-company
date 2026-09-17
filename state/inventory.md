@@ -1,39 +1,39 @@
 ---
 department: supply-chain
-date: 2026-09-16
+date: 2026-09-17
 run: scheduled
 runtime: grok-bot
 status: ok
 tools_failed: []
 ---
 ## Headline
-Daily cover check: CA Inventory Health latest snap 2026-09-14; estimated OOS lost revenue about CAD 1092.15/day (vs CAD 1089.49 on 2026-09-15). Receiving: heroes fulfillable>0: FO-SE3J-T74M (15), 5G-ZW6Q-WOZG (16). Hero under floor (lead TBD=0 for status): AN-9938-NXOT, ASW-H50, EU-Z87B-ZRBZ, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. Hero watch: TB-PIST-120. Stranded 0; aged>180: 0C-45D7-6JUB (1); expiry within 90d: YE-HCDW-4UYW inbound 2026-11-23. Monday 20260914 hero PO proposals remain pending; stockout-risk request updated. Manufacturer FBA19NZ90PPZ still DELIVERED; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted.
+Daily cover check: CA Inventory Health latest snap 2026-09-16; estimated OOS lost revenue about CAD 1083.22/day (vs CAD 1092.15 on 2026-09-16). Receiving: heroes fulfillable>0: FO-SE3J-T74M (15), 5G-ZW6Q-WOZG (14). Hero under floor (lead TBD=0 for status): AN-9938-NXOT, ASW-H50, EU-Z87B-ZRBZ, GG-0DC1-SKHG, T8-2W2X-INOK, YE-HCDW-4UYW. Hero watch: TB-PIST-120. Stranded 0; aged>180: 0C-45D7-6JUB (1); expiry within 90d: YE-HCDW-4UYW inbound 2026-11-23. Monday 20260914 hero PO proposals remain pending; stockout-risk request updated. Manufacturer FBA19NZ90PPZ still DELIVERED; READY_TO_SHIP FBA19NSL8M11 near-duplicate not double-counted. Fulfillable progress vs prior: OA-26MX-IHV0 43->44; 5G-ZW6Q-WOZG 16->14.
 
 ## Data
 Sellers: CA `5692b95f-f3f0-4063-9c1c-40177c54f408` (ANABTAWI SWEETS CA); US `822ebf46-c2bc-4350-86d3-dcf1bc8d5469` (ANABTAWI SWEETS US). Floor: 14 days. Lead time: TBD (suppliers/anabtawi.md). Seasonal buffer not active (Ramadan ~2027-02-08). Currency: CAD for CA.
 velocity_30: if fulfillable>0 use last-30 calendar units÷30; if stockout, units sold on afn_fulfillable in-stock days ÷ those unique days when >0; else up to last 30 historical sale days (vel_denom). Prefer shipped order lines. cover_days=(fulfillable+inbound)÷velocity_30. cover_adjusted=cover_days (no seasonal multiplier).
-Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health latest snapshot date in export: 2026-09-14.
+Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health latest snapshot date in export: 2026-09-16.
 
 ### Export citations
-- DataDoe export FBA Inventory Health (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-17 to 2026-09-16 job 713a623a-2293-48a4-817b-aa021320b524
-- DataDoe export Order Line Items (amazon_order_items_with_cogs / 89b27535d2) 2026-06-18 to 2026-09-16 job e3d3f813-112b-4696-b54a-98f905a0ba05 (423 raw rows; 357 shipped used)
-- DataDoe export FBA Inbound Shipments (amazon_fba_inbound_shipments / 8bc6f4bd09) snapshot job 722e4b27-392a-4c7c-b33b-c93c7909b932 (17 raw rows; RECEIVING counted in full; DELIVERED preferred over IN_TRANSIT/READY_TO_SHIP near-duplicates)
-- DataDoe export FBA Stranded Inventory (amazon_fba_stranded_inventory / a4d08771c8) snapshot job 87465e1b-e5f5-434b-bfe3-6f7ee21ae8b6 (0 rows)
-- DataDoe export FBA Inventory Health US (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-17 to 2026-09-16 job bd515986-8cc4-4c3a-9253-04b12fb9a7a1
-- DataDoe export Order Line Items US job 5acf6b56-a6ec-49e5-8f65-0c8f732ccd52 (0 rows)
-- DataDoe export FBA Inbound Shipments US snapshot job 37a0a813-5d58-45b7-90ab-bc16b589ed1e
+- DataDoe export FBA Inventory Health (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-18 to 2026-09-17 job 7a9b9453-40bc-46a0-8b01-9f620e5401b0
+- DataDoe export Order Line Items (amazon_order_items_with_cogs / 89b27535d2) 2026-06-19 to 2026-09-17 job a945566a-eaea-4327-8005-fcd9ff354dff (421 raw rows; 355 shipped used)
+- DataDoe export FBA Inbound Shipments (amazon_fba_inbound_shipments / 8bc6f4bd09) snapshot job 042a729a-7490-4823-be0b-1067f50e9cb0 (17 raw rows; RECEIVING counted in full; DELIVERED preferred over IN_TRANSIT/READY_TO_SHIP near-duplicates)
+- DataDoe export FBA Stranded Inventory (amazon_fba_stranded_inventory / a4d08771c8) snapshot job 23533926-8b5f-45da-8508-8a03f6ec8c6c (0 rows)
+- DataDoe export FBA Inventory Health US (amazon_fba_inventory_health / 44fc5ba0ce) 2026-08-18 to 2026-09-17 job f2579636-3586-4bcd-8112-6a1140f1c9bc
+- DataDoe export Order Line Items US job 8c20051c-c030-42ec-a9c5-28d2707c6923 (0 rows)
+- DataDoe export FBA Inbound Shipments US snapshot job cfb50423-2df8-4d35-a6ae-c82a2b69d5d2
 
 ### Heroes (top 10 by 90-day CA revenue)
 | rank | sku | rev_90_CAD | units_90 |
 |---:|---|---:|---:|
 | 1 | H8-PWJ0-3B1Y | 2111.36 | 64 |
 | 2 | EU-Z87B-ZRBZ | 2015.64 | 36 |
-| 3 | FO-SE3J-T74M | 1253.62 | 38 |
-| 4 | 5G-ZW6Q-WOZG | 1088.67 | 33 |
+| 3 | FO-SE3J-T74M | 1286.61 | 39 |
+| 4 | 5G-ZW6Q-WOZG | 1121.66 | 34 |
 | 5 | YE-HCDW-4UYW | 899.85 | 15 |
 | 6 | ASW-H50 | 839.86 | 14 |
 | 7 | GG-0DC1-SKHG | 659.78 | 22 |
-| 8 | T8-2W2X-INOK | 562.87 | 13 |
+| 8 | T8-2W2X-INOK | 472.89 | 11 |
 | 9 | TB-PIST-120 | 389.70 | 30 |
 | 10 | AN-9938-NXOT | 330.88 | 12 |
 
@@ -41,40 +41,40 @@ Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health l
 | rank | marketplace | sku | hero | fulfillable | inbound_qty | inbound_eta | velocity_30 | vel_denom | cover_days | cover_adjusted | floor | lead_time | last_in_stock | price_CAD | lost_units_day | lost_rev_day_CAD | status |
 |---:|---|---|---|---:|---:|---|---:|---:|---:|---:|---:|---|---|---:|---:|---:|---|
 | 1 | ca | EU-Z87B-ZRBZ | true | 0 | 36 | receiving-now | 3.6667 | 6 | 9.82 | 9.82 | 14 | TBD | 2026-08-23 | 55.99 | 3.6667 | 205.30 | critical |
-| 2 | ca | H8-PWJ0-3B1Y | true | 0 | 64 | receiving-now | 2.6667 | 24 | 24.00 | 24.00 | 14 | TBD | on-or-before-2026-08-17 | 32.99 | 2.6667 | 87.97 | ok |
-| 3 | ca | C5-TXQU-Y67R | false | 0 | 0 | none | 2.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 39.99 | 2.0000 | 79.98 | critical |
+| 2 | ca | H8-PWJ0-3B1Y | true | 0 | 64 | receiving-now | 2.6667 | 24 | 24.00 | 24.00 | 14 | TBD | on-or-before-2026-08-18 | 32.99 | 2.6667 | 87.97 | ok |
+| 3 | ca | C5-TXQU-Y67R | false | 0 | 0 | none | 2.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 39.99 | 2.0000 | 79.98 | critical |
 | 4 | ca | YE-HCDW-4UYW | true | 0 | 8 | receiving-now | 1.2500 | 12 | 6.40 | 6.40 | 14 | TBD | 2026-08-20 | 59.99 | 1.2500 | 74.99 | critical |
-| 5 | ca | T8-2W2X-INOK | true | 0 | 0 | none | 1.4444 | 9 | 0.00 | 0.00 | 14 | TBD | unknown (no FBA inventory rows in export window) | 42.99 | 1.4444 | 62.10 | critical |
-| 6 | ca | GG-0DC1-SKHG | true | 0 | 22 | receiving-now | 2.0000 | 5 | 11.00 | 11.00 | 14 | TBD | 2026-08-22 | 29.99 | 2.0000 | 59.98 | critical |
-| 7 | ca | KL-GDUL-HEA1 | false | 0 | 0 | none | 2.5000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 21.99 | 2.5000 | 54.97 | critical |
-| 8 | ca | W3-UQRU-PGRR | false | 0 | 0 | none | 1.6667 | 3 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 27.99 | 1.6667 | 46.65 | critical |
-| 9 | ca | AN-9938-NXOT | true | 0 | 0 | none | 1.7143 | 7 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 26.99 | 1.7143 | 46.27 | critical |
-| 10 | ca | 9Z-KUHZ-FU2I | false | 0 | 0 | none | 1.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 42.99 | 1.0000 | 42.99 | critical |
+| 5 | ca | GG-0DC1-SKHG | true | 0 | 22 | receiving-now | 2.0000 | 5 | 11.00 | 11.00 | 14 | TBD | 2026-08-22 | 29.99 | 2.0000 | 59.98 | critical |
+| 6 | ca | KL-GDUL-HEA1 | false | 0 | 0 | none | 2.5000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 21.99 | 2.5000 | 54.97 | critical |
+| 7 | ca | T8-2W2X-INOK | true | 0 | 0 | none | 1.2222 | 9 | 0.00 | 0.00 | 14 | TBD | unknown (no FBA inventory rows in export window) | 42.99 | 1.2222 | 52.54 | critical |
+| 8 | ca | W3-UQRU-PGRR | false | 0 | 0 | none | 1.6667 | 3 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 27.99 | 1.6667 | 46.65 | critical |
+| 9 | ca | AN-9938-NXOT | true | 0 | 0 | none | 1.7143 | 7 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 26.99 | 1.7143 | 46.27 | critical |
+| 10 | ca | 9Z-KUHZ-FU2I | false | 0 | 0 | none | 1.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 42.99 | 1.0000 | 42.99 | critical |
 | 11 | ca | ASW-H50 | true | 0 | 0 | none | 0.6923 | 13 | 0.00 | 0.00 | 14 | TBD | 2026-08-31 | 59.99 | 0.6923 | 41.53 | critical |
-| 12 | ca | 1S-ITGB-CZFR | false | 0 | 0 | none | 1.0000 | 3 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 39.99 | 1.0000 | 39.99 | critical |
-| 13 | ca | E3-DSPC-O2UN | false | 0 | 0 | none | 1.0000 | 4 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 34.99 | 1.0000 | 34.99 | critical |
-| 14 | ca | 18-116Z-1R77 | false | 0 | 0 | none | 1.1429 | 7 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 25.99 | 1.1429 | 29.70 | critical |
-| 15 | ca | BU-6GOS-GW5Q | false | 0 | 0 | none | 1.6250 | 8 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 17.99 | 1.6250 | 29.23 | critical |
-| 16 | ca | Y4-Y8EE-VEOD | false | 0 | 0 | none | 1.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 28.99 | 1.0000 | 28.99 | critical |
-| 17 | ca | 3I-SHTN-9CKQ | false | 0 | 0 | none | 1.4286 | 7 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 19.99 | 1.4286 | 28.56 | critical |
-| 18 | ca | FX-M8MA-MMSA | false | 0 | 0 | none | 1.0000 | 1 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 28.00 | 1.0000 | 28.00 | critical |
-| 19 | ca | TB-PIST-120 | true | 0 | 30 | receiving-now | 2.0000 | 15 | 15.00 | 15.00 | 14 | TBD | on-or-before-2026-08-17 | 12.99 | 2.0000 | 25.98 | watch |
-| 20 | ca | 09-AJOP-CS83 | false | 0 | 0 | none | 1.0000 | 4 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 21.99 | 1.0000 | 21.99 | critical |
-| 21 | ca | O3-V1B9-CH1H | false | 0 | 0 | none | 1.0000 | 3 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-17 | 21.99 | 1.0000 | 21.99 | critical |
-| 22 | ca | 9J-ASSK-BVKC | false | 0 | 0 | none | 0.0000 | 0 |  |  | 14 | TBD | on-or-before-2026-08-17 | 0.00 | 0.0000 | 0.00 | critical |
-| 23 | ca | RL-KMFR-SEGS | false | 0 | 0 | none | 0.0000 | 0 |  |  | 14 | TBD | on-or-before-2026-08-17 | 0.00 | 0.0000 | 0.00 | critical |
-| 24 | ca | VH-ZTOC-GW1Q | false | 0 | 0 | none | 0.0000 | 0 |  |  | 14 | TBD | on-or-before-2026-08-17 | 0.00 | 0.0000 | 0.00 | critical |
-| 25 | ca | ZK-4NDS-MNA9 | false | 0 | 18 | delivered | 0.0000 | 0 |  |  | 14 | TBD | on-or-before-2026-08-17 | 0.00 | 0.0000 | 0.00 | critical |
+| 12 | ca | 1S-ITGB-CZFR | false | 0 | 0 | none | 1.0000 | 3 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 39.99 | 1.0000 | 39.99 | critical |
+| 13 | ca | E3-DSPC-O2UN | false | 0 | 0 | none | 1.0000 | 4 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 34.99 | 1.0000 | 34.99 | critical |
+| 14 | ca | 18-116Z-1R77 | false | 0 | 0 | none | 1.1667 | 6 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 25.99 | 1.1667 | 30.32 | critical |
+| 15 | ca | BU-6GOS-GW5Q | false | 0 | 0 | none | 1.6250 | 8 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 17.99 | 1.6250 | 29.23 | critical |
+| 16 | ca | Y4-Y8EE-VEOD | false | 0 | 0 | none | 1.0000 | 2 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 28.99 | 1.0000 | 28.99 | critical |
+| 17 | ca | 3I-SHTN-9CKQ | false | 0 | 0 | none | 1.4286 | 7 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 19.99 | 1.4286 | 28.56 | critical |
+| 18 | ca | FX-M8MA-MMSA | false | 0 | 0 | none | 1.0000 | 1 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 28.00 | 1.0000 | 28.00 | critical |
+| 19 | ca | TB-PIST-120 | true | 0 | 30 | receiving-now | 2.0000 | 15 | 15.00 | 15.00 | 14 | TBD | on-or-before-2026-08-18 | 12.99 | 2.0000 | 25.98 | watch |
+| 20 | ca | 09-AJOP-CS83 | false | 0 | 0 | none | 1.0000 | 4 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 21.99 | 1.0000 | 21.99 | critical |
+| 21 | ca | O3-V1B9-CH1H | false | 0 | 0 | none | 1.0000 | 3 | 0.00 | 0.00 | 14 | TBD | on-or-before-2026-08-18 | 21.99 | 1.0000 | 21.99 | critical |
+| 22 | ca | 9J-ASSK-BVKC | false | 0 | 0 | none | 0.0000 | 0 |  |  | 14 | TBD | on-or-before-2026-08-18 | 0.00 | 0.0000 | 0.00 | critical |
+| 23 | ca | RL-KMFR-SEGS | false | 0 | 0 | none | 0.0000 | 0 |  |  | 14 | TBD | on-or-before-2026-08-18 | 0.00 | 0.0000 | 0.00 | critical |
+| 24 | ca | VH-ZTOC-GW1Q | false | 0 | 0 | none | 0.0000 | 0 |  |  | 14 | TBD | on-or-before-2026-08-18 | 0.00 | 0.0000 | 0.00 | critical |
+| 25 | ca | ZK-4NDS-MNA9 | false | 0 | 18 | delivered | 0.0000 | 0 |  |  | 14 | TBD | on-or-before-2026-08-18 | 23.99 | 0.0000 | 0.00 | critical |
 
 ### Cover OK (CA fulfillable > 0 and status ok)
 | marketplace | sku | fulfillable | inbound_qty | inbound_eta | velocity_30 | cover_days | cover_adjusted | last_in_stock | price_CAD | status |
 |---|---|---:|---:|---|---:|---:|---:|---|---:|---|
-| ca | OA-26MX-IHV0 | 43 | 54 | receiving-now | 0.1667 | 582.00 | 582.00 | 2026-09-14 | 21.00 | ok |
-| ca | 26-JITG-E4FU | 19 | 18 | receiving-now | 0.1000 | 370.00 | 370.00 | 2026-09-14 | 19.99 | ok |
-| ca | 5G-ZW6Q-WOZG | 16 | 68 | delivered,receiving-now | 0.1000 | 840.00 | 840.00 | 2026-09-14 | 32.99 | ok |
-| ca | KP-MEL9-XYGW | 16 | 18 | delivered | 0.0000 |  |  | 2026-09-14 | 19.99 | ok |
-| ca | FO-SE3J-T74M | 15 | 53 | delivered,receiving-now | 1.0000 | 68.00 | 68.00 | 2026-09-14 | 32.99 | ok |
-| ca | 0C-45D7-6JUB | 1 | 0 | none | 0.0333 | 30.00 | 30.00 | 2026-09-14 | 59.99 | ok |
+| ca | OA-26MX-IHV0 | 44 | 54 | receiving-now | 0.1667 | 588.00 | 588.00 | 2026-09-16 | 21.00 | ok |
+| ca | 26-JITG-E4FU | 19 | 18 | receiving-now | 0.1000 | 370.00 | 370.00 | 2026-09-16 | 19.99 | ok |
+| ca | KP-MEL9-XYGW | 16 | 18 | delivered | 0.0000 |  |  | 2026-09-16 | 19.99 | ok |
+| ca | FO-SE3J-T74M | 15 | 53 | delivered,receiving-now | 0.9333 | 72.86 | 72.86 | 2026-09-16 | 32.99 | ok |
+| ca | 5G-ZW6Q-WOZG | 14 | 68 | delivered,receiving-now | 0.0667 | 1230.00 | 1230.00 | 2026-09-16 | 32.99 | ok |
+| ca | 0C-45D7-6JUB | 1 | 0 | none | 0.0333 | 30.00 | 30.00 | 2026-09-16 | 59.99 | ok |
 
 ### OOS fulfillable but inbound cover ≥ floor (still not sellable)
 | marketplace | sku | hero | inbound_qty | cover_days | status |
@@ -85,8 +85,8 @@ Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health l
 ### US marketplace
 | marketplace | sku | fulfillable | inbound_qty | velocity_30 | cover_days | status | note |
 |---|---|---:|---:|---:|---:|---|---|
-| us | ASW-H50 | 0 | 0 | 0.0000 |  | critical | US orders export 0 rows; US inbound export mirrors CA confirmations — not applied to US cover; snap 2026-09-14 |
-| us | YE-HCDW-4UYW | 0 | 0 | 0.0000 |  | critical | US orders export 0 rows; US inbound export mirrors CA confirmations — not applied to US cover; snap 2026-09-14 |
+| us | ASW-H50 | 0 | 0 | 0.0000 |  | critical | US orders export 0 rows; US inbound export mirrors CA confirmations — not applied to US cover; snap 2026-09-16 |
+| us | YE-HCDW-4UYW | 0 | 0 | 0.0000 |  | critical | US orders export 0 rows; US inbound export mirrors CA confirmations — not applied to US cover; snap 2026-09-16 |
 
 ### Inbound ETAs (CA FBA shipments export, deduped)
 | sku | qty | status | confirmation | window/ETA |
@@ -106,7 +106,7 @@ Heroes = top 10 by 90-day CA order revenue (products/ empty). Inventory Health l
 ### Manufacturer open order (not yet fully received into fulfillable)
 | placed | ships | ETA at FBA | lines | status | source |
 |---|---|---|---|---|---|
-| before 2026-09-03 | 2026-09-04 | DELIVERED FBA19NZ90PPZ; READY_TO_SHIP FBA19NSL8M11 treated as near-duplicate | 5G-ZW6Q-WOZG 32; FO-SE3J-T74M 17; KP-MEL9-XYGW 18; ZK-4NDS-MNA9 18 | delivered at Amazon; fulfillable on snap 2026-09-14: 5G-ZW6Q-WOZG (16), FO-SE3J-T74M (15), KP-MEL9-XYGW (16), ZK-4NDS-MNA9 (0) | suppliers/anabtawi.md + DataDoe inbound + Inventory Health |
+| before 2026-09-03 | 2026-09-04 | DELIVERED FBA19NZ90PPZ; READY_TO_SHIP FBA19NSL8M11 treated as near-duplicate | 5G-ZW6Q-WOZG 32; FO-SE3J-T74M 17; KP-MEL9-XYGW 18; ZK-4NDS-MNA9 18 | delivered at Amazon; fulfillable on snap 2026-09-16: 5G-ZW6Q-WOZG (14), FO-SE3J-T74M (15), KP-MEL9-XYGW (16), ZK-4NDS-MNA9 (0) | suppliers/anabtawi.md + DataDoe inbound + Inventory Health |
 
 ### Capacity / IPI
 Not available from the DataDoe sources used this run (no capacity/IPI columns in FBA Inventory Health / Inbound exports pulled).
@@ -114,12 +114,12 @@ Not available from the DataDoe sources used this run (no capacity/IPI columns in
 ### Aged inventory (>180 days) and expiry
 | marketplace | sku | units_aged_over_180 | source |
 |---|---|---:|---|
-| ca | 0C-45D7-6JUB | 1 | Inventory Health inv_age_181+ buckets on snap 2026-09-14 |
+| ca | 0C-45D7-6JUB | 1 | Inventory Health inv_age_181+ buckets on snap 2026-09-16 |
 Expiry within 90 days: YE-HCDW-4UYW inbound lot expiration 2026-11-23.
 Stranded: FBA Stranded Inventory export returned 0 rows.
 
 ## Exceptions
-- Inventory Health latest date in export window is 2026-09-14; Amazon business day closes 07:00 Asia/Jerusalem (Sep 15–16 snaps may not be available yet at this run).
+- Inventory Health latest date in export window is 2026-09-16; Amazon business day closes 07:00 Asia/Jerusalem (Sep 17 snap may not be available yet at this run).
 - suppliers/anabtawi.md lead time/MOQ/case pack/payment terms TBD — status thresholds use lead TBD=0.
 - products/ empty — heroes by 90-day CA revenue (shipped lines); #10 is AN-9938-NXOT.
 - Inventory Health inbound_* columns remain unreliable vs FBA Inbound Shipments; cover uses inbound shipments export with DELIVERED > IN_TRANSIT > READY_TO_SHIP near-duplicate dedupe.
@@ -127,10 +127,10 @@ Stranded: FBA Stranded Inventory export returned 0 rows.
 - Capacity/IPI unavailable.
 - Fresh Monday PO proposals dated 20260914 remain pending; no new PO files written on this daily run.
 - finance need-cash-check 20260914-0610 still unanswered at write time.
-- No new fulfillable progress vs 2026-09-15 snap for heroes already in stock (5G-ZW6Q-WOZG 16, FO-SE3J-T74M 15 still).
+- Fulfillable progress vs 2026-09-16 known prior: OA-26MX-IHV0 43->44; 5G-ZW6Q-WOZG 16->14.
 
 ## Requests sent
-- updated 20260905-0620-supply-chain-stockout-risk → advertising (## Update 2026-09-16 daily)
+- updated 20260905-0620-supply-chain-stockout-risk → advertising (## Update 2026-09-17 daily)
 - prior unanswered: requests/advertising/inbox/20260903-1955-supply-chain-stockout-risk.md
 - prior unanswered: requests/advertising/inbox/20260904-0625-supply-chain-stockout-risk.md
 - prior unanswered: requests/finance/inbox/20260907-0610-supply-chain-need-cash-check.md
