@@ -13,3 +13,6 @@ Facts and patterns this department relies on. Each entry: `- since: YYYY-MM-DD �
 - since: 2026-09-11 · source: DataDoe inbound export · CA inbound confirmation FBA19NZ90PPZ DELIVERED (was IN_TRANSIT) for KP-MEL9-XYGW, ZK-4NDS-MNA9, 5G-ZW6Q-WOZG, FO-SE3J-T74M; READY_TO_SHIP FBA19NSL8M11 still treated as near-duplicate.
 - since: 2026-09-17 · source: DataDoe Inventory Health · CA Inventory Health snap advanced to 2026-09-16 (was stuck at 2026-09-14 on prior runs); 5G-ZW6Q-WOZG fulfillable 14 on that snap (was 16).
 - since: 2026-09-18 · source: DataDoe Inventory Health · CA Inventory Health snap advanced to 2026-09-17; 5G-ZW6Q-WOZG fulfillable 13 on that snap (was 14 on 2026-09-16).
+- since: 2026-09-19 · source: DataDoe Inventory Health · CA Inventory Health snap advanced to 2026-09-18; FO-SE3J-T74M fulfillable 14 on that snap (was 15 on 2026-09-17).
+- since: 2026-09-19 · source: state/inventory.md 2026-09-19 · Hero #10 by 90d CA revenue is 0C-45D7-6JUB; AN-9938-NXOT dropped out of top 10.
+- since: 2026-09-19 · source: DataDoe Inventory Health US · US snap 2026-09-18 incomplete (2 SKUs) vs 30 SKUs on 2026-09-17.
